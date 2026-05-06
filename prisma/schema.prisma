@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OrderStatus {
+  pending
+  checkout_open
+  paid
+  canceled
+  refunded
+}
+
+model User {
+  id            String           @id
+  name          String
+  email         String           @unique
+  emailVerified Boolean          @default(false)
+  image         String?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @default(now()) @updatedAt
+  accounts      Account[]
+  orders        Order[]
+  sessions      Session[]
+  stripeLinks   StripeCustomer[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @default(now()) @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Product {
+  id                String           @id @default(cuid())
+  name              String
+  slug              String           @unique
+  description       String?
+  image             String?
+  marketingFeatures String[]
+  active            Boolean          @default(true)
+  stripeProductId   String?          @unique
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @default(now()) @updatedAt
+  variants          ProductVariant[]
+}
+
+model ProductVariant {
+  id            String      @id @default(cuid())
+  productId     String
+  sku           String      @unique
+  name          String
+  currency      String
+  unitAmount    Int
+  stripePriceId String      @unique
+  active        Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @default(now()) @updatedAt
+  orderItems    OrderItem[]
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model Order {
+  id                     String         @id @default(cuid())
+  userId                 String?
+  email                  String?
+  status                 OrderStatus    @default(pending)
+  currency               String
+  subtotalAmount         Int
+  totalAmount            Int
+  stripeCheckoutSessionId String?       @unique
+  stripePaymentIntentId  String?        @unique
+  stripeCustomerId       String?
+  completedAt            DateTime?
+  canceledAt             DateTime?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @default(now()) @updatedAt
+  items                  OrderItem[]
+  stripeEvents           WebhookEvent[]
+  user                   User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([email])
+}
+
+model OrderItem {
+  id               String          @id @default(cuid())
+  orderId          String
+  productVariantId String?
+  name             String
+  sku              String?
+  quantity         Int
+  unitAmount       Int
+  totalAmount      Int
+  stripePriceId    String?
+  createdAt        DateTime        @default(now())
+  order            Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productVariant   ProductVariant? @relation(fields: [productVariantId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([productVariantId])
+}
+
+model StripeCustomer {
+  id               String    @id @default(cuid())
+  userId           String?
+  email            String?
+  stripeCustomerId String    @unique
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @default(now()) @updatedAt
+  user             User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([email])
+}
+
+model WebhookEvent {
+  id            String   @id @default(cuid())
+  stripeEventId String   @unique
+  type          String
+  orderId       String?
+  payload       Json?
+  processedAt   DateTime @default(now())
+  order         Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+}
