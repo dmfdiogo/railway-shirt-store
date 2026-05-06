@@ -5,6 +5,7 @@ import Image from "next/image";
 import { auth, isAuthConfigured } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getStripeServerClient } from "@/lib/stripe";
+import { MysticBackground } from "@/components/ui/mystic-background";
 
 export const runtime = "nodejs";
 
@@ -165,6 +166,9 @@ export default async function Home() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-[#0A0A0C] text-white">
+      {/* Animated background — WebGL nebula with CSS fallback */}
+      <MysticBackground />
+
       {/* Grain texture overlay */}
       <div
         aria-hidden="true"
