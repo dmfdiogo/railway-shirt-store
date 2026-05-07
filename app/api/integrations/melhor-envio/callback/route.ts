@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { auth, isAuthConfigured } from "@/lib/auth";
 import {
   exchangeMelhorEnvioAuthorizationCode,
   getMelhorEnvioActorCookieName,
@@ -14,14 +13,11 @@ export async function GET(request: NextRequest) {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const requestState = request.cookies.get(getMelhorEnvioStateCookieName())?.value;
-  const requestActor = request.cookies.get(getMelhorEnvioActorCookieName())?.value;
-  const session = isAuthConfigured()
-    ? await auth.api.getSession({ headers: request.headers }).catch(() => null)
-    : null;
+  const publicAppUrl = process.env.APP_URL ?? process.env.BETTER_AUTH_URL ?? url.origin;
 
-  const redirectUrl = new URL("/operacoes/frete", url.origin);
+  const redirectUrl = new URL("/operacoes/frete", publicAppUrl);
 
-  if (!code || !state || !requestState || requestState !== state || !session || !requestActor || requestActor !== session.user.id) {
+  if (!code || !state || !requestState || requestState !== state) {
     redirectUrl.searchParams.set("melhor-envio", "invalid-state");
     const response = NextResponse.redirect(redirectUrl, 302);
     response.cookies.set(getMelhorEnvioStateCookieName(), "", { maxAge: 0, path: "/" });
