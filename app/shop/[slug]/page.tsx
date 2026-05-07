@@ -1,21 +1,17 @@
+import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
-import Image from "next/image";
+import Link from "next/link";
 
-import prisma from "@/lib/prisma";
-import { getStripeServerClient } from "@/lib/stripe";
+import { auth, isAuthConfigured } from "@/lib/auth";
+import { getSiteUrl, getStorefrontProductBySlug } from "@/lib/storefront";
 import { SizeSelector } from "@/components/shop/size-selector";
+import { ProductGallery } from "@/components/shop/product-gallery";
+import { MysticBackground } from "@/components/ui/mystic-background";
+import { Navbar } from "@/components/ui/navbar";
 
 export const runtime = "nodejs";
-
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 80);
-}
 
 function formatCurrency(amount: number, currency: string) {
   return new Intl.NumberFormat("pt-BR", {
@@ -24,105 +20,68 @@ function formatCurrency(amount: number, currency: string) {
   }).format(amount / 100);
 }
 
-type VariantOption = {
-  stripePriceId: string;
-  label: string;
-  price: number;
-  currency: string;
-  size?: string;
-};
+function buildProductDescription(product: NonNullable<Awaited<ReturnType<typeof getStorefrontProductBySlug>>>) {
+  return (
+    product.description ??
+    product.marketingFeatures[0] ??
+    "Camiseta Be Art com presença visual, atmosfera noturna e acabamento premium."
+  );
+}
 
-type ProductDetail = {
-  name: string;
-  description: string | null;
-  image: string | null;
-  marketingFeatures: string[];
-  colors: string[];
-  sizes: string[];
-  variants: VariantOption[];
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getStorefrontProductBySlug(slug);
 
-async function getProductDetail(slug: string): Promise<ProductDetail | null> {
-  // DB path — populated after first checkout
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: {
-      variants: {
-        where: { active: true },
-        orderBy: { unitAmount: "asc" },
+  if (!product) {
+    return {
+      title: "Produto não encontrado — Be Art",
+      robots: {
+        index: false,
+        follow: false,
       },
+    };
+  }
+
+  const description = buildProductDescription(product);
+  const canonicalPath = `/shop/${product.slug}`;
+  const firstImage = product.images[0];
+  const imageUrl = firstImage
+    ? firstImage.startsWith("http")
+      ? firstImage
+      : new URL(firstImage, getSiteUrl()).toString()
+    : undefined;
+
+  return {
+    title: `${product.name} — Be Art`,
+    description,
+    alternates: {
+      canonical: canonicalPath,
     },
-  });
-
-  if (product && product.variants.length > 0) {
-    return {
-      name: product.name,
-      description: product.description,
-      image: product.image,
-      marketingFeatures: product.marketingFeatures,
-      colors: [],
-      sizes: [],
-      variants: product.variants.map((v) => ({
-        stripePriceId: v.stripePriceId,
-        label: v.name,
-        price: v.unitAmount,
-        currency: v.currency,
-        size: v.name.startsWith("Tamanho ") ? v.name.replace("Tamanho ", "") : undefined,
-      })),
-    };
-  }
-
-  // Stripe fallback — before any checkout has happened
-  try {
-    const stripe = getStripeServerClient();
-    const prices = await stripe.prices.list({
-      active: true,
-      limit: 100,
-      expand: ["data.product"],
-    });
-
-    const matchingPrices = prices.data.filter((p) => {
-      if (p.unit_amount === null) return false;
-      if (typeof p.product === "string") return false;
-      const prod = p.product;
-      if (prod.deleted) return false;
-      return slugify(`${prod.name}-${prod.id}`) === slug;
-    });
-
-    if (matchingPrices.length === 0) return null;
-
-    const rawProduct = matchingPrices[0].product;
-    if (typeof rawProduct === "string" || rawProduct.deleted) return null;
-
-    const meta = rawProduct.metadata ?? {};
-    const colors = meta.colors
-      ? meta.colors.split(",").map((s: string) => s.trim()).filter(Boolean)
-      : [];
-    const sizes = meta.sizes
-      ? meta.sizes.split(",").map((s: string) => s.trim()).filter(Boolean)
-      : [];
-
-    return {
-      name: rawProduct.name,
-      description: rawProduct.description ?? null,
-      image: rawProduct.images?.[0] ?? null,
-      marketingFeatures:
-        rawProduct.marketing_features?.map((f) => f.name ?? "").filter(Boolean) ?? [],
-      colors,
-      sizes,
-      variants: matchingPrices
-        .sort((a, b) => a.unit_amount! - b.unit_amount!)
-        .map((p) => ({
-          stripePriceId: p.id,
-          label: p.nickname ?? rawProduct.name,
-          price: p.unit_amount!,
-          currency: p.currency,
-          size: (p.metadata as Record<string, string>)?.size ?? undefined,
-        })),
-    };
-  } catch {
-    return null;
-  }
+    openGraph: {
+      title: `${product.name} — Be Art`,
+      description,
+      url: canonicalPath,
+      type: "website",
+      images: imageUrl
+        ? [
+            {
+              url: imageUrl,
+              alt: product.name,
+            },
+          ]
+        : undefined,
+    },
+    twitter: {
+      card: imageUrl ? "summary_large_image" : "summary",
+      title: `${product.name} — Be Art`,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    },
+  };
 }
 
 export default async function ProductPage({
@@ -131,109 +90,133 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   await connection();
+
+  const authReady = isAuthConfigured();
+  const session = authReady
+    ? await auth.api.getSession({ headers: await headers() }).catch(() => null)
+    : null;
   const { slug } = await params;
-  const product = await getProductDetail(slug);
+  const product = await getStorefrontProductBySlug(slug);
 
   if (!product) notFound();
 
-  const firstVariant = product.variants[0];
-
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,#ffd36d_0%,#f6efe4_26%,#efe3ce_56%,#d8c3a5_100%)] px-6 py-12 text-stone-950 sm:px-10 lg:px-16">
-      <div className="mx-auto max-w-5xl">
-        <a
-          href="/shop"
-          className="inline-flex items-center gap-2 text-sm font-medium text-stone-600 transition hover:text-stone-950"
-        >
-          ← Catálogo
-        </a>
+    <div className="relative min-h-screen overflow-x-hidden bg-[#0A0A0C] text-white">
+      <MysticBackground />
 
-        <div className="mt-10 grid gap-12 lg:grid-cols-2 lg:items-start">
-          {/* Left: Product image */}
-          <div className="relative aspect-square w-full overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#f6efe4,#ffd36d30)] shadow-[0_12px_40px_rgba(66,45,25,0.12)]">
-            {product.image ? (
-              <Image
-                src={product.image}
-                alt={product.name}
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-                priority
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center">
-                <span className="select-none text-9xl" aria-hidden="true">
-                  👕
-                </span>
-              </div>
-            )}
-          </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-[-10rem] h-[28rem] bg-[radial-gradient(ellipse_at_bottom,rgba(107,60,246,0.22),transparent_58%)] opacity-90 blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-[-4rem] left-1/2 h-[22rem] w-[72rem] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(46,91,255,0.12),transparent_62%)] blur-[90px]"
+      />
 
-          {/* Right: Product info */}
-          <div className="flex flex-col">
-            <p className="font-mono text-xs uppercase tracking-[0.35em] text-stone-500">
-              Produto
-            </p>
-            <h1 className="mt-2 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">
-              {product.name}
-            </h1>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-50 opacity-[0.03]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "256px 256px",
+        }}
+      />
 
-            {product.description ? (
-              <p className="mt-5 text-base leading-7 text-stone-600">{product.description}</p>
-            ) : null}
+      <Navbar sessionActive={!!session} authReady={authReady} />
 
-            {product.marketingFeatures.length > 0 ? (
-              <ul className="mt-5 space-y-2">
-                {product.marketingFeatures.map((f) => (
-                  <li key={f} className="flex items-center gap-2.5 text-stone-700">
-                    <span className="flex-shrink-0 text-amber-500" aria-hidden="true">
-                      ✓
-                    </span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            ) : null}
+      <main className="relative z-10 px-6 pb-24 pt-28 sm:px-10 sm:pt-32 lg:px-16">
+        <div className="mx-auto max-w-7xl">
+          <nav aria-label="Breadcrumb" className="mb-5">
+            <ol className="flex flex-wrap items-center gap-2 text-sm text-white/42">
+              <li>
+                <Link href="/" className="transition hover:text-white">
+                  Início
+                </Link>
+              </li>
+              <li aria-hidden="true" className="text-white/24">
+                /
+              </li>
+              <li>
+                <Link href="/shop" className="transition hover:text-white">
+                  Catálogo
+                </Link>
+              </li>
+              <li aria-hidden="true" className="text-white/24">
+                /
+              </li>
+              <li className="max-w-[18rem] truncate text-white/70">{product.name}</li>
+            </ol>
+          </nav>
 
-            {product.colors.length > 0 ? (
-              <div className="mt-5 flex flex-wrap items-center gap-2">
-                <span className="text-sm font-medium text-stone-500">Cores:</span>
-                {product.colors.map((c) => (
-                  <span
-                    key={c}
-                    className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-sm text-stone-700"
-                  >
-                    {c}
-                  </span>
-                ))}
-              </div>
-            ) : null}
+          <Link
+            href="/shop"
+            className="inline-flex items-center gap-2 text-sm font-medium text-white/45 transition hover:text-white"
+          >
+            ← Catálogo
+          </Link>
 
-            <hr className="my-7 border-stone-200" />
+          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,0.94fr)_34rem] lg:items-stretch">
+            <ProductGallery images={product.images} name={product.name} />
 
-            <form action="/api/checkout-session" method="POST">
-              {product.variants.length > 1 ? (
-                <SizeSelector variants={product.variants} />
-              ) : (
-                <>
-                  <input type="hidden" name="priceId" value={firstVariant.stripePriceId} />
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-3xl font-semibold tracking-[-0.04em]">
-                      {formatCurrency(firstVariant.price, firstVariant.currency)}
-                    </span>
-                    <button
-                      type="submit"
-                      className="inline-flex min-h-12 items-center justify-center rounded-full bg-stone-950 px-8 text-base font-medium text-stone-50 transition hover:bg-stone-800"
+            <section className="rounded-[2.2rem] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] px-6 py-6 shadow-[0_28px_80px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:px-7 lg:h-full">
+              {product.category ? (
+                <p className="text-[11px] font-semibold uppercase tracking-[0.38em] text-[#BFC6FF]">
+                  {product.category}
+                </p>
+              ) : null}
+              <p className="mt-1 text-xs font-semibold uppercase tracking-[0.45em] text-[#8B5CF6]">
+                Produto
+              </p>
+              <h1 className="font-display mt-3 text-[clamp(2.2rem,3.8vw,4rem)] font-extrabold uppercase leading-[0.92] tracking-[-0.05em]">
+                {product.name}
+              </h1>
+
+              {product.description ? (
+                <p className="mt-4 text-base leading-7 text-white/58">{product.description}</p>
+              ) : null}
+
+              {product.marketingFeatures.length > 0 ? (
+                <ul className="mt-5 space-y-2.5 rounded-[1.6rem] border border-white/[0.08] bg-white/[0.03] p-4">
+                  {product.marketingFeatures.slice(0, 2).map((feature) => (
+                    <li key={feature} className="flex items-center gap-2.5 text-sm leading-6 text-white/70">
+                      <span className="flex-shrink-0 text-[#7C7CFF]" aria-hidden="true">
+                        ✦
+                      </span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+
+              {product.colors.length > 0 ? (
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/32">Cores</span>
+                  {product.colors.map((color) => (
+                    <span
+                      key={color}
+                      className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-sm text-white/72"
                     >
-                      Comprar agora
-                    </button>
-                  </div>
-                </>
-              )}
-            </form>
+                      {color}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+
+              <div className="my-5 h-px bg-gradient-to-r from-transparent via-white/[0.09] to-transparent" />
+
+              <form action="/api/checkout-session" method="POST">
+                <SizeSelector
+                  productImage={product.image}
+                  productName={product.name}
+                  productSlug={product.slug}
+                  variants={product.variants}
+                />
+              </form>
+            </section>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }

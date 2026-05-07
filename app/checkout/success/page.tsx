@@ -1,6 +1,7 @@
 import { connection } from "next/server";
 import Link from "next/link";
 
+import { CartSuccessReset } from "@/components/cart/cart-success-reset";
 import prisma from "@/lib/prisma";
 
 function formatCurrency(amount: number, currency: string) {
@@ -28,6 +29,7 @@ export default async function CheckoutSuccessPage({
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[linear-gradient(180deg,#fdf2cc_0%,#f4ecdf_100%)] px-6 py-12 text-stone-950">
+      <CartSuccessReset />
       <section className="w-full max-w-2xl rounded-[2rem] border border-stone-950/10 bg-white/85 p-8 shadow-[0_24px_80px_rgba(66,45,25,0.18)] backdrop-blur sm:p-10">
         <p className="text-sm font-mono uppercase tracking-[0.3em] text-stone-500">Pagamento recebido</p>
         <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">
