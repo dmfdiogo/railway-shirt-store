@@ -110,7 +110,7 @@ export function useShippingQuote(lines: ShippingQuoteLineInput[]) {
     }
 
     void requestQuotes(normalizedPostalCode, lines);
-  }, [normalizedPostalCode, requestQuotes, requestSignature, lines]);
+  }, [normalizedPostalCode, requestQuotes, requestSignature]);
 
   const setPostalCode = (value: string) => {
     const normalized = normalizePostalCode(value);
