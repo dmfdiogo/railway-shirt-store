@@ -17,15 +17,15 @@ type MelhorEnvioQuoteProduct = {
 type MelhorEnvioApiQuote = {
   company?: {
     id?: number | string;
-    name?: string;
+    name?: string | number | null;
   };
-  custom_delivery_range?: string;
+  custom_delivery_range?: string | number | null;
   custom_delivery_time?: number | string;
   custom_price?: number | string;
   delivery_time?: number | string;
   error?: string;
   id?: number | string;
-  name?: string;
+  name?: string | number | null;
   price?: number | string;
 };
 
@@ -122,8 +122,22 @@ function parsePriceToCents(value: number | string | undefined) {
   return Math.max(0, Math.round(parsed * 100));
 }
 
-function buildDeliveryWindowLabel(minimumBusinessDays: number, maximumBusinessDays: number, rawRange?: string) {
-  if (rawRange?.trim()) return rawRange.trim();
+function normalizeOptionalText(value: unknown) {
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed || null;
+  }
+
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return String(value);
+  }
+
+  return null;
+}
+
+function buildDeliveryWindowLabel(minimumBusinessDays: number, maximumBusinessDays: number, rawRange?: unknown) {
+  const normalizedRange = normalizeOptionalText(rawRange);
+  if (normalizedRange) return normalizedRange;
 
   if (minimumBusinessDays === maximumBusinessDays) {
     return `${minimumBusinessDays} dia${minimumBusinessDays === 1 ? "" : "s"} uteis`;
@@ -483,8 +497,8 @@ export async function calculateMelhorEnvioShippingQuotes({
   return payload
     .filter((quote) => !quote.error)
     .map((quote) => {
-      const carrierName = quote.company?.name?.trim() || "Transportadora";
-      const serviceName = quote.name?.trim() || "Servico";
+      const carrierName = normalizeOptionalText(quote.company?.name) ?? "Transportadora";
+      const serviceName = normalizeOptionalText(quote.name) ?? "Servico";
       const serviceCode = String(quote.id ?? serviceName).trim();
       const maximumBusinessDays = parseBusinessDays(quote.custom_delivery_time ?? quote.delivery_time);
       const minimumBusinessDays = Math.max(1, maximumBusinessDays - 1);
