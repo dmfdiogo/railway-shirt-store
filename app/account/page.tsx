@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { ProfileSettingsForm } from "@/components/account/profile-settings-form";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { auth, isAuthConfigured } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -56,6 +57,21 @@ export default async function AccountPage() {
     },
   });
 
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: {
+      addressLine1: true,
+      addressLine2: true,
+      city: true,
+      country: true,
+      emailVerified: true,
+      neighborhood: true,
+      phone: true,
+      postalCode: true,
+      state: true,
+    },
+  });
+
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f2e5d5_0%,#eadbc8_100%)] px-6 py-12 text-stone-950">
       <section className="mx-auto w-full max-w-4xl rounded-[2rem] border border-stone-950/10 bg-white/90 p-8 shadow-[0_24px_70px_rgba(44,32,18,0.14)] backdrop-blur sm:p-10">
@@ -68,6 +84,9 @@ export default async function AccountPage() {
             <p className="mt-4 text-base leading-7 text-stone-700">
               {session.user.email}
             </p>
+            <div className="mt-4 inline-flex items-center rounded-full border border-stone-950/10 bg-stone-50 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-stone-700">
+              {currentUser?.emailVerified ? "Email verificado" : "Email pendente"}
+            </div>
           </div>
 
           <div className="flex flex-col gap-3 sm:items-end">
@@ -80,6 +99,19 @@ export default async function AccountPage() {
             <SignOutButton />
           </div>
         </div>
+
+        <ProfileSettingsForm
+          initialValues={{
+            addressLine1: currentUser?.addressLine1 ?? null,
+            addressLine2: currentUser?.addressLine2 ?? null,
+            city: currentUser?.city ?? null,
+            country: currentUser?.country ?? null,
+            neighborhood: currentUser?.neighborhood ?? null,
+            phone: currentUser?.phone ?? null,
+            postalCode: currentUser?.postalCode ?? null,
+            state: currentUser?.state ?? null,
+          }}
+        />
 
         <div className="mt-10 rounded-[1.5rem] border border-stone-950/10 bg-stone-50 px-5 py-5">
           <p className="text-sm font-mono uppercase tracking-[0.28em] text-stone-500">Pedidos</p>

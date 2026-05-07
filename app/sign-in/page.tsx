@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { EmailAuthForm } from "@/components/auth/email-auth-form";
-import { isAuthConfigured } from "@/lib/auth";
+import { isAuthConfigured, isEmailVerificationConfigured, isGoogleAuthConfigured } from "@/lib/auth";
 
 export default function SignInPage() {
   if (!isAuthConfigured()) {
@@ -28,7 +28,11 @@ export default function SignInPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[linear-gradient(180deg,#f7ebd6_0%,#efe2cf_100%)] px-6 py-12 text-stone-950">
-      <EmailAuthForm mode="sign-in" />
+      <EmailAuthForm
+        mode="sign-in"
+        googleEnabled={isGoogleAuthConfigured()}
+        requireEmailVerification={isEmailVerificationConfigured()}
+      />
     </main>
   );
 }
