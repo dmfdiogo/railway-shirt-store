@@ -18,6 +18,8 @@ Copy `.env.example` into `.env.local` for local development.
 DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/railway_shirt_store
 BETTER_AUTH_SECRET=replace-with-a-32-plus-char-secret
 BETTER_AUTH_URL=http://localhost:3000
+GOOGLE_CLIENT_ID=google-client-id
+GOOGLE_CLIENT_SECRET=google-client-secret
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_PRICE_ID=price_...
 STRIPE_WEBHOOK_SECRET=whsec_...
@@ -54,16 +56,28 @@ npm run stripe:listen
 
 Use the CLI output from `stripe listen` to fill `STRIPE_WEBHOOK_SECRET`.
 
+For Google OAuth, register this redirect URI in Google Cloud Console:
+
+```bash
+http://localhost:3000/api/auth/callback/google
+```
+
 ## Railway Deploy Flow
 
 The Railway project is already created and linked for this repository.
 
 1. Provision a Railway Postgres service if the project does not already have one.
 2. Wire `DATABASE_URL` in the `web` service to the Postgres service reference.
-3. Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, and `APP_URL` in the `web` service variables.
+3. Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, and `APP_URL` in the `web` service variables.
 4. Deploy from the workspace with `railway up`.
 5. Run `npm run db:migrate:deploy` in the deployed environment so the schema lands in Postgres.
 6. Register the production webhook endpoint at `/api/stripe/webhook` in Stripe and store the matching signing secret in Railway.
+
+For production Google OAuth, register this redirect URI:
+
+```bash
+https://www.beartstore.com.br/api/auth/callback/google
+```
 
 ## Workspace Operations
 
