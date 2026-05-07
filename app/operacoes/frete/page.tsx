@@ -134,12 +134,12 @@ export default async function ShippingOperationsPage({
             </div>
 
             {oauthReady && !missingTable ? (
-              <Link
+              <a
                 href="/api/integrations/melhor-envio/connect"
                 className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
               >
                 {melhorEnvioToken ? "Reconectar sandbox" : "Conectar sandbox"}
-              </Link>
+              </a>
             ) : missingTable ? (
               <div className="rounded-full border border-amber-400/20 bg-amber-500/12 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-100">
                 Aplique a migration IntegrationToken neste banco
