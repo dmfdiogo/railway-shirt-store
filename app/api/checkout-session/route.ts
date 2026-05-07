@@ -2,8 +2,18 @@ import type Stripe from "stripe";
 import { NextResponse } from "next/server";
 
 import { auth, isAuthConfigured } from "@/lib/auth";
+import {
+  buildMelhorEnvioProductFromStripePrice,
+  calculateMelhorEnvioShippingQuotes,
+} from "@/lib/melhor-envio";
 import prisma from "@/lib/prisma";
-import { resolveShippingOption } from "@/lib/shipping";
+import {
+  buildShippingSku,
+  parseCheckoutShippingOption,
+  resolveShippingOption,
+  type CheckoutShippingOption,
+  type ShippingRegionCode,
+} from "@/lib/shipping";
 import { getAppUrl, getStripeServerClient } from "@/lib/stripe";
 
 export const runtime = "nodejs";
@@ -17,8 +27,53 @@ type CheckoutLineInput = {
 
 type CheckoutRequestInput = {
   checkoutLines: CheckoutLineInput[];
-  shippingOption: ReturnType<typeof resolveShippingOption>;
+  fallbackShippingRegion: ShippingRegionCode | null;
+  selectedShippingQuote: CheckoutShippingOption | null;
 };
+
+function dedupeStrings(values: Array<string | null | undefined>) {
+  return Array.from(new Set(values.map((value) => value?.trim()).filter(Boolean) as string[]));
+}
+
+function normalizeList(value: string | undefined) {
+  return dedupeStrings((value ?? "").split(","));
+}
+
+function getMetadataValue(metadata: Record<string, string>, keys: string[]) {
+  for (const key of keys) {
+    const value = metadata[key]?.trim();
+    if (value) return value;
+  }
+
+  return null;
+}
+
+function normalizeCategory(metadata: Record<string, string>) {
+  const direct = getMetadataValue(metadata, ["category"]);
+  if (direct) return direct;
+
+  const first = normalizeList(metadata.categories)[0];
+  return first ?? null;
+}
+
+function normalizeSeoTags(metadata: Record<string, string>) {
+  return dedupeStrings([
+    ...normalizeList(metadata.seo_tags),
+    ...normalizeList(metadata.seoTags),
+    ...normalizeList(metadata.seo_keywords),
+    ...normalizeList(metadata.seoKeywords),
+  ]);
+}
+
+function sanitizeFeatures(features: string[]) {
+  return features.filter((feature) => {
+    const normalized = feature.trim();
+    if (!normalized) return false;
+    if (/^feature\s*\d+$/i.test(normalized)) return false;
+    if (/^test(e)?$/i.test(normalized)) return false;
+    return true;
+  });
+}
 
 function slugify(value: string) {
   return value
@@ -35,6 +90,7 @@ function getPriceDetails(price: Stripe.Price) {
   }
 
   const rawProduct = typeof price.product === "string" ? null : price.product;
+  const metadata = rawProduct && !rawProduct.deleted ? ((rawProduct.metadata ?? {}) as Record<string, string>) : {};
   const stripeProductId = typeof price.product === "string" ? price.product : price.product.id;
   const productName = rawProduct && !rawProduct.deleted ? rawProduct.name : DEFAULT_PRODUCT_NAME;
   const productDescription = rawProduct && !rawProduct.deleted ? rawProduct.description : null;
@@ -44,20 +100,43 @@ function getPriceDetails(price: Stripe.Price) {
   const variantName = price.nickname ?? productName;
   const marketingFeatures =
     rawProduct && !rawProduct.deleted
-      ? rawProduct.marketing_features.map((feature) => feature.name ?? "").filter(Boolean)
+      ? sanitizeFeatures(rawProduct.marketing_features.map((feature) => feature.name ?? "").filter(Boolean))
       : [];
 
   return {
     currency: price.currency,
+    category: normalizeCategory(metadata),
+    colors: normalizeList(metadata.colors),
     marketingFeatures,
+    ogImage: getMetadataValue(metadata, ["og_image", "ogImage"]) ?? productImage,
     productDescription,
+    productActive: rawProduct && !rawProduct.deleted ? rawProduct.active : price.active,
     productImage,
     productName,
+    seoDescription: getMetadataValue(metadata, ["seo_description", "seoDescription"]),
+    seoTags: normalizeSeoTags(metadata),
+    seoTitle: getMetadataValue(metadata, ["seo_title", "seoTitle"]),
+    sizes: normalizeList(metadata.sizes),
     variantName,
     sku,
     stripeProductId,
     unitAmount: price.unit_amount,
   };
+}
+
+function buildOrderItemName(productName: string, variantName: string) {
+  const normalizedProductName = productName.trim().toLowerCase();
+  const normalizedVariantName = variantName.trim().toLowerCase();
+
+  if (!normalizedVariantName || normalizedVariantName === normalizedProductName) {
+    return productName;
+  }
+
+  if (normalizedVariantName.includes(normalizedProductName)) {
+    return variantName;
+  }
+
+  return `${productName} · ${variantName}`;
 }
 
 function parseCartPayload(value: FormDataEntryValue | null): CheckoutLineInput[] | null {
@@ -97,30 +176,35 @@ function parseCartPayload(value: FormDataEntryValue | null): CheckoutLineInput[]
 
 async function resolveCheckoutRequest(request: Request): Promise<CheckoutRequestInput | null> {
   const contentType = request.headers.get("content-type") ?? "";
-  let shippingOption = resolveShippingOption();
+  let fallbackShippingRegion: ShippingRegionCode | null = null;
+  let selectedShippingQuote: CheckoutShippingOption | null = null;
 
   if (contentType.includes("application/x-www-form-urlencoded")) {
     const body = await request.formData();
-    shippingOption = resolveShippingOption(
+    fallbackShippingRegion = resolveShippingOption(
       typeof body.get("shippingRegion") === "string" ? (body.get("shippingRegion") as string) : null
+    ).code;
+    selectedShippingQuote = parseCheckoutShippingOption(
+      typeof body.get("shippingQuote") === "string" ? (body.get("shippingQuote") as string) : null
     );
 
     const cart = parseCartPayload(body.get("cart"));
-    if (cart) return { checkoutLines: cart, shippingOption };
+    if (cart) return { checkoutLines: cart, fallbackShippingRegion, selectedShippingQuote };
 
     const priceId = typeof body.get("priceId") === "string" ? (body.get("priceId") as string) : null;
     const quantityValue = typeof body.get("quantity") === "string" ? Number(body.get("quantity")) : 1;
     const quantity = Number.isFinite(quantityValue) && quantityValue > 0 ? Math.floor(quantityValue) : 1;
 
     if (priceId) {
-      return { checkoutLines: [{ priceId, quantity }], shippingOption };
+      return { checkoutLines: [{ priceId, quantity }], fallbackShippingRegion, selectedShippingQuote };
     }
   }
 
   if (process.env.STRIPE_PRICE_ID) {
     return {
       checkoutLines: [{ priceId: process.env.STRIPE_PRICE_ID, quantity: 1 }],
-      shippingOption,
+      fallbackShippingRegion,
+      selectedShippingQuote,
     };
   }
 
@@ -133,18 +217,32 @@ async function ensureVariant(price: Stripe.Price) {
   const product = await prisma.product.upsert({
     where: { stripeProductId: priceDetails.stripeProductId },
     update: {
-      active: price.active,
+      active: priceDetails.productActive,
+      category: priceDetails.category,
+      colors: priceDetails.colors,
       description: priceDetails.productDescription,
       image: priceDetails.productImage,
       marketingFeatures: priceDetails.marketingFeatures,
       name: priceDetails.productName,
+      ogImage: priceDetails.ogImage,
+      seoDescription: priceDetails.seoDescription,
+      seoTags: priceDetails.seoTags,
+      seoTitle: priceDetails.seoTitle,
+      sizes: priceDetails.sizes,
     },
     create: {
-      active: price.active,
+      active: priceDetails.productActive,
+      category: priceDetails.category,
+      colors: priceDetails.colors,
       description: priceDetails.productDescription,
       image: priceDetails.productImage,
       marketingFeatures: priceDetails.marketingFeatures,
       name: priceDetails.productName,
+      ogImage: priceDetails.ogImage,
+      seoDescription: priceDetails.seoDescription,
+      seoTags: priceDetails.seoTags,
+      seoTitle: priceDetails.seoTitle,
+      sizes: priceDetails.sizes,
       slug: slugify(`${priceDetails.productName}-${priceDetails.stripeProductId}`),
       stripeProductId: priceDetails.stripeProductId,
     },
@@ -187,7 +285,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No checkout items provided." }, { status: 400 });
     }
 
-    const { checkoutLines, shippingOption } = checkoutRequest;
+    const { checkoutLines, fallbackShippingRegion, selectedShippingQuote } = checkoutRequest;
 
     const stripePrices = await Promise.all(
       checkoutLines.map((line) =>
@@ -229,7 +327,7 @@ export async function POST(request: Request) {
       const totalAmount = priceDetails.unitAmount * line.quantity;
 
       return {
-        name: priceDetails.variantName,
+        name: buildOrderItemName(priceDetails.productName, priceDetails.variantName),
         productVariantId: variant.id,
         quantity: line.quantity,
         sku: priceDetails.sku,
@@ -240,6 +338,26 @@ export async function POST(request: Request) {
     });
 
     const subtotalAmount = orderItems.reduce((sum, item) => sum + item.totalAmount, 0);
+    let shippingOption: CheckoutShippingOption = resolveShippingOption(fallbackShippingRegion);
+
+    if (selectedShippingQuote?.source === "melhor_envio" && selectedShippingQuote.postalCode) {
+      try {
+        const quotedOptions = await calculateMelhorEnvioShippingQuotes({
+          products: stripePrices.map((price, index) =>
+            buildMelhorEnvioProductFromStripePrice(price, checkoutLines[index].quantity)
+          ),
+          toPostalCode: selectedShippingQuote.postalCode,
+        });
+        const matchedQuote = quotedOptions.find((option) => option.code === selectedShippingQuote.code);
+
+        if (matchedQuote) {
+          shippingOption = matchedQuote;
+        }
+      } catch {
+        shippingOption = resolveShippingOption(fallbackShippingRegion);
+      }
+    }
+
     const shippingAmount = shippingOption.amount;
     const totalAmount = subtotalAmount + shippingAmount;
     const currency = resolved[0]?.priceDetails.currency;
@@ -253,7 +371,7 @@ export async function POST(request: Request) {
         name: shippingOption.orderLineLabel,
         productVariantId: null,
         quantity: 1,
-        sku: `shipping:${shippingOption.code}`,
+        sku: buildShippingSku(shippingOption),
         stripePriceId: null,
         totalAmount: shippingAmount,
         unitAmount: shippingAmount,
@@ -314,7 +432,12 @@ export async function POST(request: Request) {
         cartSize: String(checkoutLines.length),
         orderId: order.id,
         shippingAmount: String(shippingAmount),
-        shippingRegion: shippingOption.code,
+        shippingCarrierName: shippingOption.carrierName ?? "",
+        shippingPostalCode: shippingOption.postalCode ?? "",
+        shippingRegion: fallbackShippingRegion ?? "",
+        shippingServiceCode: shippingOption.code,
+        shippingServiceName: shippingOption.serviceName ?? shippingOption.displayLabel,
+        shippingSource: shippingOption.source,
         source: "beart-store",
         userId: authSession?.user.id ?? "",
       },

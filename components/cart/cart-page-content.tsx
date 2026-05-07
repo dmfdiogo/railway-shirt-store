@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { useShippingQuote } from "@/components/cart/use-shipping-quote";
 import { useShippingRegion } from "@/components/cart/use-shipping-region";
 import { useCart } from "@/components/cart/use-cart";
-import { SHIPPING_OPTIONS } from "@/lib/shipping";
+import { SHIPPING_OPTIONS, serializeCheckoutShippingOption } from "@/lib/shipping";
 
 function formatCurrency(amount: number, currency: string) {
   return new Intl.NumberFormat("pt-BR", {
@@ -17,10 +18,13 @@ function formatCurrency(amount: number, currency: string) {
 export function CartPageContent() {
   const { items, subtotal, removeItem, updateQuantity } = useCart();
   const { setShippingRegion, shippingOption, shippingRegion } = useShippingRegion();
+  const { integrationAvailable, isLoading, postalCode, quoteError, quotes, selectedQuote, selectQuote, setPostalCode } =
+    useShippingQuote(items.map((item) => ({ priceId: item.priceId, quantity: item.quantity })));
   const checkoutPayload = JSON.stringify(
     items.map((item) => ({ priceId: item.priceId, quantity: item.quantity }))
   );
-  const estimatedTotal = subtotal + shippingOption.amount;
+  const activeShippingOption = selectedQuote ?? shippingOption;
+  const estimatedTotal = subtotal + activeShippingOption.amount;
 
   if (items.length === 0) {
     return (
@@ -32,6 +36,14 @@ export function CartPageContent() {
         <p className="mx-auto mt-4 max-w-xl text-base leading-8 text-white/58">
           Adicione peças da coleção para montar o checkout antes de seguir para o Stripe.
         </p>
+        <div className="mx-auto mt-6 grid max-w-2xl gap-3 text-left sm:grid-cols-2">
+          <div className="rounded-[1.4rem] border border-white/10 bg-white/[0.04] px-5 py-4 text-sm leading-7 text-white/62">
+            Escolha uma peça no catálogo e adicione a variação correta antes de calcular o frete.
+          </div>
+          <div className="rounded-[1.4rem] border border-white/10 bg-white/[0.04] px-5 py-4 text-sm leading-7 text-white/62">
+            Quando houver itens salvos, o resumo do carrinho fica persistido neste navegador.
+          </div>
+        </div>
         <Link
           href="/shop"
           className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-8 text-base font-semibold text-white shadow-[0_16px_42px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_54px_rgba(107,60,246,0.42)]"
@@ -129,8 +141,74 @@ export function CartPageContent() {
         <p className="text-xs font-semibold uppercase tracking-[0.45em] text-[#8B5CF6]">Resumo</p>
 
         <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-4">
-          <label htmlFor="shipping-region" className="text-xs font-semibold uppercase tracking-[0.3em] text-white/46">
-            Regiao de entrega
+          <label htmlFor="shipping-postal-code" className="text-xs font-semibold uppercase tracking-[0.3em] text-white/46">
+            CEP de entrega
+          </label>
+          <input
+            id="shipping-postal-code"
+            name="shipping-postal-code"
+            inputMode="numeric"
+            maxLength={9}
+            value={postalCode}
+            onChange={(event) => setPostalCode(event.target.value)}
+            placeholder="00000-000"
+            className="mt-3 h-12 w-full rounded-2xl border border-white/10 bg-[#0D0E13] px-4 text-sm font-medium text-white outline-none transition placeholder:text-white/22 focus:border-[#6B3CF6]"
+          />
+          <p className="mt-3 text-xs uppercase tracking-[0.18em] text-white/36">
+            {selectedQuote
+              ? `${selectedQuote.checkoutLabel} · ${selectedQuote.deliveryWindowLabel}`
+              : "Digite um CEP valido para cotar fretes reais do Melhor Envio."}
+          </p>
+
+          {isLoading ? (
+            <p className="mt-3 text-sm text-white/56">Consultando servicos disponiveis...</p>
+          ) : null}
+
+          {quotes.length > 0 ? (
+            <div className="mt-4 space-y-2">
+              {quotes.map((quote) => {
+                const isSelected = selectedQuote?.code === quote.code;
+
+                return (
+                  <button
+                    key={quote.code}
+                    type="button"
+                    onClick={() => selectQuote(quote.code)}
+                    aria-pressed={isSelected}
+                    className={`flex w-full items-center justify-between gap-4 rounded-2xl border px-4 py-3 text-left transition ${
+                      isSelected
+                        ? "border-[#6B3CF6] bg-[linear-gradient(135deg,rgba(46,91,255,0.18)_0%,rgba(107,60,246,0.2)_100%)]"
+                        : "border-white/10 bg-black/10 hover:border-white/20 hover:bg-white/[0.05]"
+                    }`}
+                  >
+                    <span>
+                      <span className="block text-sm font-semibold text-white">{quote.displayLabel}</span>
+                      <span className="mt-1 block text-xs uppercase tracking-[0.16em] text-white/42">
+                        {quote.deliveryWindowLabel}
+                      </span>
+                    </span>
+                    <span className="text-sm font-semibold text-white">
+                      {formatCurrency(quote.amount, items[0].currency)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+
+          {!integrationAvailable || quoteError ? (
+            <div className="mt-4 rounded-2xl border border-amber-300/20 bg-amber-500/10 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-100/90">
+                Fallback manual
+              </p>
+              <p className="mt-2 text-sm leading-6 text-amber-50/82">
+                {quoteError ?? "Melhor Envio indisponivel neste ambiente. Use a tabela fixa por regiao enquanto configuramos as credenciais."}
+              </p>
+            </div>
+          ) : null}
+
+          <label htmlFor="shipping-region" className="mt-4 block text-xs font-semibold uppercase tracking-[0.3em] text-white/46">
+            Regiao de fallback
           </label>
           <select
             id="shipping-region"
@@ -145,9 +223,7 @@ export function CartPageContent() {
               </option>
             ))}
           </select>
-          <p className="mt-3 text-xs uppercase tracking-[0.18em] text-white/36">
-            {shippingOption.checkoutLabel} · {shippingOption.deliveryWindowLabel}
-          </p>
+          <p className="mt-3 text-xs uppercase tracking-[0.18em] text-white/36">{shippingOption.checkoutLabel} · {shippingOption.deliveryWindowLabel}</p>
         </div>
 
         <div className="mt-6 flex items-center justify-between text-sm text-white/56">
@@ -156,7 +232,7 @@ export function CartPageContent() {
         </div>
         <div className="mt-3 flex items-center justify-between text-sm text-white/56">
           <span>Frete</span>
-          <span>{formatCurrency(shippingOption.amount, items[0].currency)}</span>
+          <span>{formatCurrency(activeShippingOption.amount, items[0].currency)}</span>
         </div>
         <div className="mt-3 flex items-center justify-between text-sm text-white/56">
           <span>Descontos</span>
@@ -173,6 +249,7 @@ export function CartPageContent() {
         <form action="/api/checkout-session" method="POST" className="mt-6">
           <input type="hidden" name="cart" value={checkoutPayload} />
           <input type="hidden" name="shippingRegion" value={shippingRegion} />
+          <input type="hidden" name="shippingQuote" value={serializeCheckoutShippingOption(selectedQuote)} />
           <button
             type="submit"
             className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-8 text-base font-semibold text-white shadow-[0_12px_30px_rgba(79,70,229,0.24)] transition hover:shadow-[0_16px_36px_rgba(107,60,246,0.34)]"
