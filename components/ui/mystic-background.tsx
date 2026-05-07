@@ -79,11 +79,11 @@ void main() {
   vec3 blue   = vec3(0.1451, 0.3882, 0.9216); /* #2563EB               */
 
   /* Purple mist — mid-range noise, weighted away from centre */
-  float pm = smoothstep(0.38, 0.65, f) * 0.20
+  float pm = smoothstep(0.34, 0.68, f) * 0.34
            * (0.5 + 0.5 * smoothstep(0.10, 0.90, d));
 
   /* Blue highlight — noise peaks, slightly stronger near centre */
-  float bm = smoothstep(0.60, 0.84, f) * 0.13
+  float bm = smoothstep(0.56, 0.84, f) * 0.24
            * (1.0 - 0.40 * smoothstep(0.0, 0.55, d));
 
   /* Slow breath — ~57 s period */
@@ -92,9 +92,10 @@ void main() {
   vec3 col = dark;
   col = mix(col, purple, pm);
   col = mix(col, blue,   bm);
-  col += purple * exp(-d * d * 3.2) * 0.075;           /* vortex glow  */
-  col += purple * breath * 0.012 * smoothstep(0.5, 1.0, f); /* pulse   */
-  col  = mix(col, dark, 0.38);                          /* keep subtle  */
+  col += purple * exp(-d * d * 2.5) * 0.14;             /* vortex glow  */
+  col += blue   * exp(-d * d * 3.4) * 0.06;             /* cold core    */
+  col += purple * breath * 0.024 * smoothstep(0.48, 1.0, f); /* pulse */
+  col  = mix(col, dark, 0.22);                          /* keep readable */
 
   gl_FragColor = vec4(col, 1.0);
 }`;
@@ -276,7 +277,7 @@ export function MysticBackground() {
           className="mystic-a absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 90% 70% at 50% 110%, rgba(107,33,168,0.18) 0%, transparent 55%)",
+              "radial-gradient(ellipse 90% 70% at 50% 110%, rgba(107,33,168,0.28) 0%, transparent 55%)",
             willChange: "opacity, transform",
           }}
         />
@@ -284,7 +285,7 @@ export function MysticBackground() {
           className="mystic-b absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 70% 55% at 78% 8%, rgba(37,99,235,0.14) 0%, transparent 55%)",
+              "radial-gradient(ellipse 70% 55% at 78% 8%, rgba(37,99,235,0.24) 0%, transparent 55%)",
             willChange: "opacity, transform",
           }}
         />
@@ -292,7 +293,7 @@ export function MysticBackground() {
           className="mystic-c absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 55% 45% at 18% 82%, rgba(107,33,168,0.10) 0%, transparent 50%)",
+              "radial-gradient(ellipse 55% 45% at 18% 82%, rgba(107,33,168,0.18) 0%, transparent 50%)",
             willChange: "opacity",
           }}
         />

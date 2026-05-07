@@ -1,25 +1,43 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans } from "next/font/google";
+import { Bricolage_Grotesque, Figtree } from "next/font/google";
 import "./globals.css";
 
-const syne = Syne({
-  variable: "--font-syne",
+const siteUrl = process.env.APP_URL ?? "http://localhost:3000";
+
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const figtree = Figtree({
+  variable: "--font-figtree",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Beart Store — Camisetas de Rave",
+  metadataBase: new URL(siteUrl),
+  title: "Be Art — Camisetas de Rave",
   description:
-    "Drops limitados para quem vive pela música. Peças premium, identidade noturna, exclusividade que pulsa.",
+    "Camisetas de rave com presença, sofisticação e atmosfera noturna. Moda premium para quem quer vestir poder e mistério.",
+  openGraph: {
+    title: "Be Art — Camisetas de Rave",
+    description:
+      "Camisetas de rave com presença, sofisticação e atmosfera noturna. Moda premium para quem quer vestir poder e mistério.",
+    url: "/",
+    siteName: "Be Art",
+    type: "website",
+    locale: "pt_BR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Be Art — Camisetas de Rave",
+    description:
+      "Camisetas de rave com presença, sofisticação e atmosfera noturna. Moda premium para quem quer vestir poder e mistério.",
+  },
 };
 
 export default function RootLayout({
@@ -30,7 +48,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${syne.variable} ${dmSans.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${figtree.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#0A0A0C] text-white">
         {children}
