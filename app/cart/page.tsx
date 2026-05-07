@@ -3,19 +3,19 @@ import { headers } from "next/headers";
 import { connection } from "next/server";
 
 import { auth, isAuthConfigured } from "@/lib/auth";
+import { buildNoIndexMetadata } from "@/lib/seo";
 import { CartPageContent } from "@/components/cart/cart-page-content";
 import { MysticBackground } from "@/components/ui/mystic-background";
 import { Navbar } from "@/components/ui/navbar";
+import { SiteFooter } from "@/components/ui/site-footer";
 
 export const runtime = "nodejs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildNoIndexMetadata({
   title: "Carrinho — Be Art",
   description: "Revise as peças escolhidas antes de seguir para o checkout da Be Art.",
-  alternates: {
-    canonical: "/cart",
-  },
-};
+  path: "/cart",
+});
 
 export default async function CartPage() {
   await connection();
@@ -51,6 +51,7 @@ export default async function CartPage() {
           <CartPageContent />
         </div>
       </main>
+      <SiteFooter authReady={authReady} sessionActive={!!session} />
     </div>
   );
 }

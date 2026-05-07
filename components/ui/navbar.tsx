@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { useCart } from "@/components/cart/use-cart";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useSession } from "@/lib/auth-client";
 
 interface NavbarProps {
   sessionActive: boolean;
@@ -13,6 +15,8 @@ interface NavbarProps {
 export function Navbar({ sessionActive, authReady }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const { count } = useCart();
+  const { data: session } = useSession();
+  const isLoggedIn = sessionActive || Boolean(session?.user);
 
   return (
     <header className="fixed left-0 right-0 top-0 z-40 border-b border-white/[0.06] bg-[#08080B]/72 backdrop-blur-2xl">
@@ -27,6 +31,12 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-8 md:flex" aria-label="Principal">
+          {isLoggedIn ? (
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-500/10 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-emerald-100">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" aria-hidden="true" />
+              Sessao ativa
+            </span>
+          ) : null}
           <Link href="/shop" className="text-sm font-medium text-white/50 transition-colors hover:text-white">
             Catálogo
           </Link>
@@ -38,7 +48,7 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
               </span>
             ) : null}
           </Link>
-          {sessionActive ? (
+          {isLoggedIn ? (
             <Link href="/account" className="text-sm font-medium text-white/50 transition-colors hover:text-white">
               Minha conta
             </Link>
@@ -53,6 +63,7 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
           >
             Ver coleção
           </Link>
+          <ThemeToggle />
         </nav>
 
         {/* Mobile: hamburger */}
@@ -107,7 +118,7 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
                 ) : null}
               </Link>
             </li>
-            {sessionActive ? (
+            {isLoggedIn ? (
               <li>
                 <Link
                   href="/account"
@@ -139,6 +150,19 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
                 </li>
               </>
             ) : null}
+            <li className="pt-2">
+              <div className="px-4 pb-3">
+                <ThemeToggle />
+              </div>
+            </li>
+            <li>
+              {isLoggedIn ? (
+                <div className="mx-4 inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-500/10 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-emerald-100">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" aria-hidden="true" />
+                  Sessao ativa
+                </div>
+              ) : null}
+            </li>
             <li className="pt-2">
               <Link
                 href="/shop"

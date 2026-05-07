@@ -393,6 +393,7 @@ export const ModelName = {
   Order: 'Order',
   OrderItem: 'OrderItem',
   StripeCustomer: 'StripeCustomer',
+  IntegrationToken: 'IntegrationToken',
   WebhookEvent: 'WebhookEvent'
 } as const
 
@@ -409,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "product" | "productVariant" | "order" | "orderItem" | "stripeCustomer" | "webhookEvent"
+    modelProps: "user" | "session" | "account" | "verification" | "product" | "productVariant" | "order" | "orderItem" | "stripeCustomer" | "integrationToken" | "webhookEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1079,6 +1080,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    IntegrationToken: {
+      payload: Prisma.$IntegrationTokenPayload<ExtArgs>
+      fields: Prisma.IntegrationTokenFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.IntegrationTokenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IntegrationTokenPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.IntegrationTokenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IntegrationTokenPayload>
+        }
+        findFirst: {
+          args: Prisma.IntegrationTokenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IntegrationTokenPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.IntegrationTokenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IntegrationTokenPayload>
+        }
+        findMany: {
+          args: Prisma.IntegrationTokenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IntegrationTokenPayload>[]
+        }
+        create: {
+          args: Prisma.IntegrationTokenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IntegrationTokenPayload>
+        }
+        createMany: {
+          args: Prisma.IntegrationTokenCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.IntegrationTokenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IntegrationTokenPayload>[]
+        }
+        delete: {
+          args: Prisma.IntegrationTokenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IntegrationTokenPayload>
+        }
+        update: {
+          args: Prisma.IntegrationTokenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IntegrationTokenPayload>
+        }
+        deleteMany: {
+          args: Prisma.IntegrationTokenDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.IntegrationTokenUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.IntegrationTokenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IntegrationTokenPayload>[]
+        }
+        upsert: {
+          args: Prisma.IntegrationTokenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IntegrationTokenPayload>
+        }
+        aggregate: {
+          args: Prisma.IntegrationTokenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateIntegrationToken>
+        }
+        groupBy: {
+          args: Prisma.IntegrationTokenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IntegrationTokenGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.IntegrationTokenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IntegrationTokenCountAggregateOutputType> | number
+        }
+      }
+    }
     WebhookEvent: {
       payload: Prisma.$WebhookEventPayload<ExtArgs>
       fields: Prisma.WebhookEventFieldRefs
@@ -1264,7 +1339,14 @@ export const ProductScalarFieldEnum = {
   slug: 'slug',
   description: 'description',
   image: 'image',
+  category: 'category',
+  colors: 'colors',
+  sizes: 'sizes',
   marketingFeatures: 'marketingFeatures',
+  seoTitle: 'seoTitle',
+  seoDescription: 'seoDescription',
+  seoTags: 'seoTags',
+  ogImage: 'ogImage',
   active: 'active',
   stripeProductId: 'stripeProductId',
   createdAt: 'createdAt',
@@ -1336,6 +1418,24 @@ export const StripeCustomerScalarFieldEnum = {
 } as const
 
 export type StripeCustomerScalarFieldEnum = (typeof StripeCustomerScalarFieldEnum)[keyof typeof StripeCustomerScalarFieldEnum]
+
+
+export const IntegrationTokenScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  environment: 'environment',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  tokenType: 'tokenType',
+  scope: 'scope',
+  expiresAt: 'expiresAt',
+  externalAccountId: 'externalAccountId',
+  externalAccountName: 'externalAccountName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type IntegrationTokenScalarFieldEnum = (typeof IntegrationTokenScalarFieldEnum)[keyof typeof IntegrationTokenScalarFieldEnum]
 
 
 export const WebhookEventScalarFieldEnum = {
@@ -1606,6 +1706,7 @@ export type GlobalOmitConfig = {
   order?: Prisma.OrderOmit
   orderItem?: Prisma.OrderItemOmit
   stripeCustomer?: Prisma.StripeCustomerOmit
+  integrationToken?: Prisma.IntegrationTokenOmit
   webhookEvent?: Prisma.WebhookEventOmit
 }
 

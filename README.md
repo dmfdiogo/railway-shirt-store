@@ -24,6 +24,19 @@ STRIPE_SECRET_KEY=sk_test_...
 STRIPE_PRICE_ID=price_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 APP_URL=http://localhost:3000
+MELHOR_ENVIO_ENVIRONMENT=sandbox
+MELHOR_ENVIO_CLIENT_ID=9283
+MELHOR_ENVIO_CLIENT_SECRET=replace-with-melhor-envio-app-secret
+MELHOR_ENVIO_REDIRECT_URI=http://localhost:3000/api/integrations/melhor-envio/callback
+MELHOR_ENVIO_ACCESS_TOKEN=me_access_token
+MELHOR_ENVIO_FROM_POSTAL_CODE=96020360
+MELHOR_ENVIO_SERVICE_IDS=1,2
+MELHOR_ENVIO_OPERATOR_EMAILS=owner@beartstore.com.br
+MELHOR_ENVIO_USER_AGENT=Be Art (contato@beartstore.com.br)
+MELHOR_ENVIO_DEFAULT_WIDTH_CM=18
+MELHOR_ENVIO_DEFAULT_HEIGHT_CM=4
+MELHOR_ENVIO_DEFAULT_LENGTH_CM=26
+MELHOR_ENVIO_DEFAULT_WEIGHT_KG=0.3
 ```
 
 Generate a secret with:
@@ -62,13 +75,15 @@ For Google OAuth, register this redirect URI in Google Cloud Console:
 http://localhost:3000/api/auth/callback/google
 ```
 
+For Melhor Envio, configure the sandbox app credentials, an origin CEP, and then authorize the app through `/operacoes/frete`. The callback must match `MELHOR_ENVIO_REDIRECT_URI` exactly. The current integration stores the OAuth token server-side and quotes freights through `/api/shipping/quote`, falling back to the fixed regional table when Melhor Envio is unavailable or not configured. Set `MELHOR_ENVIO_OPERATOR_EMAILS` with a comma-separated allowlist to keep this operations page out of regular customer accounts.
+
 ## Railway Deploy Flow
 
 The Railway project is already created and linked for this repository.
 
 1. Provision a Railway Postgres service if the project does not already have one.
 2. Wire `DATABASE_URL` in the `web` service to the Postgres service reference.
-3. Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, and `APP_URL` in the `web` service variables.
+3. Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `APP_URL`, `MELHOR_ENVIO_ENVIRONMENT`, `MELHOR_ENVIO_CLIENT_ID`, `MELHOR_ENVIO_CLIENT_SECRET`, `MELHOR_ENVIO_REDIRECT_URI`, `MELHOR_ENVIO_FROM_POSTAL_CODE`, `MELHOR_ENVIO_SERVICE_IDS`, `MELHOR_ENVIO_OPERATOR_EMAILS`, `MELHOR_ENVIO_USER_AGENT`, `MELHOR_ENVIO_DEFAULT_WIDTH_CM`, `MELHOR_ENVIO_DEFAULT_HEIGHT_CM`, `MELHOR_ENVIO_DEFAULT_LENGTH_CM`, and `MELHOR_ENVIO_DEFAULT_WEIGHT_KG` in the `web` service variables.
 4. Deploy from the workspace with `railway up`.
 5. Run `npm run db:migrate:deploy` in the deployed environment so the schema lands in Postgres.
 6. Register the production webhook endpoint at `/api/stripe/webhook` in Stripe and store the matching signing secret in Railway.

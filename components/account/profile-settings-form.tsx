@@ -61,123 +61,123 @@ export function ProfileSettingsForm({ initialValues }: ProfileSettingsFormProps)
   }
 
   return (
-    <div className="mt-10 rounded-[1.5rem] border border-stone-950/10 bg-stone-50 px-5 py-5">
+    <div className="mt-10 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-5 py-5">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-mono uppercase tracking-[0.28em] text-stone-500">Entrega</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-stone-950">
+          <p className="text-sm font-mono uppercase tracking-[0.28em] text-[#A5ADFF]">Entrega</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">
             Endereco salvo no perfil
           </h2>
         </div>
-        <p className="text-sm leading-6 text-stone-600">
+        <p className="text-sm leading-6 text-white/58">
           Esses dados agilizam o preenchimento do checkout e do suporte.
         </p>
       </div>
 
       <form className="mt-6 grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
-        <label className="block text-sm font-medium text-stone-700 sm:col-span-2">
+        <label className="block text-sm font-medium text-white/72 sm:col-span-2">
           Telefone
           <input
             name="phone"
             type="tel"
             autoComplete="tel"
             defaultValue={initialValues.phone ?? ""}
-            className="mt-2 block w-full rounded-2xl border border-stone-950/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-stone-950/30"
+            className="mt-2 block w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#6D78FF]/45"
             placeholder="(11) 99999-9999"
           />
         </label>
 
-        <label className="block text-sm font-medium text-stone-700 sm:col-span-2">
+        <label className="block text-sm font-medium text-white/72 sm:col-span-2">
           Endereco
           <input
             name="addressLine1"
             type="text"
             autoComplete="address-line1"
             defaultValue={initialValues.addressLine1 ?? ""}
-            className="mt-2 block w-full rounded-2xl border border-stone-950/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-stone-950/30"
+            className="mt-2 block w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#6D78FF]/45"
             placeholder="Rua, numero e complemento principal"
           />
         </label>
 
-        <label className="block text-sm font-medium text-stone-700 sm:col-span-2">
+        <label className="block text-sm font-medium text-white/72 sm:col-span-2">
           Complemento
           <input
             name="addressLine2"
             type="text"
             autoComplete="address-line2"
             defaultValue={initialValues.addressLine2 ?? ""}
-            className="mt-2 block w-full rounded-2xl border border-stone-950/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-stone-950/30"
+            className="mt-2 block w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#6D78FF]/45"
             placeholder="Apartamento, bloco ou referencia"
           />
         </label>
 
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-sm font-medium text-white/72">
           Bairro
           <input
             name="neighborhood"
             type="text"
             defaultValue={initialValues.neighborhood ?? ""}
-            className="mt-2 block w-full rounded-2xl border border-stone-950/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-stone-950/30"
+            className="mt-2 block w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#6D78FF]/45"
             placeholder="Centro"
           />
         </label>
 
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-sm font-medium text-white/72">
           CEP
           <input
             name="postalCode"
             type="text"
             autoComplete="postal-code"
             defaultValue={initialValues.postalCode ?? ""}
-            className="mt-2 block w-full rounded-2xl border border-stone-950/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-stone-950/30"
+            className="mt-2 block w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#6D78FF]/45"
             placeholder="00000-000"
           />
         </label>
 
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-sm font-medium text-white/72">
           Cidade
           <input
             name="city"
             type="text"
             autoComplete="address-level2"
             defaultValue={initialValues.city ?? ""}
-            className="mt-2 block w-full rounded-2xl border border-stone-950/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-stone-950/30"
+            className="mt-2 block w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#6D78FF]/45"
             placeholder="Sao Paulo"
           />
         </label>
 
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-sm font-medium text-white/72">
           Estado
           <input
             name="state"
             type="text"
             autoComplete="address-level1"
             defaultValue={initialValues.state ?? ""}
-            className="mt-2 block w-full rounded-2xl border border-stone-950/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-stone-950/30"
+            className="mt-2 block w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#6D78FF]/45"
             placeholder="SP"
           />
         </label>
 
-        <label className="block text-sm font-medium text-stone-700 sm:col-span-2">
+        <label className="block text-sm font-medium text-white/72 sm:col-span-2">
           Pais
           <input
             name="country"
             type="text"
             autoComplete="country-name"
             defaultValue={initialValues.country ?? "Brasil"}
-            className="mt-2 block w-full rounded-2xl border border-stone-950/10 bg-white px-4 py-3 text-sm outline-none transition focus:border-stone-950/30"
+            className="mt-2 block w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#6D78FF]/45"
             placeholder="Brasil"
           />
         </label>
 
         {error ? (
-          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 sm:col-span-2">
+          <div className="rounded-2xl border border-red-300/20 bg-red-500/10 px-4 py-3 text-sm text-red-100 sm:col-span-2">
             {error}
           </div>
         ) : null}
 
         {success ? (
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 sm:col-span-2">
+          <div className="rounded-2xl border border-emerald-300/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100 sm:col-span-2">
             {success}
           </div>
         ) : null}
@@ -186,7 +186,7 @@ export function ProfileSettingsForm({ initialValues }: ProfileSettingsFormProps)
           <button
             type="submit"
             disabled={isPending}
-            className="inline-flex min-h-12 items-center justify-center rounded-full bg-stone-950 px-6 text-sm font-medium text-stone-50 transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
+            className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isPending ? "Salvando..." : "Salvar endereco"}
           </button>

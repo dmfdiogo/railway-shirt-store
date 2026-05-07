@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ViewTransition } from "react";
 import { headers } from "next/headers";
 import { connection } from "next/server";
 import Image from "next/image";
@@ -6,32 +7,19 @@ import Link from "next/link";
 
 import { auth, isAuthConfigured } from "@/lib/auth";
 import { getStorefrontProducts } from "@/lib/storefront";
+import { buildMarketingMetadata } from "@/lib/seo";
 import { MysticBackground } from "@/components/ui/mystic-background";
 import { Navbar } from "@/components/ui/navbar";
+import { SiteFooter } from "@/components/ui/site-footer";
 
 export const runtime = "nodejs";
 
-export const metadata: Metadata = {
+const shopMetadata = buildMarketingMetadata({
   title: "Catálogo — Be Art",
   description:
     "Explore o catálogo Be Art com camisetas de rave de presença noturna, acabamento premium e linguagem visual autoral.",
-  alternates: {
-    canonical: "/shop",
-  },
-  openGraph: {
-    title: "Catálogo — Be Art",
-    description:
-      "Camisetas de rave com contraste preciso, presença visual e atmosfera noturna.",
-    url: "/shop",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Catálogo — Be Art",
-    description:
-      "Camisetas de rave com contraste preciso, presença visual e atmosfera noturna.",
-  },
-};
+  path: "/shop",
+});
 
 function formatCurrency(amount: number, currency: string) {
   return new Intl.NumberFormat("pt-BR", {
@@ -42,6 +30,42 @@ function formatCurrency(amount: number, currency: string) {
 
 function getQueryValue(value: string | string[] | undefined) {
   return typeof value === "string" ? value : "";
+}
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ color?: string | string[]; category?: string | string[] }>;
+}): Promise<Metadata> {
+  const resolvedSearchParams = await searchParams;
+  const selectedColor = getQueryValue(resolvedSearchParams.color);
+  const selectedCategory = getQueryValue(resolvedSearchParams.category);
+
+  if (!selectedColor && !selectedCategory) {
+    return shopMetadata;
+  }
+
+  const activeFilters = [selectedCategory ? `categoria ${selectedCategory}` : null, selectedColor ? `cor ${selectedColor}` : null]
+    .filter(Boolean)
+    .join(" e ");
+
+  return {
+    ...shopMetadata,
+    title: `Catálogo filtrado — ${activeFilters} — Be Art`,
+    description: `Resultado filtrado do catálogo Be Art por ${activeFilters}. Esta variação usa canonical para /shop e fica fora do índice orgânico.`,
+    robots: {
+      index: false,
+      follow: true,
+      googleBot: {
+        index: false,
+        follow: true,
+        noimageindex: false,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+  };
 }
 
 export default async function ShopPage({
@@ -109,6 +133,7 @@ export default async function ShopPage({
       <Navbar sessionActive={!!session} authReady={authReady} />
 
       <main className="relative z-10 px-6 pb-16 pt-28 sm:px-10 sm:pt-32 lg:px-16">
+        <ViewTransition enter="slide-up" default="none">
         <div className="mx-auto max-w-7xl">
           <header className="mb-10 rounded-[2rem] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] px-6 py-6 shadow-[0_28px_80px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:px-8 sm:py-7">
             <Link
@@ -221,6 +246,7 @@ export default async function ShopPage({
                     href={`/shop/${product.slug}`}
                     className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(15,15,20,0.95),rgba(10,10,14,0.88))] shadow-[0_20px_60px_rgba(0,0,0,0.24)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-[#4F46E5]/40 hover:shadow-[0_28px_70px_rgba(79,70,229,0.16)]"
                   >
+                    <ViewTransition name={`product-${product.slug}`} share="morph">
                     <div className="relative aspect-[4/4.35] w-full overflow-hidden bg-[linear-gradient(145deg,#12131a,#0a0b10)]">
                       <div
                         aria-hidden="true"
@@ -259,6 +285,7 @@ export default async function ShopPage({
 
                       <div className="pointer-events-none absolute left-0 top-0 h-0.5 w-0 bg-gradient-to-r from-[#2563EB] to-[#8B5CF6] transition-all duration-500 group-hover:w-full" />
                     </div>
+                    </ViewTransition>
 
                     <div className="flex flex-1 flex-col p-5">
                       <div className="flex items-start justify-between gap-4">
@@ -341,7 +368,9 @@ export default async function ShopPage({
             </ul>
           )}
         </div>
+        </ViewTransition>
       </main>
+      <SiteFooter authReady={authReady} sessionActive={!!session} />
     </div>
   );
 }

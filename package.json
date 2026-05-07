@@ -14,7 +14,8 @@
     "db:migrate:dev": "prisma migrate dev",
     "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
     "lint": "eslint",
-    "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe/webhook"
+    "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe/webhook",
+    "stripe:catalog:normalize": "npx tsx scripts/normalize-stripe-catalog.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",

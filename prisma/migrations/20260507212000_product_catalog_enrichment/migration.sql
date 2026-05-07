@@ -1,0 +1,8 @@
+ALTER TABLE "Product"
+ADD COLUMN     "category" TEXT,
+ADD COLUMN     "colors" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+ADD COLUMN     "sizes" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+ADD COLUMN     "seoTitle" TEXT,
+ADD COLUMN     "seoDescription" TEXT,
+ADD COLUMN     "seoTags" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+ADD COLUMN     "ogImage" TEXT;

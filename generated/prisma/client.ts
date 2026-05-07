@@ -87,6 +87,11 @@ export type OrderItem = Prisma.OrderItemModel
  */
 export type StripeCustomer = Prisma.StripeCustomerModel
 /**
+ * Model IntegrationToken
+ * 
+ */
+export type IntegrationToken = Prisma.IntegrationTokenModel
+/**
  * Model WebhookEvent
  * 
  */

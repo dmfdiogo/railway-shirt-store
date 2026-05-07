@@ -1,14 +1,25 @@
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { connection } from "next/server";
 import Image from "next/image";
+import Link from "next/link";
 
 import { auth, isAuthConfigured } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { getStorefrontProducts } from "@/lib/storefront";
 import { getStripeServerClient } from "@/lib/stripe";
+import { buildMarketingMetadata, SITE_DESCRIPTION, SITE_TITLE } from "@/lib/seo";
 import { MysticBackground } from "@/components/ui/mystic-background";
 import { Navbar } from "@/components/ui/navbar";
+import { SiteFooter } from "@/components/ui/site-footer";
 
 export const runtime = "nodejs";
+
+export const metadata: Metadata = buildMarketingMetadata({
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  path: "/",
+});
 
 type FeaturedProduct = {
   slug: string;
@@ -163,7 +174,13 @@ export default async function Home() {
     ? await auth.api.getSession({ headers: await headers() }).catch(() => null)
     : null;
 
-  const featured = await getFeaturedProducts(4);
+  const [featured, storefrontProducts] = await Promise.all([
+    getFeaturedProducts(4),
+    getStorefrontProducts(),
+  ]);
+  const featuredCategories = Array.from(
+    new Set(storefrontProducts.map((product) => product.category).filter(Boolean) as string[])
+  ).slice(0, 4);
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-[#0A0A0C] text-white">
@@ -316,6 +333,48 @@ export default async function Home() {
         </div>
 
       </section>
+
+      {featuredCategories.length > 0 ? (
+        <>
+          <div aria-hidden="true" className="h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+          <section className="px-6 py-16 sm:py-20" aria-labelledby="catalog-paths-heading">
+            <div className="mx-auto flex max-w-7xl flex-col gap-6 rounded-[2rem] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] px-6 py-7 shadow-[0_20px_60px_rgba(0,0,0,0.22)] backdrop-blur-2xl sm:px-8 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#6B21A8]">
+                  Navegação interna
+                </p>
+                <h2
+                  id="catalog-paths-heading"
+                  className="font-display mt-3 text-3xl font-extrabold uppercase tracking-[-0.04em] sm:text-4xl"
+                >
+                  Entre direto nos recortes mais fortes do catálogo.
+                </h2>
+                <p className="mt-3 max-w-xl text-sm leading-7 text-white/56 sm:text-base">
+                  Use estes atalhos para saltar da home para categorias e seguir dos cards para as páginas de produto sem depender só da navegação principal.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/shop"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-5 text-sm font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+                >
+                  Ver catálogo completo
+                </Link>
+                {featuredCategories.map((category) => (
+                  <Link
+                    key={category}
+                    href={`/shop?category=${encodeURIComponent(category)}`}
+                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#6B3CF6]/30 bg-[#6B3CF6]/10 px-5 text-sm font-semibold text-white transition hover:border-[#6B3CF6]/55 hover:bg-[#6B3CF6]/16"
+                  >
+                    {category}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>
+      ) : null}
 
       {/* ── BENEFITS ─────────────────────────────────────────── */}
       <div aria-hidden="true" className="h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
@@ -583,42 +642,7 @@ export default async function Home() {
       </section>
 
       {/* ── FOOTER ───────────────────────────────────────────── */}
-      <footer className="border-t border-white/[0.06] px-6 py-12">
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-8 sm:flex-row sm:justify-between">
-          <a
-            href="/"
-            className="font-display text-xl font-extrabold uppercase tracking-widest text-white"
-          >
-            Be Art<span className="text-[#7C7CFF]">.</span>
-          </a>
-
-          <nav
-            className="flex flex-wrap justify-center gap-6"
-            aria-label="Rodapé"
-          >
-            <a
-              href="/shop"
-              className="text-sm text-white/35 transition hover:text-white/80"
-            >
-              Catálogo
-            </a>
-            <a
-              href="/sign-in"
-              className="text-sm text-white/35 transition hover:text-white/80"
-            >
-              Entrar
-            </a>
-            <a
-              href="/sign-up"
-              className="text-sm text-white/35 transition hover:text-white/80"
-            >
-              Criar conta
-            </a>
-          </nav>
-
-          <p className="text-xs text-white/20">© 2026 Be Art</p>
-        </div>
-      </footer>
+      <SiteFooter authReady={authReady} sessionActive={!!session} />
     </div>
   );
 }

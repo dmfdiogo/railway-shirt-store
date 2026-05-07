@@ -92,7 +92,14 @@ model Product {
   slug              String           @unique
   description       String?
   image             String?
+  category          String?
+  colors            String[]         @default([])
+  sizes             String[]         @default([])
   marketingFeatures String[]
+  seoTitle          String?
+  seoDescription    String?
+  seoTags           String[]         @default([])
+  ogImage           String?
   active            Boolean          @default(true)
   stripeProductId   String?          @unique
   createdAt         DateTime         @default(now())
@@ -169,6 +176,23 @@ model StripeCustomer {
 
   @@index([userId])
   @@index([email])
+}
+
+model IntegrationToken {
+  id                  String   @id @default(cuid())
+  provider            String
+  environment         String
+  accessToken         String
+  refreshToken        String?
+  tokenType           String   @default("Bearer")
+  scope               String?
+  expiresAt           DateTime?
+  externalAccountId   String?
+  externalAccountName String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @default(now()) @updatedAt
+
+  @@unique([provider, environment])
 }
 
 model WebhookEvent {

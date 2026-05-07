@@ -60,6 +60,7 @@ export const ModelName = {
   Order: 'Order',
   OrderItem: 'OrderItem',
   StripeCustomer: 'StripeCustomer',
+  IntegrationToken: 'IntegrationToken',
   WebhookEvent: 'WebhookEvent'
 } as const
 
@@ -151,7 +152,14 @@ export const ProductScalarFieldEnum = {
   slug: 'slug',
   description: 'description',
   image: 'image',
+  category: 'category',
+  colors: 'colors',
+  sizes: 'sizes',
   marketingFeatures: 'marketingFeatures',
+  seoTitle: 'seoTitle',
+  seoDescription: 'seoDescription',
+  seoTags: 'seoTags',
+  ogImage: 'ogImage',
   active: 'active',
   stripeProductId: 'stripeProductId',
   createdAt: 'createdAt',
@@ -223,6 +231,24 @@ export const StripeCustomerScalarFieldEnum = {
 } as const
 
 export type StripeCustomerScalarFieldEnum = (typeof StripeCustomerScalarFieldEnum)[keyof typeof StripeCustomerScalarFieldEnum]
+
+
+export const IntegrationTokenScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  environment: 'environment',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  tokenType: 'tokenType',
+  scope: 'scope',
+  expiresAt: 'expiresAt',
+  externalAccountId: 'externalAccountId',
+  externalAccountName: 'externalAccountName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type IntegrationTokenScalarFieldEnum = (typeof IntegrationTokenScalarFieldEnum)[keyof typeof IntegrationTokenScalarFieldEnum]
 
 
 export const WebhookEventScalarFieldEnum = {

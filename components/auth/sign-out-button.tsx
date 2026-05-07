@@ -20,7 +20,7 @@ export function SignOutButton() {
           router.refresh();
         });
       }}
-      className="inline-flex min-h-12 items-center justify-center rounded-full border border-stone-950/10 px-6 text-sm font-medium text-stone-700 transition hover:bg-stone-950/5 disabled:cursor-not-allowed disabled:opacity-60"
+      className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.04] px-6 text-sm font-medium text-white/76 transition hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-60"
     >
       {isPending ? "Saindo..." : "Sair"}
     </button>

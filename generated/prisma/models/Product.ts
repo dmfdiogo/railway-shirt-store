@@ -30,6 +30,10 @@ export type ProductMinAggregateOutputType = {
   slug: string | null
   description: string | null
   image: string | null
+  category: string | null
+  seoTitle: string | null
+  seoDescription: string | null
+  ogImage: string | null
   active: boolean | null
   stripeProductId: string | null
   createdAt: Date | null
@@ -42,6 +46,10 @@ export type ProductMaxAggregateOutputType = {
   slug: string | null
   description: string | null
   image: string | null
+  category: string | null
+  seoTitle: string | null
+  seoDescription: string | null
+  ogImage: string | null
   active: boolean | null
   stripeProductId: string | null
   createdAt: Date | null
@@ -54,7 +62,14 @@ export type ProductCountAggregateOutputType = {
   slug: number
   description: number
   image: number
+  category: number
+  colors: number
+  sizes: number
   marketingFeatures: number
+  seoTitle: number
+  seoDescription: number
+  seoTags: number
+  ogImage: number
   active: number
   stripeProductId: number
   createdAt: number
@@ -69,6 +84,10 @@ export type ProductMinAggregateInputType = {
   slug?: true
   description?: true
   image?: true
+  category?: true
+  seoTitle?: true
+  seoDescription?: true
+  ogImage?: true
   active?: true
   stripeProductId?: true
   createdAt?: true
@@ -81,6 +100,10 @@ export type ProductMaxAggregateInputType = {
   slug?: true
   description?: true
   image?: true
+  category?: true
+  seoTitle?: true
+  seoDescription?: true
+  ogImage?: true
   active?: true
   stripeProductId?: true
   createdAt?: true
@@ -93,7 +116,14 @@ export type ProductCountAggregateInputType = {
   slug?: true
   description?: true
   image?: true
+  category?: true
+  colors?: true
+  sizes?: true
   marketingFeatures?: true
+  seoTitle?: true
+  seoDescription?: true
+  seoTags?: true
+  ogImage?: true
   active?: true
   stripeProductId?: true
   createdAt?: true
@@ -179,7 +209,14 @@ export type ProductGroupByOutputType = {
   slug: string
   description: string | null
   image: string | null
+  category: string | null
+  colors: string[]
+  sizes: string[]
   marketingFeatures: string[]
+  seoTitle: string | null
+  seoDescription: string | null
+  seoTags: string[]
+  ogImage: string | null
   active: boolean
   stripeProductId: string | null
   createdAt: Date
@@ -213,7 +250,14 @@ export type ProductWhereInput = {
   slug?: Prisma.StringFilter<"Product"> | string
   description?: Prisma.StringNullableFilter<"Product"> | string | null
   image?: Prisma.StringNullableFilter<"Product"> | string | null
+  category?: Prisma.StringNullableFilter<"Product"> | string | null
+  colors?: Prisma.StringNullableListFilter<"Product">
+  sizes?: Prisma.StringNullableListFilter<"Product">
   marketingFeatures?: Prisma.StringNullableListFilter<"Product">
+  seoTitle?: Prisma.StringNullableFilter<"Product"> | string | null
+  seoDescription?: Prisma.StringNullableFilter<"Product"> | string | null
+  seoTags?: Prisma.StringNullableListFilter<"Product">
+  ogImage?: Prisma.StringNullableFilter<"Product"> | string | null
   active?: Prisma.BoolFilter<"Product"> | boolean
   stripeProductId?: Prisma.StringNullableFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -227,7 +271,14 @@ export type ProductOrderByWithRelationInput = {
   slug?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  colors?: Prisma.SortOrder
+  sizes?: Prisma.SortOrder
   marketingFeatures?: Prisma.SortOrder
+  seoTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  seoDescription?: Prisma.SortOrderInput | Prisma.SortOrder
+  seoTags?: Prisma.SortOrder
+  ogImage?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
   stripeProductId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -245,7 +296,14 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Product"> | string
   description?: Prisma.StringNullableFilter<"Product"> | string | null
   image?: Prisma.StringNullableFilter<"Product"> | string | null
+  category?: Prisma.StringNullableFilter<"Product"> | string | null
+  colors?: Prisma.StringNullableListFilter<"Product">
+  sizes?: Prisma.StringNullableListFilter<"Product">
   marketingFeatures?: Prisma.StringNullableListFilter<"Product">
+  seoTitle?: Prisma.StringNullableFilter<"Product"> | string | null
+  seoDescription?: Prisma.StringNullableFilter<"Product"> | string | null
+  seoTags?: Prisma.StringNullableListFilter<"Product">
+  ogImage?: Prisma.StringNullableFilter<"Product"> | string | null
   active?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -258,7 +316,14 @@ export type ProductOrderByWithAggregationInput = {
   slug?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  colors?: Prisma.SortOrder
+  sizes?: Prisma.SortOrder
   marketingFeatures?: Prisma.SortOrder
+  seoTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  seoDescription?: Prisma.SortOrderInput | Prisma.SortOrder
+  seoTags?: Prisma.SortOrder
+  ogImage?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
   stripeProductId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -277,7 +342,14 @@ export type ProductScalarWhereWithAggregatesInput = {
   slug?: Prisma.StringWithAggregatesFilter<"Product"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   image?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
+  category?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
+  colors?: Prisma.StringNullableListFilter<"Product">
+  sizes?: Prisma.StringNullableListFilter<"Product">
   marketingFeatures?: Prisma.StringNullableListFilter<"Product">
+  seoTitle?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
+  seoDescription?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
+  seoTags?: Prisma.StringNullableListFilter<"Product">
+  ogImage?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   active?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   stripeProductId?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
@@ -290,7 +362,14 @@ export type ProductCreateInput = {
   slug: string
   description?: string | null
   image?: string | null
+  category?: string | null
+  colors?: Prisma.ProductCreatecolorsInput | string[]
+  sizes?: Prisma.ProductCreatesizesInput | string[]
   marketingFeatures?: Prisma.ProductCreatemarketingFeaturesInput | string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+  seoTags?: Prisma.ProductCreateseoTagsInput | string[]
+  ogImage?: string | null
   active?: boolean
   stripeProductId?: string | null
   createdAt?: Date | string
@@ -304,7 +383,14 @@ export type ProductUncheckedCreateInput = {
   slug: string
   description?: string | null
   image?: string | null
+  category?: string | null
+  colors?: Prisma.ProductCreatecolorsInput | string[]
+  sizes?: Prisma.ProductCreatesizesInput | string[]
   marketingFeatures?: Prisma.ProductCreatemarketingFeaturesInput | string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+  seoTags?: Prisma.ProductCreateseoTagsInput | string[]
+  ogImage?: string | null
   active?: boolean
   stripeProductId?: string | null
   createdAt?: Date | string
@@ -318,7 +404,14 @@ export type ProductUpdateInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colors?: Prisma.ProductUpdatecolorsInput | string[]
+  sizes?: Prisma.ProductUpdatesizesInput | string[]
   marketingFeatures?: Prisma.ProductUpdatemarketingFeaturesInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoTags?: Prisma.ProductUpdateseoTagsInput | string[]
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeProductId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -332,7 +425,14 @@ export type ProductUncheckedUpdateInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colors?: Prisma.ProductUpdatecolorsInput | string[]
+  sizes?: Prisma.ProductUpdatesizesInput | string[]
   marketingFeatures?: Prisma.ProductUpdatemarketingFeaturesInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoTags?: Prisma.ProductUpdateseoTagsInput | string[]
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeProductId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -346,7 +446,14 @@ export type ProductCreateManyInput = {
   slug: string
   description?: string | null
   image?: string | null
+  category?: string | null
+  colors?: Prisma.ProductCreatecolorsInput | string[]
+  sizes?: Prisma.ProductCreatesizesInput | string[]
   marketingFeatures?: Prisma.ProductCreatemarketingFeaturesInput | string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+  seoTags?: Prisma.ProductCreateseoTagsInput | string[]
+  ogImage?: string | null
   active?: boolean
   stripeProductId?: string | null
   createdAt?: Date | string
@@ -359,7 +466,14 @@ export type ProductUpdateManyMutationInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colors?: Prisma.ProductUpdatecolorsInput | string[]
+  sizes?: Prisma.ProductUpdatesizesInput | string[]
   marketingFeatures?: Prisma.ProductUpdatemarketingFeaturesInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoTags?: Prisma.ProductUpdateseoTagsInput | string[]
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeProductId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -372,7 +486,14 @@ export type ProductUncheckedUpdateManyInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colors?: Prisma.ProductUpdatecolorsInput | string[]
+  sizes?: Prisma.ProductUpdatesizesInput | string[]
   marketingFeatures?: Prisma.ProductUpdatemarketingFeaturesInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoTags?: Prisma.ProductUpdateseoTagsInput | string[]
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeProductId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -393,7 +514,14 @@ export type ProductCountOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  colors?: Prisma.SortOrder
+  sizes?: Prisma.SortOrder
   marketingFeatures?: Prisma.SortOrder
+  seoTitle?: Prisma.SortOrder
+  seoDescription?: Prisma.SortOrder
+  seoTags?: Prisma.SortOrder
+  ogImage?: Prisma.SortOrder
   active?: Prisma.SortOrder
   stripeProductId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -406,6 +534,10 @@ export type ProductMaxOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  seoTitle?: Prisma.SortOrder
+  seoDescription?: Prisma.SortOrder
+  ogImage?: Prisma.SortOrder
   active?: Prisma.SortOrder
   stripeProductId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -418,6 +550,10 @@ export type ProductMinOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   description?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  seoTitle?: Prisma.SortOrder
+  seoDescription?: Prisma.SortOrder
+  ogImage?: Prisma.SortOrder
   active?: Prisma.SortOrder
   stripeProductId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -429,11 +565,38 @@ export type ProductScalarRelationFilter = {
   isNot?: Prisma.ProductWhereInput
 }
 
+export type ProductCreatecolorsInput = {
+  set: string[]
+}
+
+export type ProductCreatesizesInput = {
+  set: string[]
+}
+
 export type ProductCreatemarketingFeaturesInput = {
   set: string[]
 }
 
+export type ProductCreateseoTagsInput = {
+  set: string[]
+}
+
+export type ProductUpdatecolorsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ProductUpdatesizesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type ProductUpdatemarketingFeaturesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type ProductUpdateseoTagsInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -458,7 +621,14 @@ export type ProductCreateWithoutVariantsInput = {
   slug: string
   description?: string | null
   image?: string | null
+  category?: string | null
+  colors?: Prisma.ProductCreatecolorsInput | string[]
+  sizes?: Prisma.ProductCreatesizesInput | string[]
   marketingFeatures?: Prisma.ProductCreatemarketingFeaturesInput | string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+  seoTags?: Prisma.ProductCreateseoTagsInput | string[]
+  ogImage?: string | null
   active?: boolean
   stripeProductId?: string | null
   createdAt?: Date | string
@@ -471,7 +641,14 @@ export type ProductUncheckedCreateWithoutVariantsInput = {
   slug: string
   description?: string | null
   image?: string | null
+  category?: string | null
+  colors?: Prisma.ProductCreatecolorsInput | string[]
+  sizes?: Prisma.ProductCreatesizesInput | string[]
   marketingFeatures?: Prisma.ProductCreatemarketingFeaturesInput | string[]
+  seoTitle?: string | null
+  seoDescription?: string | null
+  seoTags?: Prisma.ProductCreateseoTagsInput | string[]
+  ogImage?: string | null
   active?: boolean
   stripeProductId?: string | null
   createdAt?: Date | string
@@ -500,7 +677,14 @@ export type ProductUpdateWithoutVariantsInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colors?: Prisma.ProductUpdatecolorsInput | string[]
+  sizes?: Prisma.ProductUpdatesizesInput | string[]
   marketingFeatures?: Prisma.ProductUpdatemarketingFeaturesInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoTags?: Prisma.ProductUpdateseoTagsInput | string[]
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeProductId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -513,7 +697,14 @@ export type ProductUncheckedUpdateWithoutVariantsInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colors?: Prisma.ProductUpdatecolorsInput | string[]
+  sizes?: Prisma.ProductUpdatesizesInput | string[]
   marketingFeatures?: Prisma.ProductUpdatemarketingFeaturesInput | string[]
+  seoTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  seoTags?: Prisma.ProductUpdateseoTagsInput | string[]
+  ogImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stripeProductId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -557,7 +748,14 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   slug?: boolean
   description?: boolean
   image?: boolean
+  category?: boolean
+  colors?: boolean
+  sizes?: boolean
   marketingFeatures?: boolean
+  seoTitle?: boolean
+  seoDescription?: boolean
+  seoTags?: boolean
+  ogImage?: boolean
   active?: boolean
   stripeProductId?: boolean
   createdAt?: boolean
@@ -572,7 +770,14 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   slug?: boolean
   description?: boolean
   image?: boolean
+  category?: boolean
+  colors?: boolean
+  sizes?: boolean
   marketingFeatures?: boolean
+  seoTitle?: boolean
+  seoDescription?: boolean
+  seoTags?: boolean
+  ogImage?: boolean
   active?: boolean
   stripeProductId?: boolean
   createdAt?: boolean
@@ -585,7 +790,14 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   slug?: boolean
   description?: boolean
   image?: boolean
+  category?: boolean
+  colors?: boolean
+  sizes?: boolean
   marketingFeatures?: boolean
+  seoTitle?: boolean
+  seoDescription?: boolean
+  seoTags?: boolean
+  ogImage?: boolean
   active?: boolean
   stripeProductId?: boolean
   createdAt?: boolean
@@ -598,14 +810,21 @@ export type ProductSelectScalar = {
   slug?: boolean
   description?: boolean
   image?: boolean
+  category?: boolean
+  colors?: boolean
+  sizes?: boolean
   marketingFeatures?: boolean
+  seoTitle?: boolean
+  seoDescription?: boolean
+  seoTags?: boolean
+  ogImage?: boolean
   active?: boolean
   stripeProductId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "description" | "image" | "marketingFeatures" | "active" | "stripeProductId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "description" | "image" | "category" | "colors" | "sizes" | "marketingFeatures" | "seoTitle" | "seoDescription" | "seoTags" | "ogImage" | "active" | "stripeProductId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   variants?: boolean | Prisma.Product$variantsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductCountOutputTypeDefaultArgs<ExtArgs>
@@ -624,7 +843,14 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     slug: string
     description: string | null
     image: string | null
+    category: string | null
+    colors: string[]
+    sizes: string[]
     marketingFeatures: string[]
+    seoTitle: string | null
+    seoDescription: string | null
+    seoTags: string[]
+    ogImage: string | null
     active: boolean
     stripeProductId: string | null
     createdAt: Date
@@ -1058,7 +1284,14 @@ export interface ProductFieldRefs {
   readonly slug: Prisma.FieldRef<"Product", 'String'>
   readonly description: Prisma.FieldRef<"Product", 'String'>
   readonly image: Prisma.FieldRef<"Product", 'String'>
+  readonly category: Prisma.FieldRef<"Product", 'String'>
+  readonly colors: Prisma.FieldRef<"Product", 'String[]'>
+  readonly sizes: Prisma.FieldRef<"Product", 'String[]'>
   readonly marketingFeatures: Prisma.FieldRef<"Product", 'String[]'>
+  readonly seoTitle: Prisma.FieldRef<"Product", 'String'>
+  readonly seoDescription: Prisma.FieldRef<"Product", 'String'>
+  readonly seoTags: Prisma.FieldRef<"Product", 'String[]'>
+  readonly ogImage: Prisma.FieldRef<"Product", 'String'>
   readonly active: Prisma.FieldRef<"Product", 'Boolean'>
   readonly stripeProductId: Prisma.FieldRef<"Product", 'String'>
   readonly createdAt: Prisma.FieldRef<"Product", 'DateTime'>
