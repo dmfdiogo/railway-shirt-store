@@ -24,6 +24,11 @@ type OrderConfirmationEmailArgs = {
   currency: string;
 };
 
+type OrderShippedEmailArgs = {
+  to: string;
+  orderId: string;
+};
+
 function formatCurrency(amountInCents: number, currency: string) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -124,6 +129,39 @@ export async function sendWelcomeEmail({
     from: FROM_EMAIL,
     to,
     subject: "Bem-vindo à Beart Store!",
+    html,
+  });
+}
+
+export async function sendOrderShippedEmail({
+  to,
+  orderId,
+}: OrderShippedEmailArgs): Promise<void> {
+  if (!resend) return;
+
+  const shortId = orderId.slice(-8).toUpperCase();
+
+  const html = `
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a1a;">
+      <h2 style="margin-bottom:4px;color:#111;">Seu pedido foi enviado!</h2>
+      <p style="margin-top:0;color:#555;">A Be Art concluiu a postagem do seu pedido e ele já entrou em rota.</p>
+      <p style="color:#888;font-size:13px;">Nº do pedido: <strong style="color:#333;">#${shortId}</strong></p>
+      <p style="color:#555;line-height:1.7;">Você pode acompanhar o andamento da compra na sua área de conta. Se o código de rastreio for disponibilizado depois, ele também aparecerá por lá.</p>
+      <p style="margin-top:32px;">
+        <a href="${APP_URL}/account"
+           style="display:inline-block;padding:12px 28px;background:#111;color:#fff;text-decoration:none;border-radius:999px;font-size:15px;font-weight:600;">
+          Acompanhar pedido
+        </a>
+      </p>
+      <hr style="border:none;border-top:1px solid #f0f0f0;margin:32px 0;">
+      <p style="font-size:12px;color:#aaa;margin:0;">Beart Store &middot; beartstore.com.br</p>
+    </div>
+  `;
+
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to,
+    subject: `Pedido #${shortId} enviado — Beart Store`,
     html,
   });
 }

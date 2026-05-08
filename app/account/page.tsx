@@ -7,6 +7,13 @@ import { ProfileSettingsForm } from "@/components/account/profile-settings-form"
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { BeArtShell } from "@/components/ui/beart-shell";
 import { auth, isAuthConfigured } from "@/lib/auth";
+import {
+  getOrderTimeline,
+  getOrderReferenceDate,
+  getPaymentStatusMeta,
+  getPrimaryOrderStatusMeta,
+} from "@/lib/order-status";
+import { canManageOrders } from "@/lib/orders";
 import prisma from "@/lib/prisma";
 import { buildNoIndexMetadata } from "@/lib/seo";
 
@@ -33,41 +40,6 @@ function formatOrderDate(date: Date) {
   }).format(date);
 }
 
-function getOrderStatusMeta(status: string) {
-  switch (status) {
-    case "paid":
-      return {
-        badgeClassName: "border-emerald-400/20 bg-emerald-500/12 text-emerald-100",
-        description: "Pagamento confirmado e pedido registrado com sucesso.",
-        label: "Pago",
-      };
-    case "canceled":
-      return {
-        badgeClassName: "border-red-400/20 bg-red-500/12 text-red-100",
-        description: "Checkout encerrado antes da confirmação do pagamento.",
-        label: "Cancelado",
-      };
-    case "refunded":
-      return {
-        badgeClassName: "border-amber-400/20 bg-amber-500/12 text-amber-100",
-        description: "Pagamento estornado para o método original.",
-        label: "Reembolsado",
-      };
-    case "checkout_open":
-      return {
-        badgeClassName: "border-sky-400/20 bg-sky-500/12 text-sky-100",
-        description: "Checkout criado e aguardando finalização.",
-        label: "Checkout aberto",
-      };
-    default:
-      return {
-        badgeClassName: "border-white/10 bg-white/[0.04] text-white/72",
-        description: "Pedido criado e aguardando atualização do fluxo.",
-        label: "Pendente",
-      };
-  }
-}
-
 function isShippingItem(sku: string | null) {
   return sku?.startsWith("shipping:") ?? false;
 }
@@ -91,6 +63,36 @@ function getOrderItemDisplayName(item: {
   }
 
   return `${product.name} · ${item.name}`;
+}
+
+function getShippingSummary(order: {
+  shippingAmount: number;
+  shippingCarrierName: string | null;
+  shippingDeliveryWindowLabel: string | null;
+  shippingServiceName: string | null;
+  trackingCode: string | null;
+  trackingUrl: string | null;
+}) {
+  const serviceParts = [order.shippingCarrierName, order.shippingServiceName].filter(Boolean);
+
+  return {
+    amount: order.shippingAmount,
+    label: serviceParts.join(" · ") || "Frete",
+    deliveryWindowLabel: order.shippingDeliveryWindowLabel,
+    trackingCode: order.trackingCode,
+    trackingUrl: order.trackingUrl,
+  };
+}
+
+function getTimelineTone(state: "done" | "current" | "pending") {
+  switch (state) {
+    case "done":
+      return "border-emerald-400/20 bg-emerald-500/10 text-emerald-50";
+    case "current":
+      return "border-sky-400/20 bg-sky-500/10 text-sky-50";
+    default:
+      return "border-white/10 bg-white/[0.03] text-white/62";
+  }
 }
 
 export default async function AccountPage({
@@ -124,13 +126,34 @@ export default async function AccountPage({
     redirect("/sign-in");
   }
 
-  const orders = await prisma.order.findMany({
-    where: {
-      OR: [
-        { userId: session.user.id },
-        { email: session.user.email },
-      ],
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: {
+      addressLine1: true,
+      addressLine2: true,
+      city: true,
+      country: true,
+      emailVerified: true,
+      neighborhood: true,
+      phone: true,
+      postalCode: true,
+      state: true,
     },
+  });
+
+  const orderAccessWhere = currentUser?.emailVerified
+    ? {
+        OR: [
+          { userId: session.user.id },
+          { userId: null, email: session.user.email },
+        ],
+      }
+    : {
+        userId: session.user.id,
+      };
+
+  const orders = await prisma.order.findMany({
+    where: orderAccessWhere,
     orderBy: {
       createdAt: "desc",
     },
@@ -155,24 +178,10 @@ export default async function AccountPage({
     },
   });
 
-  const currentUser = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: {
-      addressLine1: true,
-      addressLine2: true,
-      city: true,
-      country: true,
-      emailVerified: true,
-      neighborhood: true,
-      phone: true,
-      postalCode: true,
-      state: true,
-    },
-  });
-
-  const paidOrders = orders.filter((order) => order.status === "paid");
+  const canManageAdminOrders = canManageOrders(session.user.email);
+  const paidOrders = orders.filter((order) => order.paymentStatus === "paid");
   const totalPaidAmount = paidOrders.reduce((sum, order) => sum + order.totalAmount, 0);
-  const latestOrderTimestamp = orders[0]?.completedAt ?? orders[0]?.createdAt ?? null;
+  const latestOrderTimestamp = orders[0] ? getOrderReferenceDate(orders[0]) : null;
 
   return (
     <BeArtShell authReady footer navbar sessionActive contentClassName="relative px-6 pb-12 pt-28 sm:px-10 lg:px-16">
@@ -192,6 +201,14 @@ export default async function AccountPage({
           </div>
 
           <div className="flex flex-col gap-3 sm:items-end">
+            {canManageAdminOrders ? (
+              <Link
+                href="/admin/orders"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-medium text-white/82 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+              >
+                Operar pedidos
+              </Link>
+            ) : null}
             <Link
               href="/"
               className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
@@ -252,10 +269,15 @@ export default async function AccountPage({
               {orders.map((order) => (
                 <article key={order.id} className="rounded-[1.5rem] border border-white/10 bg-white/[0.04] px-5 py-5">
                   {(() => {
-                    const statusMeta = getOrderStatusMeta(order.status);
-                    const shippingAmount = Math.max(0, order.totalAmount - order.subtotalAmount);
+                    const paymentMeta = getPaymentStatusMeta(order.paymentStatus);
+                    const statusMeta = getPrimaryOrderStatusMeta({
+                      fulfillmentStatus: order.fulfillmentStatus,
+                      paymentStatus: order.paymentStatus,
+                    });
+                    const shippingSummary = getShippingSummary(order);
+                    const timeline = getOrderTimeline(order);
                     const productItems = order.items.filter((item) => !isShippingItem(item.sku));
-                    const referenceDate = order.completedAt ?? order.canceledAt ?? order.createdAt;
+                    const referenceDate = getOrderReferenceDate(order);
 
                     return (
                       <>
@@ -271,9 +293,16 @@ export default async function AccountPage({
                           </div>
 
                           <div className="flex flex-col gap-2 text-sm text-white/58 sm:items-end">
-                            <span className={`rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${statusMeta.badgeClassName}`}>
-                              {statusMeta.label}
-                            </span>
+                            <div className="flex flex-wrap gap-2 sm:justify-end">
+                              <span className={`rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${statusMeta.badgeClassName}`}>
+                                {statusMeta.label}
+                              </span>
+                              {order.paymentStatus === "paid" ? (
+                                <span className={`rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${paymentMeta.badgeClassName}`}>
+                                  {paymentMeta.label}
+                                </span>
+                              ) : null}
+                            </div>
                             <span>{formatOrderDate(referenceDate)}</span>
                           </div>
                         </div>
@@ -324,15 +353,70 @@ export default async function AccountPage({
                                 <dd>{formatPrice(order.subtotalAmount, order.currency)}</dd>
                               </div>
                               <div className="flex items-center justify-between gap-3">
-                                <dt>Frete</dt>
-                                <dd>{shippingAmount > 0 ? formatPrice(shippingAmount, order.currency) : "Incluído"}</dd>
+                                <dt>{shippingSummary.label}</dt>
+                                <dd>
+                                  {shippingSummary.amount > 0
+                                    ? formatPrice(shippingSummary.amount, order.currency)
+                                    : "Incluído"}
+                                </dd>
                               </div>
+                              {shippingSummary.deliveryWindowLabel ? (
+                                <div className="flex items-center justify-between gap-3">
+                                  <dt>Prazo estimado</dt>
+                                  <dd>{shippingSummary.deliveryWindowLabel}</dd>
+                                </div>
+                              ) : null}
+                              {shippingSummary.trackingCode ? (
+                                <div className="flex items-start justify-between gap-3">
+                                  <dt>Rastreio</dt>
+                                  <dd className="text-right">
+                                    <span className="block">{shippingSummary.trackingCode}</span>
+                                    {shippingSummary.trackingUrl ? (
+                                      <a
+                                        href={shippingSummary.trackingUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="mt-1 inline-flex text-xs font-semibold uppercase tracking-[0.18em] text-[#A5ADFF] hover:text-white"
+                                      >
+                                        Abrir rastreio
+                                      </a>
+                                    ) : null}
+                                  </dd>
+                                </div>
+                              ) : null}
                               <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-3 text-base font-semibold text-white">
                                 <dt>Total</dt>
                                 <dd>{formatPrice(order.totalAmount, order.currency)}</dd>
                               </div>
                             </dl>
+
+                            {order.paymentStatus === "paid" ? (
+                              <Link
+                                href={`/account/orders/${order.id}/receipt`}
+                                className="mt-4 inline-flex min-h-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/72 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+                              >
+                                Baixar comprovante
+                              </Link>
+                            ) : null}
                           </div>
+                        </div>
+
+                        <div className="mt-4 rounded-[1.2rem] border border-white/10 bg-black/10 px-4 py-4">
+                          <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Linha do tempo</p>
+                          <ol className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+                            {timeline.map((step) => (
+                              <li
+                                key={step.key}
+                                className={`rounded-[1rem] border px-3 py-3 ${getTimelineTone(step.state)}`}
+                              >
+                                <p className="text-[10px] uppercase tracking-[0.22em] text-current/70">{step.label}</p>
+                                <p className="mt-2 text-sm font-semibold text-current">
+                                  {step.date ? formatOrderDate(step.date) : "Aguardando"}
+                                </p>
+                                <p className="mt-2 text-xs leading-5 text-current/75">{step.description}</p>
+                              </li>
+                            ))}
+                          </ol>
                         </div>
                       </>
                     );
