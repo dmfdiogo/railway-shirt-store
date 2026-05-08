@@ -236,7 +236,7 @@ export default async function Home() {
             </p>
 
             <div className="hero-cta mt-8 flex flex-wrap items-center gap-4">
-            <a
+            <Link
               href="/shop"
               className="group inline-flex items-center gap-2.5 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-8 py-4 text-base font-semibold text-white shadow-[0_16px_42px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_54px_rgba(107,60,246,0.42)]"
             >
@@ -255,15 +255,15 @@ export default async function Home() {
                   d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
                 />
               </svg>
-            </a>
+            </Link>
 
             {!session && authReady && (
-              <a
+              <Link
                 href="/sign-up"
                 className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-8 py-4 text-base font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
               >
                 Criar conta
-              </a>
+              </Link>
             )}
             </div>
 
@@ -453,7 +453,7 @@ export default async function Home() {
                 Peças em destaque
               </h2>
             </div>
-            <a
+            <Link
               href="/shop"
               className="hidden shrink-0 items-center gap-1.5 text-sm font-medium text-white/35 transition hover:text-white sm:inline-flex"
             >
@@ -472,7 +472,7 @@ export default async function Home() {
                   d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
                 />
               </svg>
-            </a>
+            </Link>
           </header>
 
           {featured.length === 0 ? (
@@ -494,7 +494,7 @@ export default async function Home() {
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="list">
               {featured.map((product) => (
                 <li key={product.slug}>
-                  <a
+                  <Link
                     href={`/shop/${product.slug}`}
                     className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.07] bg-[#0F0F14] transition duration-300 hover:border-[#2563EB]/35 hover:shadow-[0_0_40px_rgba(37,99,235,0.09)]"
                   >
@@ -542,7 +542,7 @@ export default async function Home() {
                         {formatPrice(product.price, product.currency)}
                       </p>
                     </div>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -550,7 +550,7 @@ export default async function Home() {
 
           {/* Mobile link */}
           <div className="mt-10 flex justify-center sm:hidden">
-            <a
+            <Link
               href="/shop"
               className="inline-flex items-center gap-2 rounded-full border border-white/10 px-6 py-3 text-sm font-medium text-white/50 transition hover:border-white/20 hover:text-white"
             >
@@ -569,7 +569,7 @@ export default async function Home() {
                   d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
                 />
               </svg>
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -608,34 +608,34 @@ export default async function Home() {
           </p>
           <div className="relative mt-8 flex flex-wrap justify-center gap-3">
             {session ? (
-              <a
+              <Link
                 href="/account"
                 className="inline-flex items-center gap-2 rounded-full bg-[#2563EB] px-8 py-4 text-base font-semibold text-white shadow-[0_0_28px_rgba(37,99,235,0.35)] transition hover:-translate-y-0.5 hover:bg-[#1d4ed8] hover:shadow-[0_0_48px_rgba(37,99,235,0.5)]"
               >
                 Ir para minha conta
-              </a>
+              </Link>
             ) : authReady ? (
               <>
-                <a
+                <Link
                   href="/sign-up"
                   className="inline-flex items-center gap-2 rounded-full bg-[#2563EB] px-8 py-4 text-base font-semibold text-white shadow-[0_0_28px_rgba(37,99,235,0.35)] transition hover:-translate-y-0.5 hover:bg-[#1d4ed8] hover:shadow-[0_0_48px_rgba(37,99,235,0.5)]"
                 >
                   Criar conta grátis
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/shop"
                   className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-8 py-4 text-base font-semibold text-white/70 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
                 >
                   Ver coleção
-                </a>
+                </Link>
               </>
             ) : (
-              <a
+              <Link
                 href="/shop"
                 className="inline-flex items-center gap-2 rounded-full bg-[#2563EB] px-8 py-4 text-base font-semibold text-white shadow-[0_0_28px_rgba(37,99,235,0.35)] transition hover:-translate-y-0.5 hover:bg-[#1d4ed8] hover:shadow-[0_0_48px_rgba(37,99,235,0.5)]"
               >
                 Explorar coleção
-              </a>
+              </Link>
             )}
           </div>
         </div>

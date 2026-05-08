@@ -166,16 +166,36 @@ export function MysticBackground() {
   const [mode, setMode] = useState<Mode>("webgl");
 
   useEffect(() => {
+    let fallbackRaf: number | null = null;
+    const scheduleMode = (nextMode: Mode) => {
+      if (fallbackRaf !== null) {
+        cancelAnimationFrame(fallbackRaf);
+      }
+
+      fallbackRaf = requestAnimationFrame(() => {
+        fallbackRaf = null;
+        setMode(nextMode);
+      });
+    };
+
     /* ── 1. Honour accessibility preference ── */
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setMode("static");
-      return;
+      scheduleMode("static");
+      return () => {
+        if (fallbackRaf !== null) {
+          cancelAnimationFrame(fallbackRaf);
+        }
+      };
     }
 
     /* ── 2. Skip WebGL on touch/mobile to preserve battery ── */
     if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
-      setMode("css");
-      return;
+      scheduleMode("css");
+      return () => {
+        if (fallbackRaf !== null) {
+          cancelAnimationFrame(fallbackRaf);
+        }
+      };
     }
 
     const canvas = canvasRef.current;
@@ -190,14 +210,35 @@ export function MysticBackground() {
       powerPreference: "low-power",
     }) as WebGLRenderingContext | null;
 
-    if (!gl) { setMode("css"); return; }
+    if (!gl) {
+      scheduleMode("css");
+      return () => {
+        if (fallbackRaf !== null) {
+          cancelAnimationFrame(fallbackRaf);
+        }
+      };
+    }
 
     const prog = createProgram(gl);
-    if (!prog) { setMode("css"); return; }
+    if (!prog) {
+      scheduleMode("css");
+      return () => {
+        if (fallbackRaf !== null) {
+          cancelAnimationFrame(fallbackRaf);
+        }
+      };
+    }
 
     /* ── 4. Full-screen quad (triangle strip, 4 vertices) ── */
     const buf = gl.createBuffer();
-    if (!buf) { setMode("css"); return; }
+    if (!buf) {
+      scheduleMode("css");
+      return () => {
+        if (fallbackRaf !== null) {
+          cancelAnimationFrame(fallbackRaf);
+        }
+      };
+    }
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(
       gl.ARRAY_BUFFER,
@@ -243,6 +284,9 @@ export function MysticBackground() {
 
     /* ── 7. Cleanup ── */
     return () => {
+      if (fallbackRaf !== null) {
+        cancelAnimationFrame(fallbackRaf);
+      }
       cancelAnimationFrame(raf);
       ro.disconnect();
       gl.deleteBuffer(buf);
