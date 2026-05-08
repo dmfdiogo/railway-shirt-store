@@ -31,6 +31,7 @@ MELHOR_ENVIO_REDIRECT_URI=http://localhost:3000/api/integrations/melhor-envio/ca
 MELHOR_ENVIO_ACCESS_TOKEN=me_access_token
 MELHOR_ENVIO_FROM_POSTAL_CODE=96020360
 MELHOR_ENVIO_SERVICE_IDS=1,2
+ORDER_OPERATOR_EMAILS=owner@beartstore.com.br
 MELHOR_ENVIO_OPERATOR_EMAILS=owner@beartstore.com.br
 MELHOR_ENVIO_USER_AGENT=Be Art (contato@beartstore.com.br)
 MELHOR_ENVIO_DEFAULT_WIDTH_CM=18
@@ -77,16 +78,20 @@ http://localhost:3000/api/auth/callback/google
 
 For Melhor Envio, configure the sandbox app credentials, an origin CEP, and then authorize the app through `/operacoes/frete`. The callback must match `MELHOR_ENVIO_REDIRECT_URI` exactly. The current integration stores the OAuth token server-side and quotes freights through `/api/shipping/quote`, falling back to the fixed regional table when Melhor Envio is unavailable or not configured. Set `MELHOR_ENVIO_OPERATOR_EMAILS` with a comma-separated allowlist to keep this operations page out of regular customer accounts.
 
+For order operations, use `ORDER_OPERATOR_EMAILS` as a separate comma-separated allowlist for `/admin/orders`. Do not rely on `MELHOR_ENVIO_OPERATOR_EMAILS` for this anymore. If `ORDER_OPERATOR_EMAILS` is empty in local development, the order admin stays open to authenticated sessions outside production so you can test the flow quickly; set it in `.env.local` when you want local access to match production behavior.
+
 ## Railway Deploy Flow
 
 The Railway project is already created and linked for this repository.
 
 1. Provision a Railway Postgres service if the project does not already have one.
 2. Wire `DATABASE_URL` in the `web` service to the Postgres service reference.
-3. Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `APP_URL`, `MELHOR_ENVIO_ENVIRONMENT`, `MELHOR_ENVIO_CLIENT_ID`, `MELHOR_ENVIO_CLIENT_SECRET`, `MELHOR_ENVIO_REDIRECT_URI`, `MELHOR_ENVIO_FROM_POSTAL_CODE`, `MELHOR_ENVIO_SERVICE_IDS`, `MELHOR_ENVIO_OPERATOR_EMAILS`, `MELHOR_ENVIO_USER_AGENT`, `MELHOR_ENVIO_DEFAULT_WIDTH_CM`, `MELHOR_ENVIO_DEFAULT_HEIGHT_CM`, `MELHOR_ENVIO_DEFAULT_LENGTH_CM`, and `MELHOR_ENVIO_DEFAULT_WEIGHT_KG` in the `web` service variables.
+3. Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `APP_URL`, `ORDER_OPERATOR_EMAILS`, `MELHOR_ENVIO_ENVIRONMENT`, `MELHOR_ENVIO_CLIENT_ID`, `MELHOR_ENVIO_CLIENT_SECRET`, `MELHOR_ENVIO_REDIRECT_URI`, `MELHOR_ENVIO_FROM_POSTAL_CODE`, `MELHOR_ENVIO_SERVICE_IDS`, `MELHOR_ENVIO_OPERATOR_EMAILS`, `MELHOR_ENVIO_USER_AGENT`, `MELHOR_ENVIO_DEFAULT_WIDTH_CM`, `MELHOR_ENVIO_DEFAULT_HEIGHT_CM`, `MELHOR_ENVIO_DEFAULT_LENGTH_CM`, and `MELHOR_ENVIO_DEFAULT_WEIGHT_KG` in the `web` service variables.
 4. Deploy from the workspace with `railway up`.
 5. Run `npm run db:migrate:deploy` in the deployed environment so the schema lands in Postgres.
 6. Register the production webhook endpoint at `/api/stripe/webhook` in Stripe and store the matching signing secret in Railway.
+
+`ORDER_OPERATOR_EMAILS` and `MELHOR_ENVIO_OPERATOR_EMAILS` should usually be set independently in Railway, even if they temporarily contain the same email list. The first controls who can operate customer orders; the second controls who can manage the Melhor Envio integration.
 
 For production Google OAuth, register this redirect URI:
 

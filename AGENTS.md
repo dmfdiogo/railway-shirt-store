@@ -26,3 +26,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - This workspace is a Next.js App Router app on Next 16, React 19, and TypeScript.
 - Before changing framework behavior or APIs, read the relevant guide in `node_modules/next/dist/docs/`.
 - Prefer narrow, reversible changes and validate with the smallest relevant check after editing.
+
+## Planning Expectations
+
+- Default to professional, scalable-by-default designs that remain appropriate for a low-budget store growing toward medium scale.
+- During planning, proactively suggest stronger domain modeling, separation of concerns, and operational guardrails before implementation starts.
+- When a simpler low-budget rollout is the better choice, present it as a phased path that preserves a clean upgrade path instead of relying on throwaway shortcuts.
+- In ecommerce flows, prefer separating payment, fulfillment, and operational status concerns unless a task explicitly calls for a temporary simplification.
