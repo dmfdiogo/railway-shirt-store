@@ -9,6 +9,28 @@ import {
 
 export const runtime = "nodejs";
 
+const CHECKOUT_SESSION_TERMINAL_EVENTS = new Set([
+  "checkout.session.async_payment_failed",
+  "checkout.session.async_payment_succeeded",
+  "checkout.session.completed",
+  "checkout.session.expired",
+]);
+
+function isPaidCheckoutSession(session: Stripe.Checkout.Session, eventType: Stripe.Event.Type) {
+  return (
+    eventType === "checkout.session.async_payment_succeeded" ||
+    ((eventType === "checkout.session.completed") &&
+      (session.payment_status === "paid" || session.payment_status === "no_payment_required"))
+  );
+}
+
+function isCanceledCheckoutSessionEvent(eventType: Stripe.Event.Type) {
+  return (
+    eventType === "checkout.session.async_payment_failed" ||
+    eventType === "checkout.session.expired"
+  );
+}
+
 function getCheckoutOrderId(session: Stripe.Checkout.Session) {
   return session.metadata?.orderId ?? session.client_reference_id ?? null;
 }
@@ -17,6 +39,10 @@ async function persistWebhookEvent(
   event: Stripe.Event,
   session?: Stripe.Checkout.Session,
 ): Promise<{ confirmationEmail: { to: string; orderId: string } | null }> {
+  const eventAlreadyPersisted = await prisma.webhookEvent.findUnique({
+    where: { stripeEventId: event.id },
+    select: { id: true },
+  });
   const payload = JSON.parse(JSON.stringify(event.data.object));
   const stripeCustomerId =
     session?.customer && typeof session.customer === "string"
@@ -38,35 +64,57 @@ async function persistWebhookEvent(
     const order = requestedOrderId
       ? await tx.order.findUnique({
           where: { id: requestedOrderId },
-          select: { id: true, userId: true },
+          select: {
+            fulfillmentStatus: true,
+            id: true,
+            paymentStatus: true,
+            userId: true,
+          },
         })
       : null;
 
     if (session && order) {
-      if (event.type === "checkout.session.completed") {
+      if (isPaidCheckoutSession(session, event.type)) {
+        const shouldSendConfirmationEmail = !eventAlreadyPersisted && order.paymentStatus !== "paid";
+
         await tx.order.update({
           where: { id: order.id },
           data: {
-            completedAt: new Date(),
+            canceledAt: null,
+            completedAt: order.paymentStatus === "paid" ? undefined : new Date(),
             email: customerEmail ?? undefined,
-            status: "paid",
+            fulfillmentStatus:
+              order.fulfillmentStatus === "pending" || order.fulfillmentStatus === "canceled"
+                ? "processing"
+                : undefined,
+            paymentStatus: "paid",
+            processingAt:
+              order.fulfillmentStatus === "pending" || order.fulfillmentStatus === "canceled"
+                ? new Date()
+                : undefined,
             stripeCheckoutSessionId: session.id,
             stripeCustomerId: stripeCustomerId ?? undefined,
             stripePaymentIntentId: stripePaymentIntentId ?? undefined,
           },
         });
 
-        if (customerEmail) {
+        if (shouldSendConfirmationEmail && customerEmail) {
           confirmationEmail = { to: customerEmail, orderId: order.id };
         }
       }
 
-      if (event.type === "checkout.session.expired") {
+      if (
+        isCanceledCheckoutSessionEvent(event.type) &&
+        order.paymentStatus !== "paid" &&
+        order.paymentStatus !== "canceled" &&
+        order.paymentStatus !== "refunded"
+      ) {
         await tx.order.update({
           where: { id: order.id },
           data: {
             canceledAt: new Date(),
-            status: "canceled",
+            fulfillmentStatus: "canceled",
+            paymentStatus: "canceled",
             stripeCheckoutSessionId: session.id,
           },
         });
@@ -88,20 +136,25 @@ async function persistWebhookEvent(
       });
     }
 
-    await tx.webhookEvent.upsert({
-      where: { stripeEventId: event.id },
-      update: {
-        orderId: order?.id,
-        payload,
-        type: event.type,
-      },
-      create: {
-        orderId: order?.id,
-        payload,
-        stripeEventId: event.id,
-        type: event.type,
-      },
-    });
+    if (!eventAlreadyPersisted) {
+      await tx.webhookEvent.create({
+        data: {
+          orderId: order?.id,
+          payload,
+          stripeEventId: event.id,
+          type: event.type,
+        },
+      });
+    } else {
+      await tx.webhookEvent.update({
+        where: { stripeEventId: event.id },
+        data: {
+          orderId: order?.id,
+          payload,
+          type: event.type,
+        },
+      });
+    }
   });
 
   return { confirmationEmail };
@@ -124,10 +177,7 @@ export async function POST(request: Request) {
       getStripeWebhookSecret(),
     );
 
-    if (
-      event.type === "checkout.session.completed" ||
-      event.type === "checkout.session.expired"
-    ) {
+    if (CHECKOUT_SESSION_TERMINAL_EVENTS.has(event.type)) {
       const session = event.data.object as Stripe.Checkout.Session;
 
       const { confirmationEmail } = await persistWebhookEvent(event, session);
@@ -138,6 +188,7 @@ export async function POST(request: Request) {
         customerEmail: session.customer_details?.email ?? null,
         amountTotal: session.amount_total,
         currency: session.currency,
+        paymentStatus: session.payment_status,
       });
 
       if (confirmationEmail) {

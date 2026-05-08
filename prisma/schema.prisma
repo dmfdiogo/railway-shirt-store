@@ -7,12 +7,21 @@ datasource db {
   provider = "postgresql"
 }
 
-enum OrderStatus {
+enum PaymentStatus {
   pending
   checkout_open
   paid
   canceled
   refunded
+}
+
+enum FulfillmentStatus {
+  pending
+  processing
+  shipped
+  delivered
+  returned
+  canceled
 }
 
 model User {
@@ -128,15 +137,30 @@ model Order {
   id                     String         @id @default(cuid())
   userId                 String?
   email                  String?
-  status                 OrderStatus    @default(pending)
+  paymentStatus          PaymentStatus  @default(pending)
+  fulfillmentStatus      FulfillmentStatus @default(pending)
   currency               String
   subtotalAmount         Int
+  shippingAmount         Int            @default(0)
+  shippingCarrierName    String?
+  shippingDeliveryWindowLabel String?
+  shippingPostalCode     String?
+  shippingRegion         String?
+  shippingServiceCode    String?
+  shippingServiceName    String?
+  shippingSource         String?
+  trackingCode           String?
+  trackingUrl            String?
   totalAmount            Int
   stripeCheckoutSessionId String?       @unique
   stripePaymentIntentId  String?        @unique
   stripeCustomerId       String?
   completedAt            DateTime?
   canceledAt             DateTime?
+  processingAt           DateTime?
+  shippedAt              DateTime?
+  deliveredAt            DateTime?
+  shippingNotificationSentAt DateTime?
   createdAt              DateTime       @default(now())
   updatedAt              DateTime       @default(now()) @updatedAt
   items                  OrderItem[]

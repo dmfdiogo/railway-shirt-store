@@ -28,11 +28,13 @@ export type AggregateOrder = {
 
 export type OrderAvgAggregateOutputType = {
   subtotalAmount: number | null
+  shippingAmount: number | null
   totalAmount: number | null
 }
 
 export type OrderSumAggregateOutputType = {
   subtotalAmount: number | null
+  shippingAmount: number | null
   totalAmount: number | null
 }
 
@@ -40,15 +42,30 @@ export type OrderMinAggregateOutputType = {
   id: string | null
   userId: string | null
   email: string | null
-  status: $Enums.OrderStatus | null
+  paymentStatus: $Enums.PaymentStatus | null
+  fulfillmentStatus: $Enums.FulfillmentStatus | null
   currency: string | null
   subtotalAmount: number | null
+  shippingAmount: number | null
+  shippingCarrierName: string | null
+  shippingDeliveryWindowLabel: string | null
+  shippingPostalCode: string | null
+  shippingRegion: string | null
+  shippingServiceCode: string | null
+  shippingServiceName: string | null
+  shippingSource: string | null
+  trackingCode: string | null
+  trackingUrl: string | null
   totalAmount: number | null
   stripeCheckoutSessionId: string | null
   stripePaymentIntentId: string | null
   stripeCustomerId: string | null
   completedAt: Date | null
   canceledAt: Date | null
+  processingAt: Date | null
+  shippedAt: Date | null
+  deliveredAt: Date | null
+  shippingNotificationSentAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -57,15 +74,30 @@ export type OrderMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   email: string | null
-  status: $Enums.OrderStatus | null
+  paymentStatus: $Enums.PaymentStatus | null
+  fulfillmentStatus: $Enums.FulfillmentStatus | null
   currency: string | null
   subtotalAmount: number | null
+  shippingAmount: number | null
+  shippingCarrierName: string | null
+  shippingDeliveryWindowLabel: string | null
+  shippingPostalCode: string | null
+  shippingRegion: string | null
+  shippingServiceCode: string | null
+  shippingServiceName: string | null
+  shippingSource: string | null
+  trackingCode: string | null
+  trackingUrl: string | null
   totalAmount: number | null
   stripeCheckoutSessionId: string | null
   stripePaymentIntentId: string | null
   stripeCustomerId: string | null
   completedAt: Date | null
   canceledAt: Date | null
+  processingAt: Date | null
+  shippedAt: Date | null
+  deliveredAt: Date | null
+  shippingNotificationSentAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -74,15 +106,30 @@ export type OrderCountAggregateOutputType = {
   id: number
   userId: number
   email: number
-  status: number
+  paymentStatus: number
+  fulfillmentStatus: number
   currency: number
   subtotalAmount: number
+  shippingAmount: number
+  shippingCarrierName: number
+  shippingDeliveryWindowLabel: number
+  shippingPostalCode: number
+  shippingRegion: number
+  shippingServiceCode: number
+  shippingServiceName: number
+  shippingSource: number
+  trackingCode: number
+  trackingUrl: number
   totalAmount: number
   stripeCheckoutSessionId: number
   stripePaymentIntentId: number
   stripeCustomerId: number
   completedAt: number
   canceledAt: number
+  processingAt: number
+  shippedAt: number
+  deliveredAt: number
+  shippingNotificationSentAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -91,11 +138,13 @@ export type OrderCountAggregateOutputType = {
 
 export type OrderAvgAggregateInputType = {
   subtotalAmount?: true
+  shippingAmount?: true
   totalAmount?: true
 }
 
 export type OrderSumAggregateInputType = {
   subtotalAmount?: true
+  shippingAmount?: true
   totalAmount?: true
 }
 
@@ -103,15 +152,30 @@ export type OrderMinAggregateInputType = {
   id?: true
   userId?: true
   email?: true
-  status?: true
+  paymentStatus?: true
+  fulfillmentStatus?: true
   currency?: true
   subtotalAmount?: true
+  shippingAmount?: true
+  shippingCarrierName?: true
+  shippingDeliveryWindowLabel?: true
+  shippingPostalCode?: true
+  shippingRegion?: true
+  shippingServiceCode?: true
+  shippingServiceName?: true
+  shippingSource?: true
+  trackingCode?: true
+  trackingUrl?: true
   totalAmount?: true
   stripeCheckoutSessionId?: true
   stripePaymentIntentId?: true
   stripeCustomerId?: true
   completedAt?: true
   canceledAt?: true
+  processingAt?: true
+  shippedAt?: true
+  deliveredAt?: true
+  shippingNotificationSentAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -120,15 +184,30 @@ export type OrderMaxAggregateInputType = {
   id?: true
   userId?: true
   email?: true
-  status?: true
+  paymentStatus?: true
+  fulfillmentStatus?: true
   currency?: true
   subtotalAmount?: true
+  shippingAmount?: true
+  shippingCarrierName?: true
+  shippingDeliveryWindowLabel?: true
+  shippingPostalCode?: true
+  shippingRegion?: true
+  shippingServiceCode?: true
+  shippingServiceName?: true
+  shippingSource?: true
+  trackingCode?: true
+  trackingUrl?: true
   totalAmount?: true
   stripeCheckoutSessionId?: true
   stripePaymentIntentId?: true
   stripeCustomerId?: true
   completedAt?: true
   canceledAt?: true
+  processingAt?: true
+  shippedAt?: true
+  deliveredAt?: true
+  shippingNotificationSentAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -137,15 +216,30 @@ export type OrderCountAggregateInputType = {
   id?: true
   userId?: true
   email?: true
-  status?: true
+  paymentStatus?: true
+  fulfillmentStatus?: true
   currency?: true
   subtotalAmount?: true
+  shippingAmount?: true
+  shippingCarrierName?: true
+  shippingDeliveryWindowLabel?: true
+  shippingPostalCode?: true
+  shippingRegion?: true
+  shippingServiceCode?: true
+  shippingServiceName?: true
+  shippingSource?: true
+  trackingCode?: true
+  trackingUrl?: true
   totalAmount?: true
   stripeCheckoutSessionId?: true
   stripePaymentIntentId?: true
   stripeCustomerId?: true
   completedAt?: true
   canceledAt?: true
+  processingAt?: true
+  shippedAt?: true
+  deliveredAt?: true
+  shippingNotificationSentAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -241,15 +335,30 @@ export type OrderGroupByOutputType = {
   id: string
   userId: string | null
   email: string | null
-  status: $Enums.OrderStatus
+  paymentStatus: $Enums.PaymentStatus
+  fulfillmentStatus: $Enums.FulfillmentStatus
   currency: string
   subtotalAmount: number
+  shippingAmount: number
+  shippingCarrierName: string | null
+  shippingDeliveryWindowLabel: string | null
+  shippingPostalCode: string | null
+  shippingRegion: string | null
+  shippingServiceCode: string | null
+  shippingServiceName: string | null
+  shippingSource: string | null
+  trackingCode: string | null
+  trackingUrl: string | null
   totalAmount: number
   stripeCheckoutSessionId: string | null
   stripePaymentIntentId: string | null
   stripeCustomerId: string | null
   completedAt: Date | null
   canceledAt: Date | null
+  processingAt: Date | null
+  shippedAt: Date | null
+  deliveredAt: Date | null
+  shippingNotificationSentAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: OrderCountAggregateOutputType | null
@@ -281,15 +390,30 @@ export type OrderWhereInput = {
   id?: Prisma.StringFilter<"Order"> | string
   userId?: Prisma.StringNullableFilter<"Order"> | string | null
   email?: Prisma.StringNullableFilter<"Order"> | string | null
-  status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFilter<"Order"> | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFilter<"Order"> | $Enums.FulfillmentStatus
   currency?: Prisma.StringFilter<"Order"> | string
   subtotalAmount?: Prisma.IntFilter<"Order"> | number
+  shippingAmount?: Prisma.IntFilter<"Order"> | number
+  shippingCarrierName?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingDeliveryWindowLabel?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingPostalCode?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingRegion?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingServiceCode?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingServiceName?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingSource?: Prisma.StringNullableFilter<"Order"> | string | null
+  trackingCode?: Prisma.StringNullableFilter<"Order"> | string | null
+  trackingUrl?: Prisma.StringNullableFilter<"Order"> | string | null
   totalAmount?: Prisma.IntFilter<"Order"> | number
   stripeCheckoutSessionId?: Prisma.StringNullableFilter<"Order"> | string | null
   stripePaymentIntentId?: Prisma.StringNullableFilter<"Order"> | string | null
   stripeCustomerId?: Prisma.StringNullableFilter<"Order"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   canceledAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  processingAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  shippedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  deliveredAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  shippingNotificationSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   items?: Prisma.OrderItemListRelationFilter
@@ -301,15 +425,30 @@ export type OrderOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
-  status?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
+  fulfillmentStatus?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   subtotalAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
+  shippingCarrierName?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingDeliveryWindowLabel?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingPostalCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingRegion?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingServiceCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingServiceName?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  trackingCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  trackingUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   stripeCheckoutSessionId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripePaymentIntentId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   canceledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  processingAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingNotificationSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   items?: Prisma.OrderItemOrderByRelationAggregateInput
@@ -326,13 +465,28 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
   userId?: Prisma.StringNullableFilter<"Order"> | string | null
   email?: Prisma.StringNullableFilter<"Order"> | string | null
-  status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFilter<"Order"> | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFilter<"Order"> | $Enums.FulfillmentStatus
   currency?: Prisma.StringFilter<"Order"> | string
   subtotalAmount?: Prisma.IntFilter<"Order"> | number
+  shippingAmount?: Prisma.IntFilter<"Order"> | number
+  shippingCarrierName?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingDeliveryWindowLabel?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingPostalCode?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingRegion?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingServiceCode?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingServiceName?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingSource?: Prisma.StringNullableFilter<"Order"> | string | null
+  trackingCode?: Prisma.StringNullableFilter<"Order"> | string | null
+  trackingUrl?: Prisma.StringNullableFilter<"Order"> | string | null
   totalAmount?: Prisma.IntFilter<"Order"> | number
   stripeCustomerId?: Prisma.StringNullableFilter<"Order"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   canceledAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  processingAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  shippedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  deliveredAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  shippingNotificationSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   items?: Prisma.OrderItemListRelationFilter
@@ -344,15 +498,30 @@ export type OrderOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
-  status?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
+  fulfillmentStatus?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   subtotalAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
+  shippingCarrierName?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingDeliveryWindowLabel?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingPostalCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingRegion?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingServiceCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingServiceName?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  trackingCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  trackingUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   stripeCheckoutSessionId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripePaymentIntentId?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   canceledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  processingAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  shippingNotificationSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.OrderCountOrderByAggregateInput
@@ -369,15 +538,30 @@ export type OrderScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Order"> | string
   userId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
-  status?: Prisma.EnumOrderStatusWithAggregatesFilter<"Order"> | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusWithAggregatesFilter<"Order"> | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusWithAggregatesFilter<"Order"> | $Enums.FulfillmentStatus
   currency?: Prisma.StringWithAggregatesFilter<"Order"> | string
   subtotalAmount?: Prisma.IntWithAggregatesFilter<"Order"> | number
+  shippingAmount?: Prisma.IntWithAggregatesFilter<"Order"> | number
+  shippingCarrierName?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  shippingDeliveryWindowLabel?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  shippingPostalCode?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  shippingRegion?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  shippingServiceCode?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  shippingServiceName?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  shippingSource?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  trackingCode?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
+  trackingUrl?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   totalAmount?: Prisma.IntWithAggregatesFilter<"Order"> | number
   stripeCheckoutSessionId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   stripePaymentIntentId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   stripeCustomerId?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
   canceledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
+  processingAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
+  shippedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
+  deliveredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
+  shippingNotificationSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string
 }
@@ -385,15 +569,30 @@ export type OrderScalarWhereWithAggregatesInput = {
 export type OrderCreateInput = {
   id?: string
   email?: string | null
-  status?: $Enums.OrderStatus
+  paymentStatus?: $Enums.PaymentStatus
+  fulfillmentStatus?: $Enums.FulfillmentStatus
   currency: string
   subtotalAmount: number
+  shippingAmount?: number
+  shippingCarrierName?: string | null
+  shippingDeliveryWindowLabel?: string | null
+  shippingPostalCode?: string | null
+  shippingRegion?: string | null
+  shippingServiceCode?: string | null
+  shippingServiceName?: string | null
+  shippingSource?: string | null
+  trackingCode?: string | null
+  trackingUrl?: string | null
   totalAmount: number
   stripeCheckoutSessionId?: string | null
   stripePaymentIntentId?: string | null
   stripeCustomerId?: string | null
   completedAt?: Date | string | null
   canceledAt?: Date | string | null
+  processingAt?: Date | string | null
+  shippedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  shippingNotificationSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
@@ -405,15 +604,30 @@ export type OrderUncheckedCreateInput = {
   id?: string
   userId?: string | null
   email?: string | null
-  status?: $Enums.OrderStatus
+  paymentStatus?: $Enums.PaymentStatus
+  fulfillmentStatus?: $Enums.FulfillmentStatus
   currency: string
   subtotalAmount: number
+  shippingAmount?: number
+  shippingCarrierName?: string | null
+  shippingDeliveryWindowLabel?: string | null
+  shippingPostalCode?: string | null
+  shippingRegion?: string | null
+  shippingServiceCode?: string | null
+  shippingServiceName?: string | null
+  shippingSource?: string | null
+  trackingCode?: string | null
+  trackingUrl?: string | null
   totalAmount: number
   stripeCheckoutSessionId?: string | null
   stripePaymentIntentId?: string | null
   stripeCustomerId?: string | null
   completedAt?: Date | string | null
   canceledAt?: Date | string | null
+  processingAt?: Date | string | null
+  shippedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  shippingNotificationSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
@@ -423,15 +637,30 @@ export type OrderUncheckedCreateInput = {
 export type OrderUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   subtotalAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingCarrierName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingDeliveryWindowLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingRegion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.IntFieldUpdateOperationsInput | number
   stripeCheckoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePaymentIntentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   canceledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippingNotificationSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
@@ -443,15 +672,30 @@ export type OrderUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   subtotalAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingCarrierName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingDeliveryWindowLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingRegion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.IntFieldUpdateOperationsInput | number
   stripeCheckoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePaymentIntentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   canceledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippingNotificationSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
@@ -462,15 +706,30 @@ export type OrderCreateManyInput = {
   id?: string
   userId?: string | null
   email?: string | null
-  status?: $Enums.OrderStatus
+  paymentStatus?: $Enums.PaymentStatus
+  fulfillmentStatus?: $Enums.FulfillmentStatus
   currency: string
   subtotalAmount: number
+  shippingAmount?: number
+  shippingCarrierName?: string | null
+  shippingDeliveryWindowLabel?: string | null
+  shippingPostalCode?: string | null
+  shippingRegion?: string | null
+  shippingServiceCode?: string | null
+  shippingServiceName?: string | null
+  shippingSource?: string | null
+  trackingCode?: string | null
+  trackingUrl?: string | null
   totalAmount: number
   stripeCheckoutSessionId?: string | null
   stripePaymentIntentId?: string | null
   stripeCustomerId?: string | null
   completedAt?: Date | string | null
   canceledAt?: Date | string | null
+  processingAt?: Date | string | null
+  shippedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  shippingNotificationSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -478,15 +737,30 @@ export type OrderCreateManyInput = {
 export type OrderUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   subtotalAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingCarrierName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingDeliveryWindowLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingRegion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.IntFieldUpdateOperationsInput | number
   stripeCheckoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePaymentIntentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   canceledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippingNotificationSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -495,15 +769,30 @@ export type OrderUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   subtotalAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingCarrierName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingDeliveryWindowLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingRegion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.IntFieldUpdateOperationsInput | number
   stripeCheckoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePaymentIntentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   canceledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippingNotificationSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -522,21 +811,37 @@ export type OrderCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  status?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
+  fulfillmentStatus?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   subtotalAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
+  shippingCarrierName?: Prisma.SortOrder
+  shippingDeliveryWindowLabel?: Prisma.SortOrder
+  shippingPostalCode?: Prisma.SortOrder
+  shippingRegion?: Prisma.SortOrder
+  shippingServiceCode?: Prisma.SortOrder
+  shippingServiceName?: Prisma.SortOrder
+  shippingSource?: Prisma.SortOrder
+  trackingCode?: Prisma.SortOrder
+  trackingUrl?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   stripeCheckoutSessionId?: Prisma.SortOrder
   stripePaymentIntentId?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   canceledAt?: Prisma.SortOrder
+  processingAt?: Prisma.SortOrder
+  shippedAt?: Prisma.SortOrder
+  deliveredAt?: Prisma.SortOrder
+  shippingNotificationSentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type OrderAvgOrderByAggregateInput = {
   subtotalAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
 }
 
@@ -544,15 +849,30 @@ export type OrderMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  status?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
+  fulfillmentStatus?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   subtotalAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
+  shippingCarrierName?: Prisma.SortOrder
+  shippingDeliveryWindowLabel?: Prisma.SortOrder
+  shippingPostalCode?: Prisma.SortOrder
+  shippingRegion?: Prisma.SortOrder
+  shippingServiceCode?: Prisma.SortOrder
+  shippingServiceName?: Prisma.SortOrder
+  shippingSource?: Prisma.SortOrder
+  trackingCode?: Prisma.SortOrder
+  trackingUrl?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   stripeCheckoutSessionId?: Prisma.SortOrder
   stripePaymentIntentId?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   canceledAt?: Prisma.SortOrder
+  processingAt?: Prisma.SortOrder
+  shippedAt?: Prisma.SortOrder
+  deliveredAt?: Prisma.SortOrder
+  shippingNotificationSentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -561,21 +881,37 @@ export type OrderMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  status?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
+  fulfillmentStatus?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   subtotalAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
+  shippingCarrierName?: Prisma.SortOrder
+  shippingDeliveryWindowLabel?: Prisma.SortOrder
+  shippingPostalCode?: Prisma.SortOrder
+  shippingRegion?: Prisma.SortOrder
+  shippingServiceCode?: Prisma.SortOrder
+  shippingServiceName?: Prisma.SortOrder
+  shippingSource?: Prisma.SortOrder
+  trackingCode?: Prisma.SortOrder
+  trackingUrl?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
   stripeCheckoutSessionId?: Prisma.SortOrder
   stripePaymentIntentId?: Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   canceledAt?: Prisma.SortOrder
+  processingAt?: Prisma.SortOrder
+  shippedAt?: Prisma.SortOrder
+  deliveredAt?: Prisma.SortOrder
+  shippingNotificationSentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type OrderSumOrderByAggregateInput = {
   subtotalAmount?: Prisma.SortOrder
+  shippingAmount?: Prisma.SortOrder
   totalAmount?: Prisma.SortOrder
 }
 
@@ -631,8 +967,12 @@ export type OrderUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
 }
 
-export type EnumOrderStatusFieldUpdateOperationsInput = {
-  set?: $Enums.OrderStatus
+export type EnumPaymentStatusFieldUpdateOperationsInput = {
+  set?: $Enums.PaymentStatus
+}
+
+export type EnumFulfillmentStatusFieldUpdateOperationsInput = {
+  set?: $Enums.FulfillmentStatus
 }
 
 export type OrderCreateNestedOneWithoutItemsInput = {
@@ -668,15 +1008,30 @@ export type OrderUpdateOneWithoutStripeEventsNestedInput = {
 export type OrderCreateWithoutUserInput = {
   id?: string
   email?: string | null
-  status?: $Enums.OrderStatus
+  paymentStatus?: $Enums.PaymentStatus
+  fulfillmentStatus?: $Enums.FulfillmentStatus
   currency: string
   subtotalAmount: number
+  shippingAmount?: number
+  shippingCarrierName?: string | null
+  shippingDeliveryWindowLabel?: string | null
+  shippingPostalCode?: string | null
+  shippingRegion?: string | null
+  shippingServiceCode?: string | null
+  shippingServiceName?: string | null
+  shippingSource?: string | null
+  trackingCode?: string | null
+  trackingUrl?: string | null
   totalAmount: number
   stripeCheckoutSessionId?: string | null
   stripePaymentIntentId?: string | null
   stripeCustomerId?: string | null
   completedAt?: Date | string | null
   canceledAt?: Date | string | null
+  processingAt?: Date | string | null
+  shippedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  shippingNotificationSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
@@ -686,15 +1041,30 @@ export type OrderCreateWithoutUserInput = {
 export type OrderUncheckedCreateWithoutUserInput = {
   id?: string
   email?: string | null
-  status?: $Enums.OrderStatus
+  paymentStatus?: $Enums.PaymentStatus
+  fulfillmentStatus?: $Enums.FulfillmentStatus
   currency: string
   subtotalAmount: number
+  shippingAmount?: number
+  shippingCarrierName?: string | null
+  shippingDeliveryWindowLabel?: string | null
+  shippingPostalCode?: string | null
+  shippingRegion?: string | null
+  shippingServiceCode?: string | null
+  shippingServiceName?: string | null
+  shippingSource?: string | null
+  trackingCode?: string | null
+  trackingUrl?: string | null
   totalAmount: number
   stripeCheckoutSessionId?: string | null
   stripePaymentIntentId?: string | null
   stripeCustomerId?: string | null
   completedAt?: Date | string | null
   canceledAt?: Date | string | null
+  processingAt?: Date | string | null
+  shippedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  shippingNotificationSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
@@ -734,15 +1104,30 @@ export type OrderScalarWhereInput = {
   id?: Prisma.StringFilter<"Order"> | string
   userId?: Prisma.StringNullableFilter<"Order"> | string | null
   email?: Prisma.StringNullableFilter<"Order"> | string | null
-  status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFilter<"Order"> | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFilter<"Order"> | $Enums.FulfillmentStatus
   currency?: Prisma.StringFilter<"Order"> | string
   subtotalAmount?: Prisma.IntFilter<"Order"> | number
+  shippingAmount?: Prisma.IntFilter<"Order"> | number
+  shippingCarrierName?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingDeliveryWindowLabel?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingPostalCode?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingRegion?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingServiceCode?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingServiceName?: Prisma.StringNullableFilter<"Order"> | string | null
+  shippingSource?: Prisma.StringNullableFilter<"Order"> | string | null
+  trackingCode?: Prisma.StringNullableFilter<"Order"> | string | null
+  trackingUrl?: Prisma.StringNullableFilter<"Order"> | string | null
   totalAmount?: Prisma.IntFilter<"Order"> | number
   stripeCheckoutSessionId?: Prisma.StringNullableFilter<"Order"> | string | null
   stripePaymentIntentId?: Prisma.StringNullableFilter<"Order"> | string | null
   stripeCustomerId?: Prisma.StringNullableFilter<"Order"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   canceledAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  processingAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  shippedAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  deliveredAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
+  shippingNotificationSentAt?: Prisma.DateTimeNullableFilter<"Order"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
 }
@@ -750,15 +1135,30 @@ export type OrderScalarWhereInput = {
 export type OrderCreateWithoutItemsInput = {
   id?: string
   email?: string | null
-  status?: $Enums.OrderStatus
+  paymentStatus?: $Enums.PaymentStatus
+  fulfillmentStatus?: $Enums.FulfillmentStatus
   currency: string
   subtotalAmount: number
+  shippingAmount?: number
+  shippingCarrierName?: string | null
+  shippingDeliveryWindowLabel?: string | null
+  shippingPostalCode?: string | null
+  shippingRegion?: string | null
+  shippingServiceCode?: string | null
+  shippingServiceName?: string | null
+  shippingSource?: string | null
+  trackingCode?: string | null
+  trackingUrl?: string | null
   totalAmount: number
   stripeCheckoutSessionId?: string | null
   stripePaymentIntentId?: string | null
   stripeCustomerId?: string | null
   completedAt?: Date | string | null
   canceledAt?: Date | string | null
+  processingAt?: Date | string | null
+  shippedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  shippingNotificationSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   stripeEvents?: Prisma.WebhookEventCreateNestedManyWithoutOrderInput
@@ -769,15 +1169,30 @@ export type OrderUncheckedCreateWithoutItemsInput = {
   id?: string
   userId?: string | null
   email?: string | null
-  status?: $Enums.OrderStatus
+  paymentStatus?: $Enums.PaymentStatus
+  fulfillmentStatus?: $Enums.FulfillmentStatus
   currency: string
   subtotalAmount: number
+  shippingAmount?: number
+  shippingCarrierName?: string | null
+  shippingDeliveryWindowLabel?: string | null
+  shippingPostalCode?: string | null
+  shippingRegion?: string | null
+  shippingServiceCode?: string | null
+  shippingServiceName?: string | null
+  shippingSource?: string | null
+  trackingCode?: string | null
+  trackingUrl?: string | null
   totalAmount: number
   stripeCheckoutSessionId?: string | null
   stripePaymentIntentId?: string | null
   stripeCustomerId?: string | null
   completedAt?: Date | string | null
   canceledAt?: Date | string | null
+  processingAt?: Date | string | null
+  shippedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  shippingNotificationSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   stripeEvents?: Prisma.WebhookEventUncheckedCreateNestedManyWithoutOrderInput
@@ -802,15 +1217,30 @@ export type OrderUpdateToOneWithWhereWithoutItemsInput = {
 export type OrderUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   subtotalAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingCarrierName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingDeliveryWindowLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingRegion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.IntFieldUpdateOperationsInput | number
   stripeCheckoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePaymentIntentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   canceledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippingNotificationSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeEvents?: Prisma.WebhookEventUpdateManyWithoutOrderNestedInput
@@ -821,15 +1251,30 @@ export type OrderUncheckedUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   subtotalAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingCarrierName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingDeliveryWindowLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingRegion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.IntFieldUpdateOperationsInput | number
   stripeCheckoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePaymentIntentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   canceledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippingNotificationSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stripeEvents?: Prisma.WebhookEventUncheckedUpdateManyWithoutOrderNestedInput
@@ -838,15 +1283,30 @@ export type OrderUncheckedUpdateWithoutItemsInput = {
 export type OrderCreateWithoutStripeEventsInput = {
   id?: string
   email?: string | null
-  status?: $Enums.OrderStatus
+  paymentStatus?: $Enums.PaymentStatus
+  fulfillmentStatus?: $Enums.FulfillmentStatus
   currency: string
   subtotalAmount: number
+  shippingAmount?: number
+  shippingCarrierName?: string | null
+  shippingDeliveryWindowLabel?: string | null
+  shippingPostalCode?: string | null
+  shippingRegion?: string | null
+  shippingServiceCode?: string | null
+  shippingServiceName?: string | null
+  shippingSource?: string | null
+  trackingCode?: string | null
+  trackingUrl?: string | null
   totalAmount: number
   stripeCheckoutSessionId?: string | null
   stripePaymentIntentId?: string | null
   stripeCustomerId?: string | null
   completedAt?: Date | string | null
   canceledAt?: Date | string | null
+  processingAt?: Date | string | null
+  shippedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  shippingNotificationSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
@@ -857,15 +1317,30 @@ export type OrderUncheckedCreateWithoutStripeEventsInput = {
   id?: string
   userId?: string | null
   email?: string | null
-  status?: $Enums.OrderStatus
+  paymentStatus?: $Enums.PaymentStatus
+  fulfillmentStatus?: $Enums.FulfillmentStatus
   currency: string
   subtotalAmount: number
+  shippingAmount?: number
+  shippingCarrierName?: string | null
+  shippingDeliveryWindowLabel?: string | null
+  shippingPostalCode?: string | null
+  shippingRegion?: string | null
+  shippingServiceCode?: string | null
+  shippingServiceName?: string | null
+  shippingSource?: string | null
+  trackingCode?: string | null
+  trackingUrl?: string | null
   totalAmount: number
   stripeCheckoutSessionId?: string | null
   stripePaymentIntentId?: string | null
   stripeCustomerId?: string | null
   completedAt?: Date | string | null
   canceledAt?: Date | string | null
+  processingAt?: Date | string | null
+  shippedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  shippingNotificationSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
@@ -890,15 +1365,30 @@ export type OrderUpdateToOneWithWhereWithoutStripeEventsInput = {
 export type OrderUpdateWithoutStripeEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   subtotalAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingCarrierName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingDeliveryWindowLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingRegion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.IntFieldUpdateOperationsInput | number
   stripeCheckoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePaymentIntentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   canceledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippingNotificationSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
@@ -909,15 +1399,30 @@ export type OrderUncheckedUpdateWithoutStripeEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   subtotalAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingCarrierName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingDeliveryWindowLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingRegion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.IntFieldUpdateOperationsInput | number
   stripeCheckoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePaymentIntentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   canceledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippingNotificationSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
@@ -926,15 +1431,30 @@ export type OrderUncheckedUpdateWithoutStripeEventsInput = {
 export type OrderCreateManyUserInput = {
   id?: string
   email?: string | null
-  status?: $Enums.OrderStatus
+  paymentStatus?: $Enums.PaymentStatus
+  fulfillmentStatus?: $Enums.FulfillmentStatus
   currency: string
   subtotalAmount: number
+  shippingAmount?: number
+  shippingCarrierName?: string | null
+  shippingDeliveryWindowLabel?: string | null
+  shippingPostalCode?: string | null
+  shippingRegion?: string | null
+  shippingServiceCode?: string | null
+  shippingServiceName?: string | null
+  shippingSource?: string | null
+  trackingCode?: string | null
+  trackingUrl?: string | null
   totalAmount: number
   stripeCheckoutSessionId?: string | null
   stripePaymentIntentId?: string | null
   stripeCustomerId?: string | null
   completedAt?: Date | string | null
   canceledAt?: Date | string | null
+  processingAt?: Date | string | null
+  shippedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  shippingNotificationSentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -942,15 +1462,30 @@ export type OrderCreateManyUserInput = {
 export type OrderUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   subtotalAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingCarrierName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingDeliveryWindowLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingRegion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.IntFieldUpdateOperationsInput | number
   stripeCheckoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePaymentIntentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   canceledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippingNotificationSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
@@ -960,15 +1495,30 @@ export type OrderUpdateWithoutUserInput = {
 export type OrderUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   subtotalAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingCarrierName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingDeliveryWindowLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingRegion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.IntFieldUpdateOperationsInput | number
   stripeCheckoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePaymentIntentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   canceledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippingNotificationSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
@@ -978,15 +1528,30 @@ export type OrderUncheckedUpdateWithoutUserInput = {
 export type OrderUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  fulfillmentStatus?: Prisma.EnumFulfillmentStatusFieldUpdateOperationsInput | $Enums.FulfillmentStatus
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   subtotalAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingAmount?: Prisma.IntFieldUpdateOperationsInput | number
+  shippingCarrierName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingDeliveryWindowLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingPostalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingRegion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingServiceName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shippingSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalAmount?: Prisma.IntFieldUpdateOperationsInput | number
   stripeCheckoutSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripePaymentIntentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   canceledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  shippingNotificationSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1035,15 +1600,30 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   id?: boolean
   userId?: boolean
   email?: boolean
-  status?: boolean
+  paymentStatus?: boolean
+  fulfillmentStatus?: boolean
   currency?: boolean
   subtotalAmount?: boolean
+  shippingAmount?: boolean
+  shippingCarrierName?: boolean
+  shippingDeliveryWindowLabel?: boolean
+  shippingPostalCode?: boolean
+  shippingRegion?: boolean
+  shippingServiceCode?: boolean
+  shippingServiceName?: boolean
+  shippingSource?: boolean
+  trackingCode?: boolean
+  trackingUrl?: boolean
   totalAmount?: boolean
   stripeCheckoutSessionId?: boolean
   stripePaymentIntentId?: boolean
   stripeCustomerId?: boolean
   completedAt?: boolean
   canceledAt?: boolean
+  processingAt?: boolean
+  shippedAt?: boolean
+  deliveredAt?: boolean
+  shippingNotificationSentAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   items?: boolean | Prisma.Order$itemsArgs<ExtArgs>
@@ -1056,15 +1636,30 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   userId?: boolean
   email?: boolean
-  status?: boolean
+  paymentStatus?: boolean
+  fulfillmentStatus?: boolean
   currency?: boolean
   subtotalAmount?: boolean
+  shippingAmount?: boolean
+  shippingCarrierName?: boolean
+  shippingDeliveryWindowLabel?: boolean
+  shippingPostalCode?: boolean
+  shippingRegion?: boolean
+  shippingServiceCode?: boolean
+  shippingServiceName?: boolean
+  shippingSource?: boolean
+  trackingCode?: boolean
+  trackingUrl?: boolean
   totalAmount?: boolean
   stripeCheckoutSessionId?: boolean
   stripePaymentIntentId?: boolean
   stripeCustomerId?: boolean
   completedAt?: boolean
   canceledAt?: boolean
+  processingAt?: boolean
+  shippedAt?: boolean
+  deliveredAt?: boolean
+  shippingNotificationSentAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.Order$userArgs<ExtArgs>
@@ -1074,15 +1669,30 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   userId?: boolean
   email?: boolean
-  status?: boolean
+  paymentStatus?: boolean
+  fulfillmentStatus?: boolean
   currency?: boolean
   subtotalAmount?: boolean
+  shippingAmount?: boolean
+  shippingCarrierName?: boolean
+  shippingDeliveryWindowLabel?: boolean
+  shippingPostalCode?: boolean
+  shippingRegion?: boolean
+  shippingServiceCode?: boolean
+  shippingServiceName?: boolean
+  shippingSource?: boolean
+  trackingCode?: boolean
+  trackingUrl?: boolean
   totalAmount?: boolean
   stripeCheckoutSessionId?: boolean
   stripePaymentIntentId?: boolean
   stripeCustomerId?: boolean
   completedAt?: boolean
   canceledAt?: boolean
+  processingAt?: boolean
+  shippedAt?: boolean
+  deliveredAt?: boolean
+  shippingNotificationSentAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.Order$userArgs<ExtArgs>
@@ -1092,20 +1702,35 @@ export type OrderSelectScalar = {
   id?: boolean
   userId?: boolean
   email?: boolean
-  status?: boolean
+  paymentStatus?: boolean
+  fulfillmentStatus?: boolean
   currency?: boolean
   subtotalAmount?: boolean
+  shippingAmount?: boolean
+  shippingCarrierName?: boolean
+  shippingDeliveryWindowLabel?: boolean
+  shippingPostalCode?: boolean
+  shippingRegion?: boolean
+  shippingServiceCode?: boolean
+  shippingServiceName?: boolean
+  shippingSource?: boolean
+  trackingCode?: boolean
+  trackingUrl?: boolean
   totalAmount?: boolean
   stripeCheckoutSessionId?: boolean
   stripePaymentIntentId?: boolean
   stripeCustomerId?: boolean
   completedAt?: boolean
   canceledAt?: boolean
+  processingAt?: boolean
+  shippedAt?: boolean
+  deliveredAt?: boolean
+  shippingNotificationSentAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "email" | "status" | "currency" | "subtotalAmount" | "totalAmount" | "stripeCheckoutSessionId" | "stripePaymentIntentId" | "stripeCustomerId" | "completedAt" | "canceledAt" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "email" | "paymentStatus" | "fulfillmentStatus" | "currency" | "subtotalAmount" | "shippingAmount" | "shippingCarrierName" | "shippingDeliveryWindowLabel" | "shippingPostalCode" | "shippingRegion" | "shippingServiceCode" | "shippingServiceName" | "shippingSource" | "trackingCode" | "trackingUrl" | "totalAmount" | "stripeCheckoutSessionId" | "stripePaymentIntentId" | "stripeCustomerId" | "completedAt" | "canceledAt" | "processingAt" | "shippedAt" | "deliveredAt" | "shippingNotificationSentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | Prisma.Order$itemsArgs<ExtArgs>
   stripeEvents?: boolean | Prisma.Order$stripeEventsArgs<ExtArgs>
@@ -1130,15 +1755,30 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     id: string
     userId: string | null
     email: string | null
-    status: $Enums.OrderStatus
+    paymentStatus: $Enums.PaymentStatus
+    fulfillmentStatus: $Enums.FulfillmentStatus
     currency: string
     subtotalAmount: number
+    shippingAmount: number
+    shippingCarrierName: string | null
+    shippingDeliveryWindowLabel: string | null
+    shippingPostalCode: string | null
+    shippingRegion: string | null
+    shippingServiceCode: string | null
+    shippingServiceName: string | null
+    shippingSource: string | null
+    trackingCode: string | null
+    trackingUrl: string | null
     totalAmount: number
     stripeCheckoutSessionId: string | null
     stripePaymentIntentId: string | null
     stripeCustomerId: string | null
     completedAt: Date | null
     canceledAt: Date | null
+    processingAt: Date | null
+    shippedAt: Date | null
+    deliveredAt: Date | null
+    shippingNotificationSentAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["order"]>
@@ -1570,15 +2210,30 @@ export interface OrderFieldRefs {
   readonly id: Prisma.FieldRef<"Order", 'String'>
   readonly userId: Prisma.FieldRef<"Order", 'String'>
   readonly email: Prisma.FieldRef<"Order", 'String'>
-  readonly status: Prisma.FieldRef<"Order", 'OrderStatus'>
+  readonly paymentStatus: Prisma.FieldRef<"Order", 'PaymentStatus'>
+  readonly fulfillmentStatus: Prisma.FieldRef<"Order", 'FulfillmentStatus'>
   readonly currency: Prisma.FieldRef<"Order", 'String'>
   readonly subtotalAmount: Prisma.FieldRef<"Order", 'Int'>
+  readonly shippingAmount: Prisma.FieldRef<"Order", 'Int'>
+  readonly shippingCarrierName: Prisma.FieldRef<"Order", 'String'>
+  readonly shippingDeliveryWindowLabel: Prisma.FieldRef<"Order", 'String'>
+  readonly shippingPostalCode: Prisma.FieldRef<"Order", 'String'>
+  readonly shippingRegion: Prisma.FieldRef<"Order", 'String'>
+  readonly shippingServiceCode: Prisma.FieldRef<"Order", 'String'>
+  readonly shippingServiceName: Prisma.FieldRef<"Order", 'String'>
+  readonly shippingSource: Prisma.FieldRef<"Order", 'String'>
+  readonly trackingCode: Prisma.FieldRef<"Order", 'String'>
+  readonly trackingUrl: Prisma.FieldRef<"Order", 'String'>
   readonly totalAmount: Prisma.FieldRef<"Order", 'Int'>
   readonly stripeCheckoutSessionId: Prisma.FieldRef<"Order", 'String'>
   readonly stripePaymentIntentId: Prisma.FieldRef<"Order", 'String'>
   readonly stripeCustomerId: Prisma.FieldRef<"Order", 'String'>
   readonly completedAt: Prisma.FieldRef<"Order", 'DateTime'>
   readonly canceledAt: Prisma.FieldRef<"Order", 'DateTime'>
+  readonly processingAt: Prisma.FieldRef<"Order", 'DateTime'>
+  readonly shippedAt: Prisma.FieldRef<"Order", 'DateTime'>
+  readonly deliveredAt: Prisma.FieldRef<"Order", 'DateTime'>
+  readonly shippingNotificationSentAt: Prisma.FieldRef<"Order", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Order", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Order", 'DateTime'>
 }

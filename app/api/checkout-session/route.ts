@@ -14,6 +14,11 @@ import {
   type CheckoutShippingOption,
   type ShippingRegionCode,
 } from "@/lib/shipping";
+import {
+  consumeRateLimit,
+  createRateLimitHeaders,
+  getRateLimitIdentifier,
+} from "@/lib/rate-limit";
 import { getAppUrl, getStripeServerClient } from "@/lib/stripe";
 
 export const runtime = "nodejs";
@@ -30,6 +35,8 @@ type CheckoutRequestInput = {
   fallbackShippingRegion: ShippingRegionCode | null;
   selectedShippingQuote: CheckoutShippingOption | null;
 };
+
+class CheckoutValidationError extends Error {}
 
 function dedupeStrings(values: Array<string | null | undefined>) {
   return Array.from(new Set(values.map((value) => value?.trim()).filter(Boolean) as string[]));
@@ -139,6 +146,22 @@ function buildOrderItemName(productName: string, variantName: string) {
   return `${productName} · ${variantName}`;
 }
 
+function assertPriceIsCheckoutable(price: Stripe.Price) {
+  if (!price.active) {
+    throw new CheckoutValidationError("Este item nao esta mais disponivel para compra.");
+  }
+
+  const rawProduct = typeof price.product === "string" ? null : price.product;
+
+  if (rawProduct?.deleted) {
+    throw new CheckoutValidationError("Este item nao esta mais disponivel para compra.");
+  }
+
+  if (rawProduct && !rawProduct.active) {
+    throw new CheckoutValidationError("Este item nao esta mais disponivel para compra.");
+  }
+}
+
 function parseCartPayload(value: FormDataEntryValue | null): CheckoutLineInput[] | null {
   if (typeof value !== "string" || !value.trim()) return null;
 
@@ -198,14 +221,6 @@ async function resolveCheckoutRequest(request: Request): Promise<CheckoutRequest
     if (priceId) {
       return { checkoutLines: [{ priceId, quantity }], fallbackShippingRegion, selectedShippingQuote };
     }
-  }
-
-  if (process.env.STRIPE_PRICE_ID) {
-    return {
-      checkoutLines: [{ priceId: process.env.STRIPE_PRICE_ID, quantity: 1 }],
-      fallbackShippingRegion,
-      selectedShippingQuote,
-    };
   }
 
   return null;
@@ -274,6 +289,20 @@ async function ensureVariant(price: Stripe.Price) {
 
 export async function POST(request: Request) {
   try {
+    const rateLimit = consumeRateLimit({
+      identifier: getRateLimitIdentifier(request),
+      maxRequests: 12,
+      namespace: "checkout-session",
+      windowMs: 10 * 60 * 1000,
+    });
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Too many checkout attempts. Please wait a moment and try again." },
+        { status: 429, headers: createRateLimitHeaders(rateLimit) }
+      );
+    }
+
     const stripe = getStripeServerClient();
     const appUrl = getAppUrl(new URL(request.url).origin);
     const authSession = isAuthConfigured()
@@ -294,6 +323,7 @@ export async function POST(request: Request) {
         })
       )
     );
+    stripePrices.forEach(assertPriceIsCheckoutable);
 
     const resolved = await Promise.all(stripePrices.map((price) => ensureVariant(price)));
     const currencies = new Set(resolved.map(({ priceDetails }) => priceDetails.currency));
@@ -382,6 +412,14 @@ export async function POST(request: Request) {
       data: {
         currency,
         email: authSession?.user.email,
+        shippingAmount,
+        shippingCarrierName: shippingOption.carrierName,
+        shippingDeliveryWindowLabel: shippingOption.deliveryWindowLabel,
+        shippingPostalCode: shippingOption.postalCode,
+        shippingRegion: fallbackShippingRegion,
+        shippingServiceCode: shippingOption.code,
+        shippingServiceName: shippingOption.serviceName ?? shippingOption.displayLabel,
+        shippingSource: shippingOption.source,
         subtotalAmount,
         totalAmount,
         userId: authSession?.user.id,
@@ -448,7 +486,8 @@ export async function POST(request: Request) {
         where: { id: order.id },
         data: {
           canceledAt: new Date(),
-          status: "canceled",
+          fulfillmentStatus: "canceled",
+          paymentStatus: "canceled",
         },
       });
 
@@ -461,13 +500,23 @@ export async function POST(request: Request) {
     await prisma.order.update({
       where: { id: order.id },
       data: {
-        status: "checkout_open",
+        paymentStatus: "checkout_open",
         stripeCheckoutSessionId: session.id,
       },
     });
 
-    return NextResponse.redirect(session.url, 303);
+    const response = NextResponse.redirect(session.url, 303);
+    const rateLimitHeaders = createRateLimitHeaders(rateLimit);
+    rateLimitHeaders.forEach((value, key) => {
+      response.headers.set(key, value);
+    });
+
+    return response;
   } catch (error) {
+    if (error instanceof CheckoutValidationError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
     const message =
       error instanceof Error ? error.message : "Unable to create Stripe checkout session.";
 

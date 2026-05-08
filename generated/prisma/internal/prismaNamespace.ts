@@ -1376,15 +1376,30 @@ export const OrderScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   email: 'email',
-  status: 'status',
+  paymentStatus: 'paymentStatus',
+  fulfillmentStatus: 'fulfillmentStatus',
   currency: 'currency',
   subtotalAmount: 'subtotalAmount',
+  shippingAmount: 'shippingAmount',
+  shippingCarrierName: 'shippingCarrierName',
+  shippingDeliveryWindowLabel: 'shippingDeliveryWindowLabel',
+  shippingPostalCode: 'shippingPostalCode',
+  shippingRegion: 'shippingRegion',
+  shippingServiceCode: 'shippingServiceCode',
+  shippingServiceName: 'shippingServiceName',
+  shippingSource: 'shippingSource',
+  trackingCode: 'trackingCode',
+  trackingUrl: 'trackingUrl',
   totalAmount: 'totalAmount',
   stripeCheckoutSessionId: 'stripeCheckoutSessionId',
   stripePaymentIntentId: 'stripePaymentIntentId',
   stripeCustomerId: 'stripeCustomerId',
   completedAt: 'completedAt',
   canceledAt: 'canceledAt',
+  processingAt: 'processingAt',
+  shippedAt: 'shippedAt',
+  deliveredAt: 'deliveredAt',
+  shippingNotificationSentAt: 'shippingNotificationSentAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1547,16 +1562,30 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'OrderStatus'
+ * Reference to a field of type 'PaymentStatus'
  */
-export type EnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus'>
+export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus'>
     
 
 
 /**
- * Reference to a field of type 'OrderStatus[]'
+ * Reference to a field of type 'PaymentStatus[]'
  */
-export type ListEnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus[]'>
+export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FulfillmentStatus'
+ */
+export type EnumFulfillmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FulfillmentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'FulfillmentStatus[]'
+ */
+export type ListEnumFulfillmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FulfillmentStatus[]'>
     
 
 

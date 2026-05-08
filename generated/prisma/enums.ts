@@ -9,7 +9,7 @@
 * 🟢 You can import this file directly.
 */
 
-export const OrderStatus = {
+export const PaymentStatus = {
   pending: 'pending',
   checkout_open: 'checkout_open',
   paid: 'paid',
@@ -17,4 +17,16 @@ export const OrderStatus = {
   refunded: 'refunded'
 } as const
 
-export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const FulfillmentStatus = {
+  pending: 'pending',
+  processing: 'processing',
+  shipped: 'shipped',
+  delivered: 'delivered',
+  returned: 'returned',
+  canceled: 'canceled'
+} as const
+
+export type FulfillmentStatus = (typeof FulfillmentStatus)[keyof typeof FulfillmentStatus]
