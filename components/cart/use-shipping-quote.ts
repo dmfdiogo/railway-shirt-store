@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 import type { CheckoutShippingOption } from "@/lib/shipping";
 
@@ -10,6 +10,7 @@ export type ShippingQuoteLineInput = {
 };
 
 export const SHIPPING_POSTAL_CODE_STORAGE_KEY = "beart-shipping-postal-code";
+const SHIPPING_POSTAL_CODE_EVENT = "beart-shipping-postal-code-updated";
 
 function normalizePostalCode(value: string) {
   return value.replace(/\D/g, "").slice(0, 8);
@@ -21,47 +22,59 @@ function readStoredPostalCode() {
   return normalizePostalCode(window.localStorage.getItem(SHIPPING_POSTAL_CODE_STORAGE_KEY) ?? "");
 }
 
+function subscribeToStoredPostalCode(callback: () => void) {
+  if (typeof window === "undefined") return () => {};
+
+  const handleStorage = (event: StorageEvent) => {
+    if (!event.key || event.key === SHIPPING_POSTAL_CODE_STORAGE_KEY) {
+      callback();
+    }
+  };
+  const handleLocalUpdate = () => callback();
+
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener(SHIPPING_POSTAL_CODE_EVENT, handleLocalUpdate);
+
+  return () => {
+    window.removeEventListener("storage", handleStorage);
+    window.removeEventListener(SHIPPING_POSTAL_CODE_EVENT, handleLocalUpdate);
+  };
+}
+
 function writeStoredPostalCode(postalCode: string) {
   if (typeof window === "undefined") return;
 
   window.localStorage.setItem(SHIPPING_POSTAL_CODE_STORAGE_KEY, postalCode);
+  window.dispatchEvent(new Event(SHIPPING_POSTAL_CODE_EVENT));
 }
 
 export function clearStoredShippingPostalCode() {
   if (typeof window === "undefined") return;
 
   window.localStorage.removeItem(SHIPPING_POSTAL_CODE_STORAGE_KEY);
+  window.dispatchEvent(new Event(SHIPPING_POSTAL_CODE_EVENT));
 }
 
-export function useShippingQuote(lines: ShippingQuoteLineInput[]) {
-  const [postalCode, setPostalCodeState] = useState("");
+export function useShippingQuote(
+  lines: ShippingQuoteLineInput[],
+  fallbackShippingRegion: string,
+) {
   const [quotes, setQuotes] = useState<CheckoutShippingOption[]>([]);
+  const [quoteSignature, setQuoteSignature] = useState<string | null>(null);
   const [selectedQuoteCode, setSelectedQuoteCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [quoteError, setQuoteError] = useState<string | null>(null);
   const [integrationAvailable, setIntegrationAvailable] = useState(true);
+  const postalCode = useSyncExternalStore(subscribeToStoredPostalCode, readStoredPostalCode, () => "");
 
   const normalizedPostalCode = normalizePostalCode(postalCode);
   const requestSignature = JSON.stringify(lines);
+  const activeQuoteSignature = `${normalizedPostalCode}:${fallbackShippingRegion}:${requestSignature}`;
+  const canQuote = normalizedPostalCode.length === 8 && lines.length > 0;
+  const hasFreshQuoteState = canQuote && quoteSignature === activeQuoteSignature;
 
   useEffect(() => {
-    setPostalCodeState(readStoredPostalCode());
-
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key !== SHIPPING_POSTAL_CODE_STORAGE_KEY) return;
-      setPostalCodeState(normalizePostalCode(event.newValue ?? ""));
-    };
-
-    window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
-  }, []);
-
-  useEffect(() => {
-    if (normalizedPostalCode.length !== 8 || lines.length === 0) {
-      setIsLoading(false);
-      setQuoteError(null);
-      setQuotes([]);
-      setSelectedQuoteCode(null);
+    if (!canQuote) {
       return;
     }
 
@@ -70,6 +83,7 @@ export function useShippingQuote(lines: ShippingQuoteLineInput[]) {
 
     const requestQuotes = async () => {
       setIsLoading(true);
+      setQuoteSignature(null);
 
       try {
         const response = await fetch("/api/shipping/quote", {
@@ -78,6 +92,7 @@ export function useShippingQuote(lines: ShippingQuoteLineInput[]) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            fallbackShippingRegion,
             items: nextLines,
             toPostalCode: normalizedPostalCode,
           }),
@@ -101,6 +116,7 @@ export function useShippingQuote(lines: ShippingQuoteLineInput[]) {
         setIntegrationAvailable(payload.integrationAvailable ?? true);
         setQuoteError(payload.fallbackReason ?? null);
         setQuotes(nextQuotes);
+        setQuoteSignature(activeQuoteSignature);
         setSelectedQuoteCode((current) =>
           nextQuotes.some((quote) => quote.code === current) ? current : nextQuotes[0]?.code ?? null
         );
@@ -110,6 +126,7 @@ export function useShippingQuote(lines: ShippingQuoteLineInput[]) {
         setIntegrationAvailable(true);
         setQuoteError(error instanceof Error ? error.message : "Nao foi possivel calcular o frete.");
         setQuotes([]);
+        setQuoteSignature(activeQuoteSignature);
         setSelectedQuoteCode(null);
       } finally {
         if (!cancelled) {
@@ -123,21 +140,21 @@ export function useShippingQuote(lines: ShippingQuoteLineInput[]) {
     return () => {
       cancelled = true;
     };
-  }, [normalizedPostalCode, requestSignature, lines.length]);
+  }, [activeQuoteSignature, canQuote, fallbackShippingRegion, normalizedPostalCode, requestSignature]);
 
   const setPostalCode = (value: string) => {
     const normalized = normalizePostalCode(value);
-    setPostalCodeState(normalized);
     writeStoredPostalCode(normalized);
   };
 
   return {
-    integrationAvailable,
-    isLoading,
+    integrationAvailable: hasFreshQuoteState ? integrationAvailable : true,
+    isLoading: canQuote ? isLoading : false,
     postalCode,
-    quoteError,
-    quotes,
-    selectedQuote: quotes.find((quote) => quote.code === selectedQuoteCode) ?? null,
+    quoteError: hasFreshQuoteState ? quoteError : null,
+    quotes: hasFreshQuoteState ? quotes : [],
+    selectedQuote:
+      hasFreshQuoteState ? quotes.find((quote) => quote.code === selectedQuoteCode) ?? null : null,
     selectQuote: setSelectedQuoteCode,
     setPostalCode,
   };

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 import { DEFAULT_SHIPPING_REGION, resolveShippingOption, type ShippingRegionCode } from "@/lib/shipping";
 
 export const SHIPPING_REGION_STORAGE_KEY = "beart-shipping-region";
+const SHIPPING_REGION_EVENT = "beart-shipping-region-updated";
 
 function normalizeShippingRegion(value?: string | null): ShippingRegionCode {
   return resolveShippingOption(value).code;
@@ -18,36 +19,48 @@ function readStoredShippingRegion(): ShippingRegionCode {
   return normalizeShippingRegion(window.localStorage.getItem(SHIPPING_REGION_STORAGE_KEY));
 }
 
+function subscribeToStoredShippingRegion(callback: () => void) {
+  if (typeof window === "undefined") return () => {};
+
+  const handleStorage = (event: StorageEvent) => {
+    if (!event.key || event.key === SHIPPING_REGION_STORAGE_KEY) {
+      callback();
+    }
+  };
+  const handleLocalUpdate = () => callback();
+
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener(SHIPPING_REGION_EVENT, handleLocalUpdate);
+
+  return () => {
+    window.removeEventListener("storage", handleStorage);
+    window.removeEventListener(SHIPPING_REGION_EVENT, handleLocalUpdate);
+  };
+}
+
 function writeStoredShippingRegion(region: ShippingRegionCode) {
   if (typeof window === "undefined") return;
 
   window.localStorage.setItem(SHIPPING_REGION_STORAGE_KEY, region);
+  window.dispatchEvent(new Event(SHIPPING_REGION_EVENT));
 }
 
 export function clearStoredShippingRegion() {
   if (typeof window === "undefined") return;
 
   window.localStorage.removeItem(SHIPPING_REGION_STORAGE_KEY);
+  window.dispatchEvent(new Event(SHIPPING_REGION_EVENT));
 }
 
 export function useShippingRegion() {
-  const [shippingRegion, setShippingRegionState] = useState<ShippingRegionCode>(DEFAULT_SHIPPING_REGION);
-
-  useEffect(() => {
-    setShippingRegionState(readStoredShippingRegion());
-
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key !== SHIPPING_REGION_STORAGE_KEY) return;
-      setShippingRegionState(normalizeShippingRegion(event.newValue));
-    };
-
-    window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
-  }, []);
+  const shippingRegion = useSyncExternalStore(
+    subscribeToStoredShippingRegion,
+    readStoredShippingRegion,
+    () => DEFAULT_SHIPPING_REGION
+  );
 
   const setShippingRegion = (value: string) => {
     const normalized = normalizeShippingRegion(value);
-    setShippingRegionState(normalized);
     writeStoredShippingRegion(normalized);
   };
 

@@ -19,7 +19,10 @@ export function CartPageContent() {
   const { items, subtotal, removeItem, updateQuantity } = useCart();
   const { setShippingRegion, shippingOption, shippingRegion } = useShippingRegion();
   const { integrationAvailable, isLoading, postalCode, quoteError, quotes, selectedQuote, selectQuote, setPostalCode } =
-    useShippingQuote(items.map((item) => ({ priceId: item.priceId, quantity: item.quantity })));
+    useShippingQuote(
+      items.map((item) => ({ priceId: item.priceId, quantity: item.quantity })),
+      shippingRegion,
+    );
   const checkoutPayload = JSON.stringify(
     items.map((item) => ({ priceId: item.priceId, quantity: item.quantity }))
   );
@@ -199,10 +202,10 @@ export function CartPageContent() {
           {!integrationAvailable || quoteError ? (
             <div className="mt-4 rounded-2xl border border-amber-300/20 bg-amber-500/10 p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-100/90">
-                Fallback manual
+                Fallback ativo
               </p>
               <p className="mt-2 text-sm leading-6 text-amber-50/82">
-                {quoteError ?? "Melhor Envio indisponivel neste ambiente. Use a tabela fixa por regiao enquanto configuramos as credenciais."}
+                {quoteError ?? "Melhor Envio indisponivel neste ambiente. Aplicamos automaticamente a tabela fixa da regiao selecionada."}
               </p>
             </div>
           ) : null}

@@ -6,6 +6,7 @@ import {
   isMelhorEnvioConfigured,
   normalizePostalCode,
 } from "@/lib/melhor-envio";
+import { resolveShippingOption } from "@/lib/shipping";
 import { getStripeServerClient } from "@/lib/stripe";
 
 export const runtime = "nodejs";
@@ -15,10 +16,14 @@ type QuoteLineInput = {
   quantity: number;
 };
 
-function parseRequestBody(value: unknown): { items: QuoteLineInput[]; toPostalCode: string } | null {
+function parseRequestBody(value: unknown): {
+  fallbackShippingRegion: string | null;
+  items: QuoteLineInput[];
+  toPostalCode: string;
+} | null {
   if (!value || typeof value !== "object") return null;
 
-  const candidate = value as { items?: unknown; toPostalCode?: unknown };
+  const candidate = value as { fallbackShippingRegion?: unknown; items?: unknown; toPostalCode?: unknown };
   if (!Array.isArray(candidate.items) || typeof candidate.toPostalCode !== "string") return null;
 
   const items = candidate.items
@@ -43,7 +48,12 @@ function parseRequestBody(value: unknown): { items: QuoteLineInput[]; toPostalCo
   const toPostalCode = normalizePostalCode(candidate.toPostalCode);
   if (items.length === 0 || toPostalCode.length !== 8) return null;
 
-  return { items, toPostalCode };
+  return {
+    fallbackShippingRegion:
+      typeof candidate.fallbackShippingRegion === "string" ? candidate.fallbackShippingRegion : null,
+    items,
+    toPostalCode,
+  };
 }
 
 export async function POST(request: Request) {
@@ -60,11 +70,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "CEP ou itens invalidos para cotacao." }, { status: 400 });
   }
 
+  const fallbackQuote = resolveShippingOption(parsed.fallbackShippingRegion);
+
   if (!isMelhorEnvioConfigured()) {
     return NextResponse.json({
       fallbackReason: "Melhor Envio ainda nao esta configurado neste ambiente.",
       integrationAvailable: false,
-      quotes: [],
+      quotes: [fallbackQuote],
     });
   }
 
@@ -84,16 +96,18 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({
-      fallbackReason: quotes.length === 0 ? "Nenhum servico disponivel para este CEP agora." : null,
+      fallbackReason: quotes.length === 0 ? "Nenhum servico disponivel para este CEP agora. Usando tabela fixa como fallback." : null,
       integrationAvailable: true,
-      quotes,
+      quotes: quotes.length > 0 ? quotes : [fallbackQuote],
     });
   } catch (error) {
     return NextResponse.json({
       fallbackReason:
-        error instanceof Error ? error.message : "Nao foi possivel consultar o Melhor Envio agora.",
-      integrationAvailable: true,
-      quotes: [],
+        error instanceof Error
+          ? `${error.message} Usando tabela fixa como fallback.`
+          : "Nao foi possivel consultar o Melhor Envio agora. Usando tabela fixa como fallback.",
+      integrationAvailable: false,
+      quotes: [fallbackQuote],
     });
   }
 }
