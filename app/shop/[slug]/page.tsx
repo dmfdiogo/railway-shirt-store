@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { ViewTransition } from "react";
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import Image from "next/image";
 import Link from "next/link";
 
-import { auth, isAuthConfigured } from "@/lib/auth";
+import { isAuthConfigured } from "@/lib/auth";
 import { getStorefrontProductBySlug, getStorefrontProducts } from "@/lib/storefront";
 import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 import { SizeSelector } from "@/components/shop/size-selector";
@@ -115,9 +114,6 @@ export default async function ProductPage({
   await connection();
 
   const authReady = isAuthConfigured();
-  const session = authReady
-    ? await auth.api.getSession({ headers: await headers() }).catch(() => null)
-    : null;
   const { slug } = await params;
   const product = await getStorefrontProductBySlug(slug);
 
@@ -191,7 +187,7 @@ export default async function ProductPage({
   };
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#0A0A0C] text-white">
+    <div className="relative min-h-screen overflow-x-clip bg-[#0A0A0C] text-white">
       <MysticBackground />
 
       <div
@@ -213,7 +209,7 @@ export default async function ProductPage({
         }}
       />
 
-      <Navbar sessionActive={!!session} authReady={authReady} />
+      <Navbar sessionActive={false} authReady={authReady} />
 
       <script
         type="application/ld+json"
@@ -397,7 +393,7 @@ export default async function ProductPage({
         </div>
         </ViewTransition>
       </main>
-      <SiteFooter authReady={authReady} sessionActive={!!session} />
+      <SiteFooter authReady={authReady} sessionActive={false} />
     </div>
   );
 }

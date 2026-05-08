@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useEffectEvent, useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { CheckoutShippingOption } from "@/lib/shipping";
 
@@ -56,50 +56,6 @@ export function useShippingQuote(lines: ShippingQuoteLineInput[]) {
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
-  const requestQuotes = useEffectEvent(async (destinationPostalCode: string, nextLines: ShippingQuoteLineInput[]) => {
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/shipping/quote", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          items: nextLines,
-          toPostalCode: destinationPostalCode,
-        }),
-      });
-
-      const payload = (await response.json()) as {
-        error?: string;
-        fallbackReason?: string | null;
-        integrationAvailable?: boolean;
-        quotes?: CheckoutShippingOption[];
-      };
-
-      if (!response.ok) {
-        throw new Error(payload.error ?? "Nao foi possivel calcular o frete.");
-      }
-
-      const nextQuotes = Array.isArray(payload.quotes) ? payload.quotes : [];
-
-      setIntegrationAvailable(payload.integrationAvailable ?? true);
-      setQuoteError(payload.fallbackReason ?? null);
-      setQuotes(nextQuotes);
-      setSelectedQuoteCode((current) =>
-        nextQuotes.some((quote) => quote.code === current) ? current : nextQuotes[0]?.code ?? null
-      );
-    } catch (error) {
-      setIntegrationAvailable(true);
-      setQuoteError(error instanceof Error ? error.message : "Nao foi possivel calcular o frete.");
-      setQuotes([]);
-      setSelectedQuoteCode(null);
-    } finally {
-      setIsLoading(false);
-    }
-  });
-
   useEffect(() => {
     if (normalizedPostalCode.length !== 8 || lines.length === 0) {
       setIsLoading(false);
@@ -109,8 +65,65 @@ export function useShippingQuote(lines: ShippingQuoteLineInput[]) {
       return;
     }
 
-    void requestQuotes(normalizedPostalCode, lines);
-  }, [normalizedPostalCode, requestQuotes, requestSignature]);
+    let cancelled = false;
+    const nextLines = JSON.parse(requestSignature) as ShippingQuoteLineInput[];
+
+    const requestQuotes = async () => {
+      setIsLoading(true);
+
+      try {
+        const response = await fetch("/api/shipping/quote", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            items: nextLines,
+            toPostalCode: normalizedPostalCode,
+          }),
+        });
+
+        const payload = (await response.json()) as {
+          error?: string;
+          fallbackReason?: string | null;
+          integrationAvailable?: boolean;
+          quotes?: CheckoutShippingOption[];
+        };
+
+        if (!response.ok) {
+          throw new Error(payload.error ?? "Nao foi possivel calcular o frete.");
+        }
+
+        if (cancelled) return;
+
+        const nextQuotes = Array.isArray(payload.quotes) ? payload.quotes : [];
+
+        setIntegrationAvailable(payload.integrationAvailable ?? true);
+        setQuoteError(payload.fallbackReason ?? null);
+        setQuotes(nextQuotes);
+        setSelectedQuoteCode((current) =>
+          nextQuotes.some((quote) => quote.code === current) ? current : nextQuotes[0]?.code ?? null
+        );
+      } catch (error) {
+        if (cancelled) return;
+
+        setIntegrationAvailable(true);
+        setQuoteError(error instanceof Error ? error.message : "Nao foi possivel calcular o frete.");
+        setQuotes([]);
+        setSelectedQuoteCode(null);
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void requestQuotes();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [normalizedPostalCode, requestSignature, lines.length]);
 
   const setPostalCode = (value: string) => {
     const normalized = normalizePostalCode(value);

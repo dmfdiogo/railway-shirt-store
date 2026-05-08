@@ -118,7 +118,7 @@ export default async function AccountPage({
 
   const session = await auth.api.getSession({
     headers: await headers(),
-  });
+  }).catch(() => null);
 
   if (!session) {
     redirect("/sign-in");
