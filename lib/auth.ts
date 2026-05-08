@@ -40,7 +40,7 @@ const FROM_EMAIL =
   process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev";
 
 export const auth = betterAuth({
-  appName: "Railway Shirt Store",
+  appName: "Be Art",
   baseURL: authBaseUrl,
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -97,7 +97,7 @@ export const auth = betterAuth({
           await resend.emails.send({
             from: FROM_EMAIL,
             to: user.email,
-            subject: "Redefina sua senha — Railway Shirt Store",
+            subject: "Redefina sua senha — Be Art",
             html: `<p>Olá, ${user.name ?? user.email}!</p><p>Clique no link abaixo para redefinir sua senha. O link expira em 1 hora.</p><p><a href="${url}">${url}</a></p><p>Se você não solicitou a redefinição, ignore este email — sua senha permanece a mesma.</p>`,
           });
         }
@@ -112,7 +112,7 @@ export const auth = betterAuth({
           await resend!.emails.send({
             from: FROM_EMAIL,
             to: user.email,
-            subject: "Confirme seu email — Railway Shirt Store",
+            subject: "Confirme seu email — Be Art",
             html: `<p>Olá, ${user.name ?? user.email}!</p><p>Clique no link abaixo para confirmar seu endereço de email.</p><p><a href="${url}">${url}</a></p>`,
           });
         },
