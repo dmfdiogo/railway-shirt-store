@@ -270,20 +270,33 @@ export default async function AccountPage({
         </div>
         </div>
 
-        <div className="mt-8 grid overflow-hidden rounded-[1.3rem] border border-white/10 bg-white/[0.03] sm:grid-cols-2 xl:grid-cols-4">
-          <div className="px-4 py-4 xl:border-r xl:border-white/10">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Entrega</p>
-            <p className="mt-3 text-base font-semibold text-white">{deliveryProfileReady ? "Perfil pronto" : "Perfil incompleto"}</p>
-            <p className="mt-1 text-sm leading-6 text-white/56">{deliveryProfileLabel}</p>
+        <section className="mt-8 rounded-[2rem] border border-white/10 bg-[linear-gradient(160deg,rgba(18,19,28,0.94)_0%,rgba(11,12,19,0.98)_100%)] p-8 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl sm:p-10">
+          <div className="absolute inset-x-6 h-24 rounded-full bg-[radial-gradient(circle,rgba(82,110,255,0.18)_0%,rgba(82,110,255,0)_68%)] blur-3xl sm:inset-x-12" />
+          <div className="relative">
+            <p className="text-sm font-mono uppercase tracking-[0.3em] text-[#A5ADFF]">Endereço de entrega</p>
+            <h2 className="mt-4 text-2xl font-semibold tracking-[-0.05em] text-white">
+              {deliveryProfileReady ? "Perfil pronto" : "Perfil incompleto"}
+            </h2>
+            <p className="mt-3 max-w-2xl text-base leading-7 text-white/62">
+              {deliveryProfileLabel}
+            </p>
+            <p className="mt-4 text-sm leading-6 text-white/48">
+              {deliveryProfileReady 
+                ? "Seu endereço está salvo e pronto para o checkout. Você pode atualizá-lo a qualquer momento abaixo."
+                : "Complete seu endereço de entrega para fazer compras com rapidez e segurança."}
+            </p>
           </div>
-          <div className="border-t border-white/10 px-4 py-4 sm:border-l sm:border-t-0 sm:border-white/10 xl:border-r">
+        </section>
+
+        <div className="mt-8 grid overflow-hidden rounded-[1.3rem] border border-white/10 bg-white/[0.03] sm:grid-cols-2 xl:grid-cols-3">
+          <div className="px-4 py-4 xl:border-r xl:border-white/10">
             <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Pedidos em andamento</p>
             <p className="mt-3 text-base font-semibold text-white">{activeOrders}</p>
             <p className="mt-1 text-sm leading-6 text-white/56">
               {activeOrders > 0 ? "Acompanhando pagamentos e logística ativos." : "Nenhum pedido aberto no momento."}
             </p>
           </div>
-          <div className="border-t border-white/10 px-4 py-4 xl:border-r xl:border-white/10">
+          <div className="border-t border-white/10 px-4 py-4 sm:border-l sm:border-t-0 sm:border-white/10 xl:border-r xl:border-white/10">
             <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Total pago</p>
             <p className="mt-3 text-base font-semibold text-white">{formatPrice(totalPaidAmount, orders[0]?.currency ?? "BRL")}</p>
             <p className="mt-1 text-sm leading-6 text-white/56">Soma dos pedidos confirmados desta conta.</p>
