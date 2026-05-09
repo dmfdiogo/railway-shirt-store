@@ -23,6 +23,18 @@ export const metadata: Metadata = buildNoIndexMetadata({
   path: "/account",
 });
 
+type AccountProfileSnapshot = {
+  addressLine1: string | null;
+  addressLine2: string | null;
+  city: string | null;
+  country: string | null;
+  emailVerified: boolean;
+  neighborhood: string | null;
+  phone: string | null;
+  postalCode: string | null;
+  state: string | null;
+};
+
 function formatPrice(amount: number, currency: string) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -87,12 +99,27 @@ function getShippingSummary(order: {
 function getTimelineTone(state: "done" | "current" | "pending") {
   switch (state) {
     case "done":
-      return "border-emerald-400/20 bg-emerald-500/10 text-emerald-50";
+      return "border-emerald-400/70 text-emerald-50";
     case "current":
-      return "border-sky-400/20 bg-sky-500/10 text-sky-50";
+      return "border-sky-400/70 text-sky-50";
     default:
-      return "border-white/10 bg-white/[0.03] text-white/62";
+      return "border-white/18 text-white/62";
   }
+}
+
+function hasSavedDeliveryProfile(profile: AccountProfileSnapshot | null) {
+  return Boolean(profile?.addressLine1 && profile?.postalCode && profile?.city && profile?.state);
+}
+
+function getDeliveryProfileLabel(profile: AccountProfileSnapshot | null) {
+  if (!profile) return "Perfil indisponível";
+
+  const location = [profile.city, profile.state].filter(Boolean).join(" · ");
+
+  if (location) return location;
+  if (profile.addressLine1 || profile.postalCode || profile.country) return "Dados de entrega em andamento";
+
+  return "Nenhum endereço salvo";
 }
 
 export default async function AccountPage({
@@ -180,27 +207,50 @@ export default async function AccountPage({
 
   const canManageAdminOrders = canManageOrders(session.user.email);
   const paidOrders = orders.filter((order) => order.paymentStatus === "paid");
+  const activeOrders = orders.filter(
+    (order) => order.paymentStatus === "paid" && !["delivered", "returned", "canceled"].includes(order.fulfillmentStatus)
+  ).length;
   const totalPaidAmount = paidOrders.reduce((sum, order) => sum + order.totalAmount, 0);
   const latestOrderTimestamp = orders[0] ? getOrderReferenceDate(orders[0]) : null;
+  const deliveryProfileReady = hasSavedDeliveryProfile(currentUser);
+  const deliveryProfileLabel = getDeliveryProfileLabel(currentUser);
 
   return (
     <BeArtShell authReady footer navbar sessionActive contentClassName="relative px-6 pb-12 pt-28 sm:px-10 lg:px-16">
-        <section className="mx-auto w-full max-w-4xl rounded-[2rem] border border-white/10 bg-[linear-gradient(160deg,rgba(18,19,28,0.94)_0%,rgba(11,12,19,0.98)_100%)] p-8 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl sm:p-10">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+        <section className="mx-auto w-full max-w-5xl rounded-[2rem] border border-white/10 bg-[linear-gradient(160deg,rgba(18,19,28,0.94)_0%,rgba(11,12,19,0.98)_100%)] p-8 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl sm:p-10">
+        <div className="absolute inset-x-6 top-6 h-24 rounded-full bg-[radial-gradient(circle,rgba(82,110,255,0.18)_0%,rgba(82,110,255,0)_68%)] blur-3xl sm:inset-x-12" />
+
+        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_17rem] lg:items-start">
           <div>
             <p className="text-sm font-mono uppercase tracking-[0.3em] text-[#A5ADFF]">Minha conta</p>
             <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-white">
               {session.user.name || "Cliente"}
             </h1>
-            <p className="mt-4 text-base leading-7 text-white/62">
+            <p className="mt-4 max-w-2xl text-base leading-7 text-white/62">
+              Seus pedidos, comprovantes e dados de entrega ficam organizados aqui, sem depender de buscas manuais no email.
+            </p>
+            <p className="mt-3 text-sm leading-6 text-white/48">
               {session.user.email}
             </p>
-            <div className="mt-4 inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
-              {currentUser?.emailVerified ? "Email verificado" : "Email pendente"}
+            <div className="mt-6 flex flex-wrap gap-2">
+              <div className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
+                {currentUser?.emailVerified ? "Email verificado" : "Email pendente"}
+              </div>
+              <div className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
+                {deliveryProfileReady ? "Entrega pronta para checkout" : "Entrega precisa de revisão"}
+              </div>
+              <div className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
+                {activeOrders > 0 ? `${activeOrders} pedido${activeOrders > 1 ? "s" : ""} em andamento` : "Nenhum pedido em andamento"}
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 sm:items-end">
+          <div className="relative rounded-[1.4rem] border border-white/10 bg-black/10 px-4 py-4">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Atalhos</p>
+            <p className="mt-3 text-sm leading-6 text-white/58">
+              Ações rápidas para navegar, operar pedidos e encerrar a sessão com clareza.
+            </p>
+            <div className="mt-5 flex flex-col gap-3">
             {canManageAdminOrders ? (
               <Link
                 href="/admin/orders"
@@ -218,6 +268,34 @@ export default async function AccountPage({
             <SignOutButton />
           </div>
         </div>
+        </div>
+
+        <div className="mt-8 grid overflow-hidden rounded-[1.3rem] border border-white/10 bg-white/[0.03] sm:grid-cols-2 xl:grid-cols-4">
+          <div className="px-4 py-4 xl:border-r xl:border-white/10">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Entrega</p>
+            <p className="mt-3 text-base font-semibold text-white">{deliveryProfileReady ? "Perfil pronto" : "Perfil incompleto"}</p>
+            <p className="mt-1 text-sm leading-6 text-white/56">{deliveryProfileLabel}</p>
+          </div>
+          <div className="border-t border-white/10 px-4 py-4 sm:border-l sm:border-t-0 sm:border-white/10 xl:border-r">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Pedidos em andamento</p>
+            <p className="mt-3 text-base font-semibold text-white">{activeOrders}</p>
+            <p className="mt-1 text-sm leading-6 text-white/56">
+              {activeOrders > 0 ? "Acompanhando pagamentos e logística ativos." : "Nenhum pedido aberto no momento."}
+            </p>
+          </div>
+          <div className="border-t border-white/10 px-4 py-4 xl:border-r xl:border-white/10">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Total pago</p>
+            <p className="mt-3 text-base font-semibold text-white">{formatPrice(totalPaidAmount, orders[0]?.currency ?? "BRL")}</p>
+            <p className="mt-1 text-sm leading-6 text-white/56">Soma dos pedidos confirmados desta conta.</p>
+          </div>
+          <div className="border-t border-white/10 px-4 py-4 sm:border-l sm:border-t-0 sm:border-white/10 xl:border-l-0">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Última movimentação</p>
+            <p className="mt-3 text-base font-semibold text-white">
+              {latestOrderTimestamp ? formatOrderDate(latestOrderTimestamp) : "Sem pedidos processados"}
+            </p>
+            <p className="mt-1 text-sm leading-6 text-white/56">Atualização mais recente ligada ao seu histórico.</p>
+          </div>
+        </div>
 
         <ProfileSettingsForm
           initialValues={{
@@ -232,8 +310,15 @@ export default async function AccountPage({
           }}
         />
 
-        <div className="mt-10 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-5 py-5">
-          <p className="text-sm font-mono uppercase tracking-[0.28em] text-[#A5ADFF]">Pedidos</p>
+        <div className="mt-10">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-mono uppercase tracking-[0.28em] text-[#A5ADFF]">Pedidos</p>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/56">
+                Consulte andamento, itens comprados, rastreio e comprovantes sem navegar por várias telas.
+              </p>
+            </div>
+          </div>
           {orders.length === 0 ? (
             <div className="mt-5 rounded-[1.4rem] border border-white/10 bg-white/[0.04] px-5 py-5">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white/36">Historico vazio</p>
@@ -249,16 +334,16 @@ export default async function AccountPage({
             </div>
           ) : (
             <div className="mt-6 space-y-4">
-              <div className="grid gap-3 md:grid-cols-3">
-                <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.04] px-4 py-4">
+              <div className="grid overflow-hidden rounded-[1.2rem] border border-white/10 bg-white/[0.03] md:grid-cols-3">
+                <div className="px-4 py-4 md:border-r md:border-white/10">
                   <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Pedidos registrados</p>
                   <p className="mt-3 text-2xl font-semibold text-white">{orders.length}</p>
                 </div>
-                <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.04] px-4 py-4">
+                <div className="border-t border-white/10 px-4 py-4 md:border-r md:border-t-0">
                   <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Total pago</p>
                   <p className="mt-3 text-2xl font-semibold text-white">{formatPrice(totalPaidAmount, orders[0].currency)}</p>
                 </div>
-                <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.04] px-4 py-4">
+                <div className="border-t border-white/10 px-4 py-4 md:border-t-0">
                   <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Ultima atualização</p>
                   <p className="mt-3 text-sm font-medium text-white/82">
                     {latestOrderTimestamp ? formatOrderDate(latestOrderTimestamp) : "Sem pedidos processados"}
@@ -307,45 +392,47 @@ export default async function AccountPage({
                           </div>
                         </div>
 
-                        <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_15rem]">
-                          <div className="space-y-3">
-                            {productItems.map((item) => {
-                              const productSlug = item.productVariant?.product?.slug;
-                              const itemLabel = getOrderItemDisplayName(item);
+                        <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_16rem]">
+                          <div>
+                            <div className="overflow-hidden rounded-[1.1rem] border border-white/10 bg-black/10">
+                              {productItems.map((item, index) => {
+                                const productSlug = item.productVariant?.product?.slug;
+                                const itemLabel = getOrderItemDisplayName(item);
 
-                              return (
-                                <div
-                                  key={item.id}
-                                  className="rounded-[1.2rem] border border-white/10 bg-black/10 px-4 py-4"
-                                >
-                                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                    <div>
-                                      <p className="text-sm font-medium text-white">{itemLabel}</p>
-                                      <p className="mt-1 text-xs uppercase tracking-[0.18em] text-white/38">
-                                        Quantidade {item.quantity}
-                                      </p>
-                                    </div>
+                                return (
+                                  <div
+                                    key={item.id}
+                                    className={`px-4 py-4 ${index > 0 ? "border-t border-white/10" : ""}`}
+                                  >
+                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                      <div>
+                                        <p className="text-sm font-medium text-white">{itemLabel}</p>
+                                        <p className="mt-1 text-xs uppercase tracking-[0.18em] text-white/38">
+                                          Quantidade {item.quantity}
+                                        </p>
+                                      </div>
 
-                                    <div className="flex items-center gap-3">
-                                      {productSlug ? (
-                                        <Link
-                                          href={`/shop/${productSlug}`}
-                                          className="inline-flex min-h-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/72 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
-                                        >
-                                          Ver peça
-                                        </Link>
-                                      ) : null}
-                                      <span className="text-sm font-semibold text-white">
-                                        {formatPrice(item.totalAmount, order.currency)}
-                                      </span>
+                                      <div className="flex items-center gap-3">
+                                        {productSlug ? (
+                                          <Link
+                                            href={`/shop/${productSlug}`}
+                                            className="inline-flex min-h-10 items-center justify-center rounded-full border border-white/10 bg-transparent px-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/64 transition hover:border-white/20 hover:bg-white/[0.05] hover:text-white"
+                                          >
+                                            Ver peça
+                                          </Link>
+                                        ) : null}
+                                        <span className="text-sm font-semibold text-white">
+                                          {formatPrice(item.totalAmount, order.currency)}
+                                        </span>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              );
-                            })}
+                                );
+                              })}
+                            </div>
                           </div>
 
-                          <div className="rounded-[1.2rem] border border-white/10 bg-black/10 px-4 py-4">
+                          <div className="border-t border-white/10 pt-5 lg:border-l lg:border-t-0 lg:pt-0 lg:pl-5">
                             <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Resumo</p>
                             <dl className="mt-4 space-y-3 text-sm text-white/62">
                               <div className="flex items-center justify-between gap-3">
@@ -401,13 +488,13 @@ export default async function AccountPage({
                           </div>
                         </div>
 
-                        <div className="mt-4 rounded-[1.2rem] border border-white/10 bg-black/10 px-4 py-4">
+                        <div className="mt-6 border-t border-white/10 pt-5">
                           <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Linha do tempo</p>
-                          <ol className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+                          <ol className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
                             {timeline.map((step) => (
                               <li
                                 key={step.key}
-                                className={`rounded-[1rem] border px-3 py-3 ${getTimelineTone(step.state)}`}
+                                className={`border-l-2 pl-4 ${getTimelineTone(step.state)}`}
                               >
                                 <p className="text-[10px] uppercase tracking-[0.22em] text-current/70">{step.label}</p>
                                 <p className="mt-2 text-sm font-semibold text-current">

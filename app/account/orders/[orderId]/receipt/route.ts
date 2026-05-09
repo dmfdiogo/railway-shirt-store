@@ -166,8 +166,12 @@ export async function GET(
 
   const pdfBytes = await pdf.save();
   const filename = `beart-pedido-${order.id.slice(-8).toLowerCase()}.pdf`;
+  const pdfBuffer = pdfBytes.buffer.slice(
+    pdfBytes.byteOffset,
+    pdfBytes.byteOffset + pdfBytes.byteLength,
+  ) as ArrayBuffer;
 
-  return new Response(pdfBytes, {
+  return new Response(pdfBuffer, {
     headers: {
       "Content-Disposition": `attachment; filename="${filename}"`,
       "Content-Type": "application/pdf",

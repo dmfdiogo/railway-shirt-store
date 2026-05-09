@@ -137,7 +137,7 @@ export default async function CheckoutSuccessPage({
               : "O checkout foi concluido com sucesso. Por seguranca, os detalhes do pedido so aparecem para a conta vinculada a essa compra."}
           </p>
 
-          {showOrderDetails ? (
+          {order ? (
             <div className="mt-8 rounded-[1.8rem] border border-white/[0.08] bg-[#0D0E13]/80 p-6 shadow-[0_18px_50px_rgba(0,0,0,0.26)]">
               {(() => {
                 const paymentMeta = getPaymentStatusMeta(order.paymentStatus);
@@ -268,7 +268,7 @@ export default async function CheckoutSuccessPage({
             >
               Ver meus pedidos
             </Link>
-            {showOrderDetails && order.paymentStatus === "paid" ? (
+            {order?.paymentStatus === "paid" ? (
               <Link
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-medium text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
                 href={`/account/orders/${order.id}/receipt`}

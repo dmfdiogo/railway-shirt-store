@@ -43,12 +43,15 @@ export function SizeSelector({
   );
   const { setShippingRegion, shippingOption, shippingRegion } = useShippingRegion();
   const { integrationAvailable, isLoading, postalCode, quoteError, quotes, selectedQuote, selectQuote, setPostalCode } =
-    useShippingQuote([
-      {
-        priceId: selected.stripePriceId,
-        quantity: 1,
-      },
-    ]);
+    useShippingQuote(
+      [
+        {
+          priceId: selected.stripePriceId,
+          quantity: 1,
+        },
+      ],
+      shippingRegion,
+    );
 
   const hasSingleVariant = variants.length === 1;
   const isSizeVariant = variants.every((variant) => variant.size);
