@@ -75,9 +75,9 @@ export function ProfileSettingsForm({ initialValues }: ProfileSettingsFormProps)
     <div className="mt-10 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-5 py-5">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-mono uppercase tracking-[0.28em] text-[#A5ADFF]">Entrega</p>
+          <p className="text-sm font-mono uppercase tracking-[0.28em] text-[#A5ADFF]">Endereço</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">
-            Perfil de entrega
+            Perfil de contato
           </h2>
         </div>
         <p className="text-sm leading-6 text-white/58">
