@@ -271,19 +271,19 @@ export default async function AccountPage({
         </div>
 
         <section className="mt-8 rounded-[2rem] border border-white/10 bg-[linear-gradient(160deg,rgba(18,19,28,0.94)_0%,rgba(11,12,19,0.98)_100%)] p-8 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl sm:p-10">
-          <div className="absolute inset-x-6 h-24 rounded-full bg-[radial-gradient(circle,rgba(82,110,255,0.18)_0%,rgba(82,110,255,0)_68%)] blur-3xl sm:inset-x-12" />
+          <div className="absolute inset-x-6 top-6 h-24 rounded-full bg-[radial-gradient(circle,rgba(82,110,255,0.18)_0%,rgba(82,110,255,0)_68%)] blur-3xl sm:inset-x-12" />
           <div className="relative">
-            <p className="text-sm font-mono uppercase tracking-[0.3em] text-[#A5ADFF]">Endereço de entrega</p>
+            <p className="text-sm font-mono uppercase tracking-[0.3em] text-[#A5ADFF]">Endereço</p>
             <h2 className="mt-4 text-2xl font-semibold tracking-[-0.05em] text-white">
-              {deliveryProfileReady ? "Perfil pronto" : "Perfil incompleto"}
+              {deliveryProfileReady ? "Perfil de contato pronto" : "Perfil de contato incompleto"}
             </h2>
             <p className="mt-3 max-w-2xl text-base leading-7 text-white/62">
               {deliveryProfileLabel}
             </p>
             <p className="mt-4 text-sm leading-6 text-white/48">
               {deliveryProfileReady 
-                ? "Seu endereço está salvo e pronto para o checkout. Você pode atualizá-lo a qualquer momento abaixo."
-                : "Complete seu endereço de entrega para fazer compras com rapidez e segurança."}
+                ? "Seus dados de entrega e telefone estão salvos e prontos para o checkout. Atualize sempre que necessário."
+                : "Complete seu perfil de contato e endereço de entrega para fazer compras com rapidez e segurança."}
             </p>
           </div>
         </section>
