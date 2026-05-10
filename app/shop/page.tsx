@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ViewTransition } from "react";
 import { headers } from "next/headers";
 import { connection } from "next/server";
+import { ArrowLeft, ArrowRight, Filter, Package2, Palette, Shirt } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -140,7 +141,8 @@ export default async function ShopPage({
               href="/"
               className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-white/45 transition hover:text-white"
             >
-              ← Início
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+              Início
             </Link>
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-2xl">
@@ -157,7 +159,8 @@ export default async function ShopPage({
 
               <div className="grid gap-3 sm:grid-cols-2 lg:w-[22rem]">
                 <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 backdrop-blur-xl">
-                  <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-white/35">
+                  <p className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em] text-white/35">
+                    <Package2 className="h-3.5 w-3.5" aria-hidden="true" />
                     Itens visíveis
                   </p>
                   <p className="font-display mt-2 text-3xl font-extrabold text-white">
@@ -165,7 +168,8 @@ export default async function ShopPage({
                   </p>
                 </div>
                 <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 backdrop-blur-xl">
-                  <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-white/35">
+                  <p className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.3em] text-white/35">
+                    <Filter className="h-3.5 w-3.5" aria-hidden="true" />
                     Filtros
                   </p>
                   <p className="mt-2 text-sm leading-6 text-white/62">
@@ -177,7 +181,7 @@ export default async function ShopPage({
 
             <form className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto]" method="GET">
               <label className="flex flex-col gap-2">
-                <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-white/38">Cor</span>
+                <span className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.28em] text-white/38"><Palette className="h-3.5 w-3.5" aria-hidden="true" />Cor</span>
                 <select
                   name="color"
                   defaultValue={selectedColor}
@@ -193,7 +197,7 @@ export default async function ShopPage({
               </label>
 
               <label className="flex flex-col gap-2">
-                <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-white/38">Categoria</span>
+                <span className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.28em] text-white/38"><Shirt className="h-3.5 w-3.5" aria-hidden="true" />Categoria</span>
                 <select
                   name="category"
                   defaultValue={selectedCategory}
@@ -211,15 +215,17 @@ export default async function ShopPage({
 
               <button
                 type="submit"
-                className="inline-flex min-h-12 items-center justify-center self-end rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(79,70,229,0.24)] transition hover:shadow-[0_16px_36px_rgba(107,60,246,0.34)]"
+                className="inline-flex min-h-12 items-center justify-center gap-2 self-end rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(79,70,229,0.24)] transition hover:shadow-[0_16px_36px_rgba(107,60,246,0.34)]"
               >
+                <Filter className="h-4 w-4" aria-hidden="true" />
                 Aplicar filtros
               </button>
 
               <Link
                 href="/shop"
-                className="inline-flex min-h-12 items-center justify-center self-end rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-semibold text-white/72 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+                className="inline-flex min-h-12 items-center justify-center gap-2 self-end rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-semibold text-white/72 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
               >
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                 Limpar
               </Link>
             </form>
@@ -233,8 +239,9 @@ export default async function ShopPage({
               </p>
               <Link
                 href="/shop"
-                className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-5 text-sm font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+                className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 text-sm font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
               >
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                 Ver catálogo completo
               </Link>
             </div>
@@ -316,9 +323,7 @@ export default async function ShopPage({
                         <ul className="mt-4 space-y-2">
                           {product.marketingFeatures.slice(0, 2).map((feature) => (
                             <li key={feature} className="flex items-center gap-2 text-sm text-white/68">
-                              <span className="text-[#7C7CFF]" aria-hidden="true">
-                                ✦
-                              </span>
+                              <Shirt className="h-4 w-4 text-[#7C7CFF]" aria-hidden="true" />
                               {feature}
                             </li>
                           ))}
@@ -357,8 +362,8 @@ export default async function ShopPage({
                           </span>
                         </div>
 
-                        <span className="inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(79,70,229,0.24)] transition group-hover:shadow-[0_16px_36px_rgba(107,60,246,0.34)]">
-                          Ver produto →
+                        <span className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-5 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(79,70,229,0.24)] transition group-hover:shadow-[0_16px_36px_rgba(107,60,246,0.34)]">
+                          Ver produto <ArrowRight className="h-4 w-4" aria-hidden="true" />
                         </span>
                       </div>
                     </div>

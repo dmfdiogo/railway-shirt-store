@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckCircle2, CircleAlert, MapPin, Phone, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -18,14 +19,6 @@ type ProfileSettingsFormProps = {
   };
 };
 
-function hasSavedDeliveryProfile(initialValues: ProfileSettingsFormProps["initialValues"]) {
-  return Boolean(initialValues.addressLine1 && initialValues.postalCode && initialValues.city && initialValues.state);
-}
-
-function getProfileLocation(initialValues: ProfileSettingsFormProps["initialValues"]) {
-  return [initialValues.city, initialValues.state].filter(Boolean).join(" · ");
-}
-
 function normalizeOptionalField(value: FormDataEntryValue | null) {
   const normalized = String(value ?? "").trim();
   return normalized.length > 0 ? normalized : null;
@@ -36,9 +29,6 @@ export function ProfileSettingsForm({ initialValues }: ProfileSettingsFormProps)
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const profileReady = hasSavedDeliveryProfile(initialValues);
-  const profileLocation = getProfileLocation(initialValues);
-  const hasPhone = Boolean(initialValues.phone);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -72,37 +62,14 @@ export function ProfileSettingsForm({ initialValues }: ProfileSettingsFormProps)
   }
 
   return (
-    <div className="mt-10 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-5 py-5">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm font-mono uppercase tracking-[0.28em] text-[#A5ADFF]">Endereço</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">
-            Perfil de contato
-          </h2>
-        </div>
-        <p className="text-sm leading-6 text-white/58">
-          Esses dados reduzem atrito no checkout e deixam suporte e rastreio mais objetivos.
-        </p>
-      </div>
-
-      <div className="mt-6 flex flex-wrap gap-2">
-        <div className="inline-flex items-center rounded-full border border-white/10 bg-black/10 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
-          {profileReady ? "Perfil pronto para checkout" : "Complete o endereço principal"}
-        </div>
-        <div className="inline-flex items-center rounded-full border border-white/10 bg-black/10 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
-          {hasPhone ? "Telefone salvo" : "Telefone pendente"}
-        </div>
-        {profileLocation ? (
-          <div className="inline-flex items-center rounded-full border border-white/10 bg-black/10 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
-            {profileLocation}
-          </div>
-        ) : null}
-      </div>
-
-      <form className="mt-8" onSubmit={handleSubmit}>
+    <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-5 py-5">
+      <form onSubmit={handleSubmit}>
         <div className="grid gap-8 lg:grid-cols-[13rem_minmax(0,1fr)]">
           <div className="lg:pt-2">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Contato</p>
+            <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40">
+              <Phone className="h-3.5 w-3.5" aria-hidden="true" />
+              Contato
+            </p>
             <p className="mt-3 text-sm leading-6 text-white/56">
               Usado em suporte, confirmação de entrega e recuperação rápida do pedido.
             </p>
@@ -123,7 +90,10 @@ export function ProfileSettingsForm({ initialValues }: ProfileSettingsFormProps)
           </div>
 
           <div className="border-t border-white/10 pt-8 lg:pt-2">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Endereço</p>
+            <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40">
+              <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+              Endereço
+            </p>
             <p className="mt-3 text-sm leading-6 text-white/56">
               Salve o básico do destino para reduzir preenchimento repetido no checkout.
             </p>
@@ -218,13 +188,15 @@ export function ProfileSettingsForm({ initialValues }: ProfileSettingsFormProps)
         </div>
 
         {error ? (
-          <div className="mt-6 rounded-2xl border border-red-300/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+          <div className="mt-6 flex items-start gap-3 rounded-2xl border border-red-300/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+            <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
             {error}
           </div>
         ) : null}
 
         {success ? (
-          <div className="mt-6 rounded-2xl border border-emerald-300/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+          <div className="mt-6 flex items-start gap-3 rounded-2xl border border-emerald-300/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
             {success}
           </div>
         ) : null}
@@ -236,8 +208,9 @@ export function ProfileSettingsForm({ initialValues }: ProfileSettingsFormProps)
           <button
             type="submit"
             disabled={isPending}
-            className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
           >
+            <Save className="h-4 w-4" aria-hidden="true" />
             {isPending ? "Salvando..." : "Salvar endereco"}
           </button>
         </div>

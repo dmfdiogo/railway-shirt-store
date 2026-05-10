@@ -1,4 +1,22 @@
 import type { Metadata } from "next";
+import {
+  ArrowUpRight,
+  CalendarDays,
+  CheckCircle2,
+  Circle,
+  Clock3,
+  CreditCard,
+  Download,
+  Mail,
+  MailCheck,
+  MapPin,
+  Package2,
+  Phone,
+  ShieldCheck,
+  ShoppingBag,
+  Store,
+  Truck,
+} from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -122,6 +140,24 @@ function getDeliveryProfileLabel(profile: AccountProfileSnapshot | null) {
   return "Nenhum endereço salvo";
 }
 
+function getProfileLocation(profile: AccountProfileSnapshot | null) {
+  if (!profile) return "";
+
+  return [profile.city, profile.state].filter(Boolean).join(" · ");
+}
+
+function TimelineStateIcon({ state }: { state: "done" | "current" | "pending" }) {
+  if (state === "done") {
+    return <CheckCircle2 className="h-4 w-4" aria-hidden="true" />;
+  }
+
+  if (state === "current") {
+    return <Clock3 className="h-4 w-4" aria-hidden="true" />;
+  }
+
+  return <Circle className="h-4 w-4" aria-hidden="true" />;
+}
+
 export default async function AccountPage({
 }: {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -214,6 +250,8 @@ export default async function AccountPage({
   const latestOrderTimestamp = orders[0] ? getOrderReferenceDate(orders[0]) : null;
   const deliveryProfileReady = hasSavedDeliveryProfile(currentUser);
   const deliveryProfileLabel = getDeliveryProfileLabel(currentUser);
+  const profileLocation = getProfileLocation(currentUser);
+  const hasPhone = Boolean(currentUser?.phone);
 
   return (
     <BeArtShell authReady footer navbar sessionActive contentClassName="relative px-6 pb-12 pt-28 sm:px-10 lg:px-16">
@@ -233,13 +271,16 @@ export default async function AccountPage({
               {session.user.email}
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
-              <div className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
+                {currentUser?.emailVerified ? <MailCheck className="h-3.5 w-3.5" aria-hidden="true" /> : <Mail className="h-3.5 w-3.5" aria-hidden="true" />}
                 {currentUser?.emailVerified ? "Email verificado" : "Email pendente"}
               </div>
-              <div className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
+                <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
                 {deliveryProfileReady ? "Entrega pronta para checkout" : "Entrega precisa de revisão"}
               </div>
-              <div className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
+                <Package2 className="h-3.5 w-3.5" aria-hidden="true" />
                 {activeOrders > 0 ? `${activeOrders} pedido${activeOrders > 1 ? "s" : ""} em andamento` : "Nenhum pedido em andamento"}
               </div>
             </div>
@@ -254,15 +295,17 @@ export default async function AccountPage({
             {canManageAdminOrders ? (
               <Link
                 href="/admin/orders"
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-medium text-white/82 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-medium text-white/82 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
               >
+                <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                 Operar pedidos
               </Link>
             ) : null}
             <Link
               href="/"
-              className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
             >
+              <Store className="h-4 w-4" aria-hidden="true" />
               Voltar para a loja
             </Link>
             <SignOutButton />
@@ -270,39 +313,30 @@ export default async function AccountPage({
         </div>
         </div>
 
-        <section className="mt-8 rounded-[2rem] border border-white/10 bg-[linear-gradient(160deg,rgba(18,19,28,0.94)_0%,rgba(11,12,19,0.98)_100%)] p-8 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl sm:p-10">
-          <div className="absolute inset-x-6 top-6 h-24 rounded-full bg-[radial-gradient(circle,rgba(82,110,255,0.18)_0%,rgba(82,110,255,0)_68%)] blur-3xl sm:inset-x-12" />
-          <div className="relative">
-            <p className="text-sm font-mono uppercase tracking-[0.3em] text-[#A5ADFF]">Endereço</p>
-            <h2 className="mt-4 text-2xl font-semibold tracking-[-0.05em] text-white">
-              {deliveryProfileReady ? "Perfil de contato pronto" : "Perfil de contato incompleto"}
-            </h2>
-            <p className="mt-3 max-w-2xl text-base leading-7 text-white/62">
-              {deliveryProfileLabel}
-            </p>
-            <p className="mt-4 text-sm leading-6 text-white/48">
-              {deliveryProfileReady 
-                ? "Seus dados de entrega e telefone estão salvos e prontos para o checkout. Atualize sempre que necessário."
-                : "Complete seu perfil de contato e endereço de entrega para fazer compras com rapidez e segurança."}
-            </p>
-          </div>
-        </section>
-
         <div className="mt-8 grid overflow-hidden rounded-[1.3rem] border border-white/10 bg-white/[0.03] sm:grid-cols-2 xl:grid-cols-3">
           <div className="px-4 py-4 xl:border-r xl:border-white/10">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Pedidos em andamento</p>
+            <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40">
+              <Package2 className="h-3.5 w-3.5" aria-hidden="true" />
+              Pedidos em andamento
+            </p>
             <p className="mt-3 text-base font-semibold text-white">{activeOrders}</p>
             <p className="mt-1 text-sm leading-6 text-white/56">
               {activeOrders > 0 ? "Acompanhando pagamentos e logística ativos." : "Nenhum pedido aberto no momento."}
             </p>
           </div>
           <div className="border-t border-white/10 px-4 py-4 sm:border-l sm:border-t-0 sm:border-white/10 xl:border-r xl:border-white/10">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Total pago</p>
+            <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40">
+              <CreditCard className="h-3.5 w-3.5" aria-hidden="true" />
+              Total pago
+            </p>
             <p className="mt-3 text-base font-semibold text-white">{formatPrice(totalPaidAmount, orders[0]?.currency ?? "BRL")}</p>
             <p className="mt-1 text-sm leading-6 text-white/56">Soma dos pedidos confirmados desta conta.</p>
           </div>
           <div className="border-t border-white/10 px-4 py-4 sm:border-l sm:border-t-0 sm:border-white/10 xl:border-l-0">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Última movimentação</p>
+            <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40">
+              <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
+              Última movimentação
+            </p>
             <p className="mt-3 text-base font-semibold text-white">
               {latestOrderTimestamp ? formatOrderDate(latestOrderTimestamp) : "Sem pedidos processados"}
             </p>
@@ -310,23 +344,61 @@ export default async function AccountPage({
           </div>
         </div>
 
-        <ProfileSettingsForm
-          initialValues={{
-            addressLine1: currentUser?.addressLine1 ?? null,
-            addressLine2: currentUser?.addressLine2 ?? null,
-            city: currentUser?.city ?? null,
-            country: currentUser?.country ?? null,
-            neighborhood: currentUser?.neighborhood ?? null,
-            phone: currentUser?.phone ?? null,
-            postalCode: currentUser?.postalCode ?? null,
-            state: currentUser?.state ?? null,
-          }}
-        />
+        <div className="mt-10">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="inline-flex items-center gap-2 text-sm font-mono uppercase tracking-[0.28em] text-[#A5ADFF]">
+                <MapPin className="h-4 w-4" aria-hidden="true" />
+                Endereço
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">Perfil de contato</h2>
+              <p className="mt-3 text-sm leading-6 text-white/56">{deliveryProfileLabel}</p>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-white/58">
+              Esses dados reduzem atrito no checkout e deixam suporte e rastreio mais objetivos.
+            </p>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/10 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
+              <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+              {deliveryProfileReady ? "Perfil pronto para checkout" : "Complete o endereço principal"}
+            </div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/10 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
+              <Phone className="h-3.5 w-3.5" aria-hidden="true" />
+              {hasPhone ? "Telefone salvo" : "Telefone pendente"}
+            </div>
+            {profileLocation ? (
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/10 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-white/72">
+                <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+                {profileLocation}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="mt-6">
+            <ProfileSettingsForm
+              initialValues={{
+                addressLine1: currentUser?.addressLine1 ?? null,
+                addressLine2: currentUser?.addressLine2 ?? null,
+                city: currentUser?.city ?? null,
+                country: currentUser?.country ?? null,
+                neighborhood: currentUser?.neighborhood ?? null,
+                phone: currentUser?.phone ?? null,
+                postalCode: currentUser?.postalCode ?? null,
+                state: currentUser?.state ?? null,
+              }}
+            />
+          </div>
+        </div>
 
         <div className="mt-10">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-mono uppercase tracking-[0.28em] text-[#A5ADFF]">Pedidos</p>
+              <p className="inline-flex items-center gap-2 text-sm font-mono uppercase tracking-[0.28em] text-[#A5ADFF]">
+                <Package2 className="h-4 w-4" aria-hidden="true" />
+                Pedidos
+              </p>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-white/56">
                 Consulte andamento, itens comprados, rastreio e comprovantes sem navegar por várias telas.
               </p>
@@ -340,8 +412,9 @@ export default async function AccountPage({
               </p>
               <Link
                 href="/shop"
-                className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-5 text-sm font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+                className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 text-sm font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
               >
+                <ShoppingBag className="h-4 w-4" aria-hidden="true" />
                 Explorar coleção
               </Link>
             </div>
@@ -349,15 +422,24 @@ export default async function AccountPage({
             <div className="mt-6 space-y-4">
               <div className="grid overflow-hidden rounded-[1.2rem] border border-white/10 bg-white/[0.03] md:grid-cols-3">
                 <div className="px-4 py-4 md:border-r md:border-white/10">
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Pedidos registrados</p>
+                  <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40">
+                    <Package2 className="h-3.5 w-3.5" aria-hidden="true" />
+                    Pedidos registrados
+                  </p>
                   <p className="mt-3 text-2xl font-semibold text-white">{orders.length}</p>
                 </div>
                 <div className="border-t border-white/10 px-4 py-4 md:border-r md:border-t-0">
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Total pago</p>
+                  <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40">
+                    <CreditCard className="h-3.5 w-3.5" aria-hidden="true" />
+                    Total pago
+                  </p>
                   <p className="mt-3 text-2xl font-semibold text-white">{formatPrice(totalPaidAmount, orders[0].currency)}</p>
                 </div>
                 <div className="border-t border-white/10 px-4 py-4 md:border-t-0">
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Ultima atualização</p>
+                  <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40">
+                    <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
+                    Ultima atualização
+                  </p>
                   <p className="mt-3 text-sm font-medium text-white/82">
                     {latestOrderTimestamp ? formatOrderDate(latestOrderTimestamp) : "Sem pedidos processados"}
                   </p>
@@ -392,16 +474,21 @@ export default async function AccountPage({
 
                           <div className="flex flex-col gap-2 text-sm text-white/58 sm:items-end">
                             <div className="flex flex-wrap gap-2 sm:justify-end">
-                              <span className={`rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${statusMeta.badgeClassName}`}>
+                              <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${statusMeta.badgeClassName}`}>
+                                <Truck className="h-3.5 w-3.5" aria-hidden="true" />
                                 {statusMeta.label}
                               </span>
                               {order.paymentStatus === "paid" ? (
-                                <span className={`rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${paymentMeta.badgeClassName}`}>
+                                <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${paymentMeta.badgeClassName}`}>
+                                  <CreditCard className="h-3.5 w-3.5" aria-hidden="true" />
                                   {paymentMeta.label}
                                 </span>
                               ) : null}
                             </div>
-                            <span>{formatOrderDate(referenceDate)}</span>
+                            <span className="inline-flex items-center gap-2">
+                              <CalendarDays className="h-4 w-4" aria-hidden="true" />
+                              {formatOrderDate(referenceDate)}
+                            </span>
                           </div>
                         </div>
 
@@ -419,7 +506,10 @@ export default async function AccountPage({
                                   >
                                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                       <div>
-                                        <p className="text-sm font-medium text-white">{itemLabel}</p>
+                                        <p className="inline-flex items-center gap-2 text-sm font-medium text-white">
+                                          <ShoppingBag className="h-4 w-4 text-white/45" aria-hidden="true" />
+                                          {itemLabel}
+                                        </p>
                                         <p className="mt-1 text-xs uppercase tracking-[0.18em] text-white/38">
                                           Quantidade {item.quantity}
                                         </p>
@@ -429,9 +519,10 @@ export default async function AccountPage({
                                         {productSlug ? (
                                           <Link
                                             href={`/shop/${productSlug}`}
-                                            className="inline-flex min-h-10 items-center justify-center rounded-full border border-white/10 bg-transparent px-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/64 transition hover:border-white/20 hover:bg-white/[0.05] hover:text-white"
+                                            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-white/10 bg-transparent px-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/64 transition hover:border-white/20 hover:bg-white/[0.05] hover:text-white"
                                           >
                                             Ver peça
+                                            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                                           </Link>
                                         ) : null}
                                         <span className="text-sm font-semibold text-white">
@@ -446,14 +537,23 @@ export default async function AccountPage({
                           </div>
 
                           <div className="border-t border-white/10 pt-5 lg:border-l lg:border-t-0 lg:pt-0 lg:pl-5">
-                            <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Resumo</p>
+                            <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40">
+                              <CreditCard className="h-3.5 w-3.5" aria-hidden="true" />
+                              Resumo
+                            </p>
                             <dl className="mt-4 space-y-3 text-sm text-white/62">
                               <div className="flex items-center justify-between gap-3">
-                                <dt>Produtos</dt>
+                                <dt className="inline-flex items-center gap-2">
+                                  <ShoppingBag className="h-4 w-4 text-white/45" aria-hidden="true" />
+                                  Produtos
+                                </dt>
                                 <dd>{formatPrice(order.subtotalAmount, order.currency)}</dd>
                               </div>
                               <div className="flex items-center justify-between gap-3">
-                                <dt>{shippingSummary.label}</dt>
+                                <dt className="inline-flex items-center gap-2">
+                                  <Truck className="h-4 w-4 text-white/45" aria-hidden="true" />
+                                  {shippingSummary.label}
+                                </dt>
                                 <dd>
                                   {shippingSummary.amount > 0
                                     ? formatPrice(shippingSummary.amount, order.currency)
@@ -462,13 +562,19 @@ export default async function AccountPage({
                               </div>
                               {shippingSummary.deliveryWindowLabel ? (
                                 <div className="flex items-center justify-between gap-3">
-                                  <dt>Prazo estimado</dt>
+                                  <dt className="inline-flex items-center gap-2">
+                                    <Clock3 className="h-4 w-4 text-white/45" aria-hidden="true" />
+                                    Prazo estimado
+                                  </dt>
                                   <dd>{shippingSummary.deliveryWindowLabel}</dd>
                                 </div>
                               ) : null}
                               {shippingSummary.trackingCode ? (
                                 <div className="flex items-start justify-between gap-3">
-                                  <dt>Rastreio</dt>
+                                  <dt className="inline-flex items-center gap-2">
+                                    <Truck className="h-4 w-4 text-white/45" aria-hidden="true" />
+                                    Rastreio
+                                  </dt>
                                   <dd className="text-right">
                                     <span className="block">{shippingSummary.trackingCode}</span>
                                     {shippingSummary.trackingUrl ? (
@@ -476,9 +582,10 @@ export default async function AccountPage({
                                         href={shippingSummary.trackingUrl}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="mt-1 inline-flex text-xs font-semibold uppercase tracking-[0.18em] text-[#A5ADFF] hover:text-white"
+                                        className="mt-1 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[#A5ADFF] hover:text-white"
                                       >
                                         Abrir rastreio
+                                        <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                                       </a>
                                     ) : null}
                                   </dd>
@@ -493,8 +600,9 @@ export default async function AccountPage({
                             {order.paymentStatus === "paid" ? (
                               <Link
                                 href={`/account/orders/${order.id}/receipt`}
-                                className="mt-4 inline-flex min-h-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/72 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+                                className="mt-4 inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/72 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
                               >
+                                <Download className="h-3.5 w-3.5" aria-hidden="true" />
                                 Baixar comprovante
                               </Link>
                             ) : null}
@@ -502,14 +610,20 @@ export default async function AccountPage({
                         </div>
 
                         <div className="mt-6 border-t border-white/10 pt-5">
-                          <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Linha do tempo</p>
+                          <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40">
+                            <Clock3 className="h-3.5 w-3.5" aria-hidden="true" />
+                            Linha do tempo
+                          </p>
                           <ol className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
                             {timeline.map((step) => (
                               <li
                                 key={step.key}
                                 className={`border-l-2 pl-4 ${getTimelineTone(step.state)}`}
                               >
-                                <p className="text-[10px] uppercase tracking-[0.22em] text-current/70">{step.label}</p>
+                                <p className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-current/70">
+                                  <TimelineStateIcon state={step.state} />
+                                  {step.label}
+                                </p>
                                 <p className="mt-2 text-sm font-semibold text-current">
                                   {step.date ? formatOrderDate(step.date) : "Aguardando"}
                                 </p>

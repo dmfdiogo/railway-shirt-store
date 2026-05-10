@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { connection } from "next/server";
+import { ArrowRight, Sparkles, Shirt, Star, WandSparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -99,66 +100,21 @@ function formatPrice(amount: number, currency: string) {
 
 const benefits = [
   {
-    icon: (
-      <svg
-        aria-hidden="true"
-        className="h-6 w-6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
-        />
-      </svg>
-    ),
+    icon: <Sparkles aria-hidden="true" className="h-6 w-6" />,
     title: "Presença Visual",
     description:
       "Cortes limpos, contraste forte e arte aplicada com cuidado para criar presença sem exagero.",
     accent: "#2563EB",
   },
   {
-    icon: (
-      <svg
-        aria-hidden="true"
-        className="h-6 w-6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"
-        />
-      </svg>
-    ),
+    icon: <Star aria-hidden="true" className="h-6 w-6" />,
     title: "Acabamento Premium",
     description:
       "Algodão encorpado, toque refinado e caimento seguro para atravessar a noite com conforto e estrutura.",
     accent: "#6B21A8",
   },
   {
-    icon: (
-      <svg
-        aria-hidden="true"
-        className="h-6 w-6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a2.25 2.25 0 001.632-2.163zm0 0V2.25L9 5.25v10.303m0 0v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 01-.99-3.467l2.31-.66A2.25 2.25 0 009 15.553z"
-        />
-      </svg>
-    ),
+    icon: <WandSparkles aria-hidden="true" className="h-6 w-6" />,
     title: "Mistério Noturno",
     description:
       "Paleta escura, brilhos controlados e uma linguagem visual que remete ao silêncio, à pista e ao desconhecido.",
@@ -263,6 +219,7 @@ export default async function Home() {
                 className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-8 py-4 text-base font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
               >
                 Criar conta
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             )}
             </div>
@@ -357,8 +314,9 @@ export default async function Home() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/shop"
-                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-5 text-sm font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 text-sm font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
                 >
+                  <Shirt className="h-4 w-4" aria-hidden="true" />
                   Ver catálogo completo
                 </Link>
                 {featuredCategories.map((category) => (
@@ -458,20 +416,7 @@ export default async function Home() {
               className="hidden shrink-0 items-center gap-1.5 text-sm font-medium text-white/35 transition hover:text-white sm:inline-flex"
             >
               Ver todos
-              <svg
-                aria-hidden="true"
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                />
-              </svg>
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </header>
 
@@ -555,20 +500,7 @@ export default async function Home() {
               className="inline-flex items-center gap-2 rounded-full border border-white/10 px-6 py-3 text-sm font-medium text-white/50 transition hover:border-white/20 hover:text-white"
             >
               Ver toda a coleção
-              <svg
-                aria-hidden="true"
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                />
-              </svg>
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>
         </div>
@@ -613,6 +545,7 @@ export default async function Home() {
                 className="inline-flex items-center gap-2 rounded-full bg-[#2563EB] px-8 py-4 text-base font-semibold text-white shadow-[0_0_28px_rgba(37,99,235,0.35)] transition hover:-translate-y-0.5 hover:bg-[#1d4ed8] hover:shadow-[0_0_48px_rgba(37,99,235,0.5)]"
               >
                 Ir para minha conta
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             ) : authReady ? (
               <>
@@ -621,12 +554,14 @@ export default async function Home() {
                   className="inline-flex items-center gap-2 rounded-full bg-[#2563EB] px-8 py-4 text-base font-semibold text-white shadow-[0_0_28px_rgba(37,99,235,0.35)] transition hover:-translate-y-0.5 hover:bg-[#1d4ed8] hover:shadow-[0_0_48px_rgba(37,99,235,0.5)]"
                 >
                   Criar conta grátis
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
                 <Link
                   href="/shop"
                   className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-8 py-4 text-base font-semibold text-white/70 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
                 >
                   Ver coleção
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
               </>
             ) : (
@@ -635,6 +570,7 @@ export default async function Home() {
                 className="inline-flex items-center gap-2 rounded-full bg-[#2563EB] px-8 py-4 text-base font-semibold text-white shadow-[0_0_28px_rgba(37,99,235,0.35)] transition hover:-translate-y-0.5 hover:bg-[#1d4ed8] hover:shadow-[0_0_48px_rgba(37,99,235,0.5)]"
               >
                 Explorar coleção
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             )}
           </div>

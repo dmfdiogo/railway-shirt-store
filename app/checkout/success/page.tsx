@@ -1,4 +1,16 @@
 import type { Metadata } from "next";
+import {
+  ArrowUpRight,
+  CheckCircle2,
+  Circle,
+  Clock3,
+  CreditCard,
+  Download,
+  Package2,
+  ShoppingBag,
+  Store,
+  Truck,
+} from "lucide-react";
 import { connection } from "next/server";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -66,6 +78,12 @@ function getShippingSummary(order: {
     trackingCode: order.trackingCode,
     trackingUrl: order.trackingUrl,
   };
+}
+
+function TimelineStateIcon({ state }: { state: "done" | "current" | "pending" }) {
+  if (state === "done") return <CheckCircle2 className="h-4 w-4" aria-hidden="true" />;
+  if (state === "current") return <Clock3 className="h-4 w-4" aria-hidden="true" />;
+  return <Circle className="h-4 w-4" aria-hidden="true" />;
 }
 
 export default async function CheckoutSuccessPage({
@@ -153,7 +171,7 @@ export default async function CheckoutSuccessPage({
                   <>
               {delivered ? (
                 <div className="mb-6 rounded-[1.2rem] border border-emerald-400/20 bg-emerald-500/12 px-4 py-4 text-emerald-50">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-emerald-100/80">Entrega concluída</p>
+                  <p className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-emerald-100/80"><CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />Entrega concluída</p>
                   <p className="mt-2 text-sm leading-7 text-emerald-50">
                     Este pedido já foi marcado como entregue. Você pode usar o comprovante abaixo e continuar acompanhando o histórico completo na sua conta.
                   </p>
@@ -166,11 +184,13 @@ export default async function CheckoutSuccessPage({
                   <p className="mt-2 font-mono text-sm text-white/62">#{order.id.slice(-8).toUpperCase()}</p>
                 </div>
                 <div className="flex flex-wrap gap-2 sm:justify-end">
-                  <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-medium uppercase tracking-[0.22em] ${statusMeta.badgeClassName}`}>
+                  <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium uppercase tracking-[0.22em] ${statusMeta.badgeClassName}`}>
+                    <Truck className="h-3.5 w-3.5" aria-hidden="true" />
                     {statusMeta.label}
                   </span>
                   {order.paymentStatus === "paid" ? (
-                    <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-medium uppercase tracking-[0.22em] ${paymentMeta.badgeClassName}`}>
+                    <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium uppercase tracking-[0.22em] ${paymentMeta.badgeClassName}`}>
+                      <CreditCard className="h-3.5 w-3.5" aria-hidden="true" />
                       {paymentMeta.label}
                     </span>
                   ) : null}
@@ -185,24 +205,7 @@ export default async function CheckoutSuccessPage({
                       className="flex items-center justify-between gap-4 rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-4 py-3"
                     >
                       <div>
-                        <p className="text-sm font-medium text-white">{item.name}</p>
-
-                    <div className="mt-6 rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-4 py-4">
-                      <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Linha do tempo</p>
-                      <ol className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-                        {timeline.map((step) => (
-                          <li
-                            key={step.key}
-                            className={`rounded-[1rem] border px-3 py-3 ${getTimelineTone(step.state)}`}
-                          >
-                            <p className="text-[10px] uppercase tracking-[0.22em] text-current/70">{step.label}</p>
-                            <p className="mt-2 text-sm font-semibold text-current">
-                              {step.date ? formatOrderDate(step.date) : "Aguardando"}
-                            </p>
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
+                        <p className="inline-flex items-center gap-2 text-sm font-medium text-white"><ShoppingBag className="h-4 w-4 text-white/45" aria-hidden="true" />{item.name}</p>
                         <p className="mt-1 text-xs uppercase tracking-[0.18em] text-white/36">Qtd {item.quantity}</p>
                       </div>
                       <p className="text-sm font-medium text-white">
@@ -213,10 +216,27 @@ export default async function CheckoutSuccessPage({
                 </ul>
               ) : null}
 
+              <div className="mt-6 rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-4 py-4">
+                <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40"><Clock3 className="h-3.5 w-3.5" aria-hidden="true" />Linha do tempo</p>
+                <ol className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                  {timeline.map((step) => (
+                    <li
+                      key={step.key}
+                      className={`rounded-[1rem] border px-3 py-3 ${getTimelineTone(step.state)}`}
+                    >
+                      <p className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-current/70"><TimelineStateIcon state={step.state} />{step.label}</p>
+                      <p className="mt-2 text-sm font-semibold text-current">
+                        {step.date ? formatOrderDate(step.date) : "Aguardando"}
+                      </p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
               {shippingSummary.amount > 0 || shippingSummary.deliveryWindowLabel ? (
                 <div className="mt-6 rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-4 py-3">
                   <div className="flex items-center justify-between gap-4 text-sm text-white">
-                    <p className="font-medium">{shippingSummary.label}</p>
+                    <p className="inline-flex items-center gap-2 font-medium"><Truck className="h-4 w-4 text-white/45" aria-hidden="true" />{shippingSummary.label}</p>
                     <p className="font-medium">{formatCurrency(shippingSummary.amount, order.currency)}</p>
                   </div>
                   {shippingSummary.deliveryWindowLabel ? (
@@ -226,15 +246,16 @@ export default async function CheckoutSuccessPage({
                   ) : null}
                   {shippingSummary.trackingCode ? (
                     <div className="mt-3 flex flex-col gap-2 text-sm text-white">
-                      <p className="font-medium">Rastreio {shippingSummary.trackingCode}</p>
+                      <p className="inline-flex items-center gap-2 font-medium"><Truck className="h-4 w-4 text-white/45" aria-hidden="true" />Rastreio {shippingSummary.trackingCode}</p>
                       {shippingSummary.trackingUrl ? (
                         <a
                           href={shippingSummary.trackingUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex text-xs font-semibold uppercase tracking-[0.18em] text-[#A5ADFF] hover:text-white"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[#A5ADFF] hover:text-white"
                         >
                           Abrir rastreio
+                          <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                         </a>
                       ) : null}
                     </div>
@@ -255,7 +276,8 @@ export default async function CheckoutSuccessPage({
             </div>
           ) : (
             <div className="mt-8 rounded-[1.5rem] border border-amber-300/20 bg-amber-500/10 p-6">
-              <p className="text-sm leading-7 text-amber-100">
+              <p className="inline-flex items-start gap-3 text-sm leading-7 text-amber-100">
+                <Clock3 className="mt-1 h-4 w-4 shrink-0" aria-hidden="true" />
                 Seu pedido esta sendo processado. Entre com a conta vinculada a compra para acompanhar o historico completo com seguranca.
               </p>
             </div>
@@ -263,23 +285,26 @@ export default async function CheckoutSuccessPage({
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
-              className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
               href="/account"
             >
+              <Package2 className="h-4 w-4" aria-hidden="true" />
               Ver meus pedidos
             </Link>
             {order?.paymentStatus === "paid" ? (
               <Link
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-medium text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-medium text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
                 href={`/account/orders/${order.id}/receipt`}
               >
+                <Download className="h-4 w-4" aria-hidden="true" />
                 Baixar comprovante
               </Link>
             ) : null}
             <Link
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-medium text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-medium text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
               href="/"
             >
+              <Store className="h-4 w-4" aria-hidden="true" />
               Voltar para a loja
             </Link>
           </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ViewTransition } from "react";
+import { ArrowLeft, ArrowRight, Palette, Shirt, Sparkles } from "lucide-react";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import Image from "next/image";
@@ -250,7 +251,8 @@ export default async function ProductPage({
             transitionTypes={["nav-back"]}
             className="inline-flex items-center gap-2 text-sm font-medium text-white/45 transition hover:text-white"
           >
-            ← Catálogo
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Catálogo
           </Link>
 
           <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,0.94fr)_34rem] lg:items-stretch">
@@ -277,9 +279,7 @@ export default async function ProductPage({
                 <ul className="mt-5 space-y-2.5 rounded-[1.6rem] border border-white/[0.08] bg-white/[0.03] p-4">
                   {product.marketingFeatures.slice(0, 2).map((feature) => (
                     <li key={feature} className="flex items-center gap-2.5 text-sm leading-6 text-white/70">
-                      <span className="flex-shrink-0 text-[#7C7CFF]" aria-hidden="true">
-                        ✦
-                      </span>
+                      <Sparkles className="h-4 w-4 flex-shrink-0 text-[#7C7CFF]" aria-hidden="true" />
                       {feature}
                     </li>
                   ))}
@@ -288,7 +288,7 @@ export default async function ProductPage({
 
               {product.colors.length > 0 ? (
                 <div className="mt-4 flex flex-wrap items-center gap-2">
-                  <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/32">Cores</span>
+                  <span className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white/32"><Palette className="h-3.5 w-3.5" aria-hidden="true" />Cores</span>
                   {product.colors.map((color) => (
                     <span
                       key={color}
@@ -331,15 +331,17 @@ export default async function ProductPage({
                 {product.category ? (
                   <Link
                     href={`/shop?category=${encodeURIComponent(product.category)}`}
-                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#6B3CF6]/30 bg-[#6B3CF6]/10 px-5 text-sm font-semibold text-white transition hover:border-[#6B3CF6]/55 hover:bg-[#6B3CF6]/16"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#6B3CF6]/30 bg-[#6B3CF6]/10 px-5 text-sm font-semibold text-white transition hover:border-[#6B3CF6]/55 hover:bg-[#6B3CF6]/16"
                   >
+                    <Shirt className="h-4 w-4" aria-hidden="true" />
                     Ver toda a categoria {product.category}
                   </Link>
                 ) : (
                   <Link
                     href="/shop"
-                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-5 text-sm font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 text-sm font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
                   >
+                    <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                     Voltar ao catálogo
                   </Link>
                 )}

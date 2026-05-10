@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  ArrowRight,
+  CheckCircle2,
+  CircleAlert,
+  Lock,
+  Mail,
+  UserRound,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -112,7 +120,8 @@ export function EmailAuthForm({
         {isSignUp ? "Sua conta serve para acompanhar pedidos e concentrar histórico." : "Use email e senha para recuperar pedidos associados ao seu perfil."}
       </p>
       {isSignUp && requireEmailVerification ? (
-        <p className="mt-3 rounded-2xl border border-amber-300/20 bg-amber-500/10 px-4 py-3 text-sm leading-6 text-amber-100">
+        <p className="mt-3 flex items-start gap-3 rounded-2xl border border-amber-300/20 bg-amber-500/10 px-4 py-3 text-sm leading-6 text-amber-100">
+          <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
           A verificacao de email e obrigatoria antes do primeiro login com email e senha.
         </p>
       ) : null}
@@ -142,7 +151,10 @@ export function EmailAuthForm({
       <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
         {isSignUp ? (
           <label className="block text-sm font-medium text-white/72">
-            Nome
+            <span className="inline-flex items-center gap-2">
+              <UserRound className="h-4 w-4" aria-hidden="true" />
+              Nome
+            </span>
             <input
               name="name"
               type="text"
@@ -155,7 +167,10 @@ export function EmailAuthForm({
         ) : null}
 
         <label className="block text-sm font-medium text-white/72">
-          Email
+          <span className="inline-flex items-center gap-2">
+            <Mail className="h-4 w-4" aria-hidden="true" />
+            Email
+          </span>
           <input
             name="email"
             type="email"
@@ -167,7 +182,10 @@ export function EmailAuthForm({
         </label>
 
         <label className="block text-sm font-medium text-white/72">
-          Senha
+          <span className="inline-flex items-center gap-2">
+            <Lock className="h-4 w-4" aria-hidden="true" />
+            Senha
+          </span>
           <input
             name="password"
             type="password"
@@ -180,13 +198,15 @@ export function EmailAuthForm({
         </label>
 
         {error ? (
-          <div className="rounded-2xl border border-red-300/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+          <div className="flex items-start gap-3 rounded-2xl border border-red-300/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+            <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
             {error}
           </div>
         ) : null}
 
         {success ? (
-          <div className="rounded-2xl border border-emerald-300/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+          <div className="flex items-start gap-3 rounded-2xl border border-emerald-300/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
             {success}
           </div>
         ) : null}
@@ -194,8 +214,9 @@ export function EmailAuthForm({
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_50px_rgba(107,60,246,0.38)] disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_50px_rgba(107,60,246,0.38)] disabled:cursor-not-allowed disabled:opacity-50"
         >
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
           {isPending ? "Processando..." : isSignUp ? "Criar conta" : "Entrar"}
         </button>
       </form>

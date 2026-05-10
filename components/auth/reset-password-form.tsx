@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight, CheckCircle2, CircleAlert, KeyRound, Lock } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -23,8 +24,9 @@ export function ResetPasswordForm() {
         <p className="mt-4 text-sm leading-6 text-white/62">Solicite um novo link de redefinição de senha.</p>
         <Link
           href="/forgot-password"
-          className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
+          className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
         >
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
           Solicitar novo link
         </Link>
       </div>
@@ -39,8 +41,9 @@ export function ResetPasswordForm() {
         <p className="mt-4 text-sm leading-6 text-white/62">Você já pode entrar com a nova senha.</p>
         <Link
           href="/sign-in"
-          className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
+          className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
         >
+          <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
           Entrar
         </Link>
       </div>
@@ -80,7 +83,10 @@ export function ResetPasswordForm() {
 
       <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
         <label className="block text-sm font-medium text-white/72">
-          Nova senha
+          <span className="inline-flex items-center gap-2">
+            <Lock className="h-4 w-4" aria-hidden="true" />
+            Nova senha
+          </span>
           <input
             name="password"
             type="password"
@@ -93,7 +99,10 @@ export function ResetPasswordForm() {
         </label>
 
         <label className="block text-sm font-medium text-white/72">
-          Confirmar senha
+          <span className="inline-flex items-center gap-2">
+            <Lock className="h-4 w-4" aria-hidden="true" />
+            Confirmar senha
+          </span>
           <input
             name="confirm"
             type="password"
@@ -106,7 +115,8 @@ export function ResetPasswordForm() {
         </label>
 
         {error ? (
-          <div className="rounded-2xl border border-red-300/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+          <div className="flex items-start gap-3 rounded-2xl border border-red-300/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+            <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
             {error}
           </div>
         ) : null}
@@ -114,8 +124,9 @@ export function ResetPasswordForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
         >
+          <KeyRound className="h-4 w-4" aria-hidden="true" />
           {isPending ? "Salvando..." : "Redefinir senha"}
         </button>
       </form>

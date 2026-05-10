@@ -21,6 +21,7 @@
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "better-auth": "^1.6.9",
+    "lucide-react": "^1.14.0",
     "next": "16.2.4",
     "pdf-lib": "^1.17.1",
     "pg": "^8.16.3",

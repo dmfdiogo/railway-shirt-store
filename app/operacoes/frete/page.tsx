@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ArrowRight, CalendarDays, Mail, ShieldCheck, Truck } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -84,7 +85,7 @@ export default async function ShippingOperationsPage({
       <section className="mx-auto w-full max-w-4xl rounded-[2rem] border border-white/10 bg-[linear-gradient(160deg,rgba(18,19,28,0.94)_0%,rgba(11,12,19,0.98)_100%)] p-8 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl sm:p-10">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-sm font-mono uppercase tracking-[0.3em] text-[#A5ADFF]">Operacoes</p>
+            <p className="inline-flex items-center gap-2 text-sm font-mono uppercase tracking-[0.3em] text-[#A5ADFF]"><Truck className="h-4 w-4" aria-hidden="true" />Operacoes</p>
             <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-white">Integracao de frete</h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-white/62">
               Esta area controla a autorizacao da conta da loja no Melhor Envio. Clientes continuam podendo comprar sem cadastro e sem passar por esta etapa.
@@ -94,11 +95,12 @@ export default async function ShippingOperationsPage({
           <div className="flex flex-col gap-3 sm:items-end">
             <Link
               href="/account"
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-medium text-white/82 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-medium text-white/82 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
             >
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
               Voltar para a conta
             </Link>
-            <p className="text-xs uppercase tracking-[0.2em] text-white/36">{session.user.email}</p>
+            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-white/36"><Mail className="h-3.5 w-3.5" aria-hidden="true" />{session.user.email}</p>
           </div>
         </div>
 
@@ -136,8 +138,9 @@ export default async function ShippingOperationsPage({
             {oauthReady && !missingTable ? (
               <a
                 href="/api/integrations/melhor-envio/connect"
-                className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-6 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
               >
+                <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                 {melhorEnvioToken ? "Reconectar sandbox" : "Conectar sandbox"}
               </a>
             ) : missingTable ? (
@@ -153,19 +156,19 @@ export default async function ShippingOperationsPage({
 
           <div className="mt-6 grid gap-3 md:grid-cols-3">
             <div className="rounded-[1.2rem] border border-white/10 bg-black/10 px-4 py-4">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Status</p>
+              <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40"><ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />Status</p>
               <p className="mt-3 text-base font-semibold text-white">
                 {missingTable ? "Migration pendente" : melhorEnvioToken ? "Conectado" : oauthReady ? "Aguardando autorizacao" : "Nao configurado"}
               </p>
             </div>
             <div className="rounded-[1.2rem] border border-white/10 bg-black/10 px-4 py-4">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Ultima atualizacao</p>
+              <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40"><CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />Ultima atualizacao</p>
               <p className="mt-3 text-sm font-medium text-white/82">
                 {melhorEnvioToken ? formatDate(melhorEnvioToken.updatedAt) : "Sem token salvo"}
               </p>
             </div>
             <div className="rounded-[1.2rem] border border-white/10 bg-black/10 px-4 py-4">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Expiracao prevista</p>
+              <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40"><CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />Expiracao prevista</p>
               <p className="mt-3 text-sm font-medium text-white/82">
                 {melhorEnvioToken?.expiresAt ? formatDate(melhorEnvioToken.expiresAt) : "Renovada automaticamente quando possivel"}
               </p>

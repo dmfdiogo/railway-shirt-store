@@ -1,5 +1,6 @@
 "use client";
 
+import { CircleAlert, ShoppingBag, ShoppingCart, Truck } from "lucide-react";
 import Link from "next/link";
 
 import { useCart } from "@/components/cart/use-cart";
@@ -41,8 +42,9 @@ export function CartCancelRecovery() {
             {recoveryReasons.map((reason) => (
               <div
                 key={reason}
-                className="rounded-[1.4rem] border border-white/10 bg-white/[0.04] px-5 py-4 text-sm leading-7 text-white/64"
+                className="flex items-start gap-3 rounded-[1.4rem] border border-white/10 bg-white/[0.04] px-5 py-4 text-sm leading-7 text-white/64"
               >
+                <CircleAlert className="mt-1 h-4 w-4 shrink-0 text-white/42" aria-hidden="true" />
                 {reason}
               </div>
             ))}
@@ -51,34 +53,39 @@ export function CartCancelRecovery() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/cart"
-              className="inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-8 text-base font-semibold text-white shadow-[0_12px_30px_rgba(79,70,229,0.24)] transition hover:shadow-[0_16px_36px_rgba(107,60,246,0.34)]"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-8 text-base font-semibold text-white shadow-[0_12px_30px_rgba(79,70,229,0.24)] transition hover:shadow-[0_16px_36px_rgba(107,60,246,0.34)]"
             >
+              <ShoppingCart className="h-4 w-4" aria-hidden="true" />
               Retomar checkout
             </Link>
             <Link
               href="/shop"
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-8 text-base font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-8 text-base font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
             >
+              <ShoppingBag className="h-4 w-4" aria-hidden="true" />
               Voltar ao catalogo
             </Link>
           </div>
         </div>
 
         <aside className="rounded-[1.8rem] border border-white/[0.08] bg-[#0D0E13]/80 p-6 shadow-[0_18px_50px_rgba(0,0,0,0.26)]">
-          <p className="text-xs font-semibold uppercase tracking-[0.45em] text-[#8B5CF6]">Resumo salvo</p>
+          <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.45em] text-[#8B5CF6]">
+            <Truck className="h-4 w-4" aria-hidden="true" />
+            Resumo salvo
+          </p>
 
           {items.length > 0 ? (
             <>
               <div className="mt-6 flex items-center justify-between text-sm text-white/54">
-                <span>Itens no carrinho</span>
+                <span className="inline-flex items-center gap-2"><ShoppingCart className="h-4 w-4 text-white/45" aria-hidden="true" />Itens no carrinho</span>
                 <span>{count}</span>
               </div>
               <div className="mt-3 flex items-center justify-between text-sm text-white/54">
-                <span>Subtotal</span>
+                <span className="inline-flex items-center gap-2"><ShoppingBag className="h-4 w-4 text-white/45" aria-hidden="true" />Subtotal</span>
                 <span>{formatCurrency(subtotal, currency)}</span>
               </div>
               <div className="mt-3 flex items-center justify-between text-sm text-white/54">
-                <span>{shippingOption.displayLabel}</span>
+                <span className="inline-flex items-center gap-2"><Truck className="h-4 w-4 text-white/45" aria-hidden="true" />{shippingOption.displayLabel}</span>
                 <span>{formatCurrency(shippingOption.amount, currency)}</span>
               </div>
               <p className="mt-2 text-xs uppercase tracking-[0.18em] text-white/34">{shippingOption.description}</p>
@@ -94,7 +101,7 @@ export function CartCancelRecovery() {
               <ul className="mt-6 space-y-3">
                 {items.slice(0, 3).map((item) => (
                   <li key={item.priceId} className="rounded-[1.2rem] border border-white/8 bg-white/[0.03] px-4 py-3">
-                    <p className="text-sm font-medium text-white">{item.productName}</p>
+                    <p className="inline-flex items-center gap-2 text-sm font-medium text-white"><ShoppingBag className="h-4 w-4 text-white/45" aria-hidden="true" />{item.productName}</p>
                     <p className="mt-1 text-xs uppercase tracking-[0.18em] text-white/36">
                       {item.variantLabel} · qtd {item.quantity}
                     </p>

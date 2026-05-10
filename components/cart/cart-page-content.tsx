@@ -1,5 +1,17 @@
 "use client";
 
+import {
+  ArrowRight,
+  MapPin,
+  Minus,
+  Plus,
+  RefreshCw,
+  ShoppingBag,
+  ShoppingCart,
+  TicketPercent,
+  Trash2,
+  Truck,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -49,8 +61,9 @@ export function CartPageContent() {
         </div>
         <Link
           href="/shop"
-          className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-8 text-base font-semibold text-white shadow-[0_16px_42px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_54px_rgba(107,60,246,0.42)]"
+          className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-8 text-base font-semibold text-white shadow-[0_16px_42px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_54px_rgba(107,60,246,0.42)]"
         >
+          <ShoppingBag className="h-4 w-4" aria-hidden="true" />
           Explorar catálogo
         </Link>
       </section>
@@ -62,7 +75,10 @@ export function CartPageContent() {
       <section className="rounded-[2.2rem] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-5 shadow-[0_28px_80px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:p-6">
         <div className="flex items-end justify-between gap-6 border-b border-white/[0.08] pb-5">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.45em] text-[#8B5CF6]">Carrinho</p>
+            <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.45em] text-[#8B5CF6]">
+              <ShoppingCart className="h-4 w-4" aria-hidden="true" />
+              Carrinho
+            </p>
             <h1 className="font-display mt-3 text-3xl font-extrabold uppercase tracking-[-0.05em] text-white sm:text-4xl">
               Peças reservadas.
             </h1>
@@ -113,7 +129,7 @@ export function CartPageContent() {
                       className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/72 transition hover:bg-white/[0.08] hover:text-white"
                       aria-label={`Diminuir quantidade de ${item.productName}`}
                     >
-                      −
+                      <Minus className="h-4 w-4" aria-hidden="true" />
                     </button>
                     <span className="min-w-10 text-center text-sm font-semibold text-white">{item.quantity}</span>
                     <button
@@ -122,15 +138,16 @@ export function CartPageContent() {
                       className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white/72 transition hover:bg-white/[0.08] hover:text-white"
                       aria-label={`Aumentar quantidade de ${item.productName}`}
                     >
-                      +
+                      <Plus className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => removeItem(item.priceId)}
-                    className="text-sm font-medium text-white/46 transition hover:text-white"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-white/46 transition hover:text-white"
                   >
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
                     Remover
                   </button>
                 </div>
@@ -141,11 +158,17 @@ export function CartPageContent() {
       </section>
 
       <aside className="rounded-[2.2rem] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_28px_80px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
-        <p className="text-xs font-semibold uppercase tracking-[0.45em] text-[#8B5CF6]">Resumo</p>
+        <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.45em] text-[#8B5CF6]">
+          <Truck className="h-4 w-4" aria-hidden="true" />
+          Resumo
+        </p>
 
         <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-4">
           <label htmlFor="shipping-postal-code" className="text-xs font-semibold uppercase tracking-[0.3em] text-white/46">
-            CEP de entrega
+            <span className="inline-flex items-center gap-2">
+              <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+              CEP de entrega
+            </span>
           </label>
           <input
             id="shipping-postal-code"
@@ -164,7 +187,10 @@ export function CartPageContent() {
           </p>
 
           {isLoading ? (
-            <p className="mt-3 text-sm text-white/56">Consultando servicos disponiveis...</p>
+            <p className="mt-3 inline-flex items-center gap-2 text-sm text-white/56">
+              <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
+              Consultando servicos disponiveis...
+            </p>
           ) : null}
 
           {quotes.length > 0 ? (
@@ -201,7 +227,8 @@ export function CartPageContent() {
 
           {!integrationAvailable || quoteError ? (
             <div className="mt-4 rounded-2xl border border-amber-300/20 bg-amber-500/10 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-100/90">
+              <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-amber-100/90">
+                <Truck className="h-3.5 w-3.5" aria-hidden="true" />
                 Fallback ativo
               </p>
               <p className="mt-2 text-sm leading-6 text-amber-50/82">
@@ -230,15 +257,15 @@ export function CartPageContent() {
         </div>
 
         <div className="mt-6 flex items-center justify-between text-sm text-white/56">
-          <span>Subtotal</span>
+          <span className="inline-flex items-center gap-2"><ShoppingBag className="h-4 w-4 text-white/45" aria-hidden="true" />Subtotal</span>
           <span>{formatCurrency(subtotal, items[0].currency)}</span>
         </div>
         <div className="mt-3 flex items-center justify-between text-sm text-white/56">
-          <span>Frete</span>
+          <span className="inline-flex items-center gap-2"><Truck className="h-4 w-4 text-white/45" aria-hidden="true" />Frete</span>
           <span>{formatCurrency(activeShippingOption.amount, items[0].currency)}</span>
         </div>
         <div className="mt-3 flex items-center justify-between text-sm text-white/56">
-          <span>Descontos</span>
+          <span className="inline-flex items-center gap-2"><TicketPercent className="h-4 w-4 text-white/45" aria-hidden="true" />Descontos</span>
           <span>Aplicados no Stripe</span>
         </div>
         <div className="mt-5 h-px bg-gradient-to-r from-transparent via-white/[0.09] to-transparent" />
@@ -255,16 +282,18 @@ export function CartPageContent() {
           <input type="hidden" name="shippingQuote" value={serializeCheckoutShippingOption(selectedQuote)} />
           <button
             type="submit"
-            className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-8 text-base font-semibold text-white shadow-[0_12px_30px_rgba(79,70,229,0.24)] transition hover:shadow-[0_16px_36px_rgba(107,60,246,0.34)]"
+            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-8 text-base font-semibold text-white shadow-[0_12px_30px_rgba(79,70,229,0.24)] transition hover:shadow-[0_16px_36px_rgba(107,60,246,0.34)]"
           >
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
             Ir para o checkout
           </button>
         </form>
 
         <Link
           href="/shop"
-          className="mt-4 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-8 text-base font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+          className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-8 text-base font-semibold text-white/76 transition hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
         >
+          <ShoppingBag className="h-4 w-4" aria-hidden="true" />
           Continuar comprando
         </Link>
       </aside>

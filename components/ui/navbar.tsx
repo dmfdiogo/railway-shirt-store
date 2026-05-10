@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  ArrowRight,
+  LogIn,
+  Menu,
+  ShoppingBag,
+  ShoppingCart,
+  UserRound,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -31,10 +40,12 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-8 md:flex" aria-label="Principal">
-          <Link href="/shop" className="text-sm font-medium text-white/50 transition-colors hover:text-white">
+          <Link href="/shop" className="inline-flex items-center gap-2 text-sm font-medium text-white/50 transition-colors hover:text-white">
+            <ShoppingBag className="h-4 w-4" aria-hidden="true" />
             Catálogo
           </Link>
-          <Link href="/cart" className="relative text-sm font-medium text-white/50 transition-colors hover:text-white">
+          <Link href="/cart" className="relative inline-flex items-center gap-2 text-sm font-medium text-white/50 transition-colors hover:text-white">
+            <ShoppingCart className="h-4 w-4" aria-hidden="true" />
             Carrinho
             {count > 0 ? (
               <span className="ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-[#7C7CFF] px-1.5 py-0.5 text-[10px] font-semibold text-white">
@@ -43,19 +54,22 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
             ) : null}
           </Link>
           {isLoggedIn ? (
-            <Link href="/account" className="text-sm font-medium text-white/50 transition-colors hover:text-white">
+            <Link href="/account" className="inline-flex items-center gap-2 text-sm font-medium text-white/50 transition-colors hover:text-white">
+              <UserRound className="h-4 w-4" aria-hidden="true" />
               Minha conta
             </Link>
           ) : authReady ? (
-            <Link href="/sign-in" className="text-sm font-medium text-white/50 transition-colors hover:text-white">
+            <Link href="/sign-in" className="inline-flex items-center gap-2 text-sm font-medium text-white/50 transition-colors hover:text-white">
+              <LogIn className="h-4 w-4" aria-hidden="true" />
               Entrar
             </Link>
           ) : null}
           <Link
             href="/shop"
-            className="rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-5 py-2 text-sm font-semibold text-white shadow-[0_12px_34px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_44px_rgba(76,70,229,0.42)]"
+            className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-5 py-2 text-sm font-semibold text-white shadow-[0_12px_34px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_44px_rgba(76,70,229,0.42)]"
           >
             Ver coleção
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </nav>
 
@@ -68,15 +82,9 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
           onClick={() => setOpen((v) => !v)}
         >
           {open ? (
-            /* X icon */
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
+            <X className="h-5 w-5" aria-hidden="true" />
           ) : (
-            /* Hamburger icon */
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
+            <Menu className="h-5 w-5" aria-hidden="true" />
           )}
         </button>
       </div>
@@ -92,8 +100,9 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
               <Link
                 href="/shop"
                 onClick={() => setOpen(false)}
-                className="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
+                className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
               >
+                <ShoppingBag className="h-4 w-4" aria-hidden="true" />
                 Catálogo
               </Link>
             </li>
@@ -103,7 +112,10 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
                 onClick={() => setOpen(false)}
                 className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
               >
-                <span>Carrinho</span>
+                <span className="inline-flex items-center gap-3">
+                  <ShoppingCart className="h-4 w-4" aria-hidden="true" />
+                  Carrinho
+                </span>
                 {count > 0 ? (
                   <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-[#7C7CFF] px-1.5 py-0.5 text-[10px] font-semibold text-white">
                     {count}
@@ -116,8 +128,9 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
                 <Link
                   href="/account"
                   onClick={() => setOpen(false)}
-                  className="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
+                  className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
                 >
+                  <UserRound className="h-4 w-4" aria-hidden="true" />
                   Minha conta
                 </Link>
               </li>
@@ -127,8 +140,9 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
                   <Link
                     href="/sign-in"
                     onClick={() => setOpen(false)}
-                    className="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
+                    className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
                   >
+                    <LogIn className="h-4 w-4" aria-hidden="true" />
                     Entrar
                   </Link>
                 </li>
@@ -136,8 +150,9 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
                   <Link
                     href="/sign-up"
                     onClick={() => setOpen(false)}
-                    className="flex items-center rounded-xl px-4 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
+                    className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
                   >
+                    <UserRound className="h-4 w-4" aria-hidden="true" />
                     Criar conta
                   </Link>
                 </li>
@@ -147,9 +162,10 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
               <Link
                 href="/shop"
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_34px_rgba(61,79,255,0.34)] transition hover:opacity-95"
+                className="flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_34px_rgba(61,79,255,0.34)] transition hover:opacity-95"
               >
                 Ver coleção
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </li>
           </ul>

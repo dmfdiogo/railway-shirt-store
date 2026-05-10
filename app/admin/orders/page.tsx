@@ -1,4 +1,12 @@
 import type { Metadata } from "next";
+import {
+  ArrowRight,
+  CreditCard,
+  Mail,
+  Package2,
+  ShieldCheck,
+  Truck,
+} from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -127,7 +135,7 @@ export default async function AdminOrdersPage({
       <section className="mx-auto w-full max-w-5xl rounded-[2rem] border border-white/10 bg-[linear-gradient(160deg,rgba(18,19,28,0.94)_0%,rgba(11,12,19,0.98)_100%)] p-8 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl sm:p-10">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-sm font-mono uppercase tracking-[0.3em] text-[#A5ADFF]">Admin</p>
+            <p className="inline-flex items-center gap-2 text-sm font-mono uppercase tracking-[0.3em] text-[#A5ADFF]"><ShieldCheck className="h-4 w-4" aria-hidden="true" />Admin</p>
             <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-white">Operação de pedidos</h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-white/62">
               Painel manual para avançar o fluxo logístico dos pedidos pagos enquanto a operação ainda está em modo low budget.
@@ -137,11 +145,12 @@ export default async function AdminOrdersPage({
           <div className="flex flex-col gap-3 sm:items-end">
             <Link
               href="/account"
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-medium text-white/82 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-6 text-sm font-medium text-white/82 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
             >
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
               Voltar para a conta
             </Link>
-            <p className="text-xs uppercase tracking-[0.2em] text-white/36">{session.user.email}</p>
+            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-white/36"><Mail className="h-3.5 w-3.5" aria-hidden="true" />{session.user.email}</p>
           </div>
         </div>
 
@@ -186,10 +195,12 @@ export default async function AdminOrdersPage({
 
                   <div className="flex flex-col gap-3 lg:items-end">
                     <div className="flex flex-wrap gap-2 lg:justify-end">
-                      <span className={`rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${primaryStatusMeta.badgeClassName}`}>
+                      <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${primaryStatusMeta.badgeClassName}`}>
+                        <Truck className="h-3.5 w-3.5" aria-hidden="true" />
                         {primaryStatusMeta.label}
                       </span>
-                      <span className={`rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${paymentMeta.badgeClassName}`}>
+                      <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.2em] ${paymentMeta.badgeClassName}`}>
+                        <CreditCard className="h-3.5 w-3.5" aria-hidden="true" />
                         {paymentMeta.label}
                       </span>
                     </div>
@@ -200,8 +211,9 @@ export default async function AdminOrdersPage({
                         <input type="hidden" name="fulfillmentStatus" value={nextAction.value} />
                         <button
                           type="submit"
-                          className="inline-flex min-h-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-5 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
+                          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#2E5BFF_0%,#6B3CF6_100%)] px-5 text-sm font-medium text-white shadow-[0_16px_38px_rgba(61,79,255,0.34)] transition hover:-translate-y-0.5"
                         >
+                          <ArrowRight className="h-4 w-4" aria-hidden="true" />
                           {nextAction.label}
                         </button>
                       </form>
@@ -215,7 +227,7 @@ export default async function AdminOrdersPage({
 
                 {visibleItems.length > 0 ? (
                   <div className="mt-5 rounded-[1.2rem] border border-white/10 bg-black/10 px-4 py-4">
-                    <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Itens</p>
+                    <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40"><Package2 className="h-3.5 w-3.5" aria-hidden="true" />Itens</p>
                     <ul className="mt-3 space-y-2 text-sm text-white/68">
                       {visibleItems.map((item) => (
                         <li key={item.id} className="flex items-center justify-between gap-4">
@@ -232,7 +244,7 @@ export default async function AdminOrdersPage({
 
                   return (
                     <div className="mt-5 rounded-[1.2rem] border border-white/10 bg-black/10 px-4 py-4">
-                      <p className="text-[11px] uppercase tracking-[0.22em] text-white/40">Rastreio manual</p>
+                      <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40"><Truck className="h-3.5 w-3.5" aria-hidden="true" />Rastreio manual</p>
                       <form action="/admin/orders/tracking" method="post" className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] lg:items-end">
                         <input type="hidden" name="orderId" value={order.id} />
                         <label className="block text-sm font-medium text-white/72">
@@ -257,8 +269,9 @@ export default async function AdminOrdersPage({
                         </label>
                         <button
                           type="submit"
-                          className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-5 text-sm font-medium text-white/82 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
+                          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 text-sm font-medium text-white/82 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-white"
                         >
+                          <Truck className="h-4 w-4" aria-hidden="true" />
                           Salvar rastreio
                         </button>
                       </form>
