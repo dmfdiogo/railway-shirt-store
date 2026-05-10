@@ -548,12 +548,12 @@ export async function POST(request: Request) {
       },
     });
 
-    const response = NextResponse.redirect(
+    const redirectUrl =
       checkoutUi === "embedded"
         ? `${appUrl}/checkout?session_id=${encodeURIComponent(session.id)}`
-        : session.url,
-      303
-    );
+        : (session.url as string);
+
+    const response = NextResponse.redirect(redirectUrl, 303);
     const rateLimitHeaders = createRateLimitHeaders(rateLimit);
     rateLimitHeaders.forEach((value, key) => {
       response.headers.set(key, value);
