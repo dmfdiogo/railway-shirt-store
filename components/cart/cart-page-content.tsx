@@ -278,6 +278,7 @@ export function CartPageContent() {
 
         <form action="/api/checkout-session" method="POST" className="mt-6">
           <input type="hidden" name="cart" value={checkoutPayload} />
+          <input type="hidden" name="checkoutUi" value="embedded" />
           <input type="hidden" name="shippingRegion" value={shippingRegion} />
           <input type="hidden" name="shippingQuote" value={serializeCheckoutShippingOption(selectedQuote)} />
           <button

@@ -82,6 +82,7 @@ export function SizeSelector({
   return (
     <>
       <input type="hidden" name="priceId" value={selected.stripePriceId} />
+      <input type="hidden" name="checkoutUi" value="embedded" />
       <input type="hidden" name="shippingRegion" value={shippingRegion} />
       <input type="hidden" name="shippingQuote" value={serializeCheckoutShippingOption(selectedQuote)} />
 

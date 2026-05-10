@@ -4,7 +4,7 @@ Next.js 16 storefront prepared for Railway deploys with Prisma, Better Auth, and
 
 ## Current Scope
 
-- Hosted Stripe Checkout Session created on the server
+- Stripe Checkout Session created on the server, with Stripe Elements mounted on the local `/checkout` page
 - Prisma schema and initial migration for auth, catalog, orders, and webhook events
 - Better Auth mounted on App Router with email/password sign-in and sign-up
 - Stripe webhook endpoint as the server-side source of truth for payment confirmation
@@ -21,6 +21,7 @@ BETTER_AUTH_URL=http://localhost:3000
 GOOGLE_CLIENT_ID=google-client-id
 GOOGLE_CLIENT_SECRET=google-client-secret
 STRIPE_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_PRICE_ID=price_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 APP_URL=http://localhost:3000
@@ -70,6 +71,8 @@ npm run stripe:listen
 
 Use the CLI output from `stripe listen` to fill `STRIPE_WEBHOOK_SECRET`.
 
+Set `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` for local development if you want the local checkout page to render Stripe Elements inside the site. If you prefer to keep it unprefixed in the server environment, `STRIPE_PUBLISHABLE_KEY` is also accepted and forwarded safely from the server.
+
 For Google OAuth, register this redirect URI in Google Cloud Console:
 
 ```bash
@@ -86,7 +89,7 @@ The Railway project is already created and linked for this repository.
 
 1. Provision a Railway Postgres service if the project does not already have one.
 2. Wire `DATABASE_URL` in the `web` service to the Postgres service reference.
-3. Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `APP_URL`, `ORDER_OPERATOR_EMAILS`, `MELHOR_ENVIO_ENVIRONMENT`, `MELHOR_ENVIO_CLIENT_ID`, `MELHOR_ENVIO_CLIENT_SECRET`, `MELHOR_ENVIO_REDIRECT_URI`, `MELHOR_ENVIO_FROM_POSTAL_CODE`, `MELHOR_ENVIO_SERVICE_IDS`, `MELHOR_ENVIO_OPERATOR_EMAILS`, `MELHOR_ENVIO_USER_AGENT`, `MELHOR_ENVIO_DEFAULT_WIDTH_CM`, `MELHOR_ENVIO_DEFAULT_HEIGHT_CM`, `MELHOR_ENVIO_DEFAULT_LENGTH_CM`, and `MELHOR_ENVIO_DEFAULT_WEIGHT_KG` in the `web` service variables.
+3. Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` or `STRIPE_PUBLISHABLE_KEY`, `STRIPE_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `APP_URL`, `ORDER_OPERATOR_EMAILS`, `MELHOR_ENVIO_ENVIRONMENT`, `MELHOR_ENVIO_CLIENT_ID`, `MELHOR_ENVIO_CLIENT_SECRET`, `MELHOR_ENVIO_REDIRECT_URI`, `MELHOR_ENVIO_FROM_POSTAL_CODE`, `MELHOR_ENVIO_SERVICE_IDS`, `MELHOR_ENVIO_OPERATOR_EMAILS`, `MELHOR_ENVIO_USER_AGENT`, `MELHOR_ENVIO_DEFAULT_WIDTH_CM`, `MELHOR_ENVIO_DEFAULT_HEIGHT_CM`, `MELHOR_ENVIO_DEFAULT_LENGTH_CM`, and `MELHOR_ENVIO_DEFAULT_WEIGHT_KG` in the `web` service variables.
 4. Deploy from the workspace with `railway up`.
 5. Run `npm run db:migrate:deploy` in the deployed environment so the schema lands in Postgres.
 6. Register the production webhook endpoint at `/api/stripe/webhook` in Stripe and store the matching signing secret in Railway.
@@ -113,5 +116,5 @@ This workspace is configured for a CLI-first Railway and Stripe workflow.
 
 - Keep all Stripe secret values server-side.
 - The success page is not the source of truth for fulfillment; the webhook updates local orders.
-- Checkout creates a local order before redirecting to Stripe and stores the local `orderId` in Stripe metadata.
+- Checkout creates a local order before redirecting to Stripe or rendering the local Elements checkout and stores the local `orderId` in Stripe metadata.
 - If the customer is signed in, the checkout flow can associate the order with the Better Auth user.
