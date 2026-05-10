@@ -138,15 +138,7 @@ export function CheckoutElementsShell({
       };
 
       const initialSession = actions.getSession();
-      const contactElement = checkout.createContactDetailsElement(
-        initialSession.email
-          ? {
-              defaultValues: {
-                email: initialSession.email,
-              },
-            }
-          : undefined
-      );
+      const contactElement = checkout.createContactDetailsElement();
       const shippingElement = checkout.createShippingAddressElement({
         display: {
           name: "full",
