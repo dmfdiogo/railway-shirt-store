@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Figtree } from "next/font/google";
 import { ThemeController } from "@/components/ui/theme-controller";
 import { Toaster } from "@/components/ui/toaster";
@@ -45,6 +45,10 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: ["/opengraph-image"],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0A0A0C",
 };
 
 const siteJsonLd = {
