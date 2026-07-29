@@ -137,7 +137,6 @@ export function CheckoutElementsShell({
         );
       };
 
-      const initialSession = actions.getSession();
       const contactElement = checkout.createContactDetailsElement();
       const shippingElement = checkout.createShippingAddressElement({
         display: {
@@ -277,7 +276,8 @@ export function CheckoutElementsShell({
           <div ref={paymentRef} className="mt-4" />
 
           {errorMessage ? (
-            <div className="mt-4 rounded-[1.2rem] border border-red-300/20 bg-red-500/10 px-4 py-3 text-sm text-red-50/90">
+            <div className="mt-4 flex items-start gap-3 rounded-[1.2rem] border border-red-300/20 bg-red-500/10 px-4 py-3 text-sm text-red-50/90">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
               {errorMessage}
             </div>
           ) : null}

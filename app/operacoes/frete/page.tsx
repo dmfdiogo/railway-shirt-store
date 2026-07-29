@@ -79,6 +79,9 @@ export default async function ShippingOperationsPage({
   const params = await searchParams;
   const feedback = getMelhorEnvioFeedback(params["melhor-envio"]);
   const operatorRestrictionEnabled = Boolean(process.env.MELHOR_ENVIO_OPERATOR_EMAILS?.trim());
+  const isTokenExpired = Boolean(
+    melhorEnvioToken?.expiresAt && melhorEnvioToken.expiresAt.getTime() <= new Date().getTime(),
+  );
 
   return (
     <BeArtShell authReady footer navbar sessionActive contentClassName="relative px-6 pb-12 pt-28 sm:px-10 lg:px-16">
@@ -123,6 +126,12 @@ export default async function ShippingOperationsPage({
           </div>
         ) : null}
 
+        {isTokenExpired ? (
+          <div className="mt-10 rounded-[1.3rem] border border-red-400/20 bg-red-500/12 px-5 py-4 text-sm leading-7 text-red-100">
+            O token expirou em {formatDate(melhorEnvioToken!.expiresAt!)} e nao foi renovado. Cotacoes de frete estao caindo no fallback de tabela fixa para todos os clientes ate a integracao ser reconectada abaixo.
+          </div>
+        ) : null}
+
         <div className="mt-10 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-5 py-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -157,8 +166,16 @@ export default async function ShippingOperationsPage({
           <div className="mt-6 grid gap-3 md:grid-cols-3">
             <div className="rounded-[1.2rem] border border-white/10 bg-black/10 px-4 py-4">
               <p className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-white/40"><ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />Status</p>
-              <p className="mt-3 text-base font-semibold text-white">
-                {missingTable ? "Migration pendente" : melhorEnvioToken ? "Conectado" : oauthReady ? "Aguardando autorizacao" : "Nao configurado"}
+              <p className={`mt-3 text-base font-semibold ${isTokenExpired ? "text-red-300" : "text-white"}`}>
+                {missingTable
+                  ? "Migration pendente"
+                  : isTokenExpired
+                    ? "Token expirado"
+                    : melhorEnvioToken
+                      ? "Conectado"
+                      : oauthReady
+                        ? "Aguardando autorizacao"
+                        : "Nao configurado"}
               </p>
             </div>
             <div className="rounded-[1.2rem] border border-white/10 bg-black/10 px-4 py-4">

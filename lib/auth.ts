@@ -116,6 +116,13 @@ export const auth = betterAuth({
             html: `<p>Olá, ${user.name ?? user.email}!</p><p>Clique no link abaixo para confirmar seu endereço de email.</p><p><a href="${url}">${url}</a></p>`,
           });
         },
+        // Google sign-ins arrive pre-verified and never hit this hook, so they
+        // get the welcome email from databaseHooks.user.create.after instead.
+        afterEmailVerification: async (user) => {
+          sendWelcomeEmail({ to: user.email, name: user.name ?? user.email }).catch(
+            (err) => console.error("[welcome-email] failed:", err),
+          );
+        },
       }
     : undefined,
   plugins: [nextCookies()],
@@ -125,9 +132,14 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          sendWelcomeEmail({ to: user.email, name: user.name ?? user.email }).catch(
-            (err) => console.error("[welcome-email] failed:", err),
-          );
+          // Email/password sign-ups get the welcome email once they verify
+          // (see emailVerification.afterEmailVerification above) so they don't
+          // receive it twice before the account is even usable.
+          if (!emailVerificationEnabled || user.emailVerified) {
+            sendWelcomeEmail({ to: user.email, name: user.name ?? user.email }).catch(
+              (err) => console.error("[welcome-email] failed:", err),
+            );
+          }
         },
       },
     },

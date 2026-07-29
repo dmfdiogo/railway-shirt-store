@@ -32,7 +32,6 @@ type CheckoutLineInput = {
 
 type CheckoutRequestInput = {
   checkoutLines: CheckoutLineInput[];
-  checkoutUi: "embedded" | "hosted";
   fallbackShippingRegion: ShippingRegionCode | null;
   selectedShippingQuote: CheckoutShippingOption | null;
 };
@@ -202,11 +201,9 @@ async function resolveCheckoutRequest(request: Request): Promise<CheckoutRequest
   const contentType = request.headers.get("content-type") ?? "";
   let fallbackShippingRegion: ShippingRegionCode | null = null;
   let selectedShippingQuote: CheckoutShippingOption | null = null;
-  let checkoutUi: "embedded" | "hosted" = "hosted";
 
   if (contentType.includes("application/x-www-form-urlencoded")) {
     const body = await request.formData();
-    checkoutUi = body.get("checkoutUi") === "embedded" ? "embedded" : "hosted";
     fallbackShippingRegion = resolveShippingOption(
       typeof body.get("shippingRegion") === "string" ? (body.get("shippingRegion") as string) : null
     ).code;
@@ -216,7 +213,7 @@ async function resolveCheckoutRequest(request: Request): Promise<CheckoutRequest
 
     const cart = parseCartPayload(body.get("cart"));
     if (cart) {
-      return { checkoutLines: cart, checkoutUi, fallbackShippingRegion, selectedShippingQuote };
+      return { checkoutLines: cart, fallbackShippingRegion, selectedShippingQuote };
     }
 
     const priceId = typeof body.get("priceId") === "string" ? (body.get("priceId") as string) : null;
@@ -226,7 +223,6 @@ async function resolveCheckoutRequest(request: Request): Promise<CheckoutRequest
     if (priceId) {
       return {
         checkoutLines: [{ priceId, quantity }],
-        checkoutUi,
         fallbackShippingRegion,
         selectedShippingQuote,
       };
@@ -324,7 +320,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No checkout items provided." }, { status: 400 });
     }
 
-    const { checkoutLines, checkoutUi, fallbackShippingRegion, selectedShippingQuote } = checkoutRequest;
+    const { checkoutLines, fallbackShippingRegion, selectedShippingQuote } = checkoutRequest;
 
     const stripePrices = await Promise.all(
       checkoutLines.map((line) =>
@@ -441,29 +437,13 @@ export async function POST(request: Request) {
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      ui_mode: checkoutUi === "embedded" ? "elements" : "hosted_page",
-      ...(checkoutUi === "hosted"
-        ? {
-            branding_settings: {
-              button_color: "#6B3CF6",
-              display_name: "Be Art",
-              font_family: "montserrat",
-            },
-          }
-        : {}),
+      ui_mode: "elements",
       line_items: checkoutLines.map((line) => ({
         price: line.priceId,
         quantity: line.quantity,
       })),
       client_reference_id: order.id,
-      ...(checkoutUi === "embedded"
-        ? {
-            return_url: `${appUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-          }
-        : {
-            cancel_url: `${appUrl}/checkout/cancel`,
-            success_url: `${appUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-          }),
+      return_url: `${appUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       billing_address_collection: "auto",
       allow_promotion_codes: true,
       shipping_address_collection: {
@@ -508,7 +488,7 @@ export async function POST(request: Request) {
       },
     });
 
-    if (checkoutUi === "embedded" && !session.client_secret) {
+    if (!session.client_secret) {
       await prisma.order.update({
         where: { id: order.id },
         data: {
@@ -524,22 +504,6 @@ export async function POST(request: Request) {
       );
     }
 
-    if (checkoutUi === "hosted" && !session.url) {
-      await prisma.order.update({
-        where: { id: order.id },
-        data: {
-          canceledAt: new Date(),
-          fulfillmentStatus: "canceled",
-          paymentStatus: "canceled",
-        },
-      });
-
-      return NextResponse.json(
-        { error: "Stripe did not return a checkout URL." },
-        { status: 500 }
-      );
-    }
-
     await prisma.order.update({
       where: { id: order.id },
       data: {
@@ -548,10 +512,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const redirectUrl =
-      checkoutUi === "embedded"
-        ? `${appUrl}/checkout?session_id=${encodeURIComponent(session.id)}`
-        : (session.url as string);
+    const redirectUrl = `${appUrl}/checkout?session_id=${encodeURIComponent(session.id)}`;
 
     const response = NextResponse.redirect(redirectUrl, 303);
     const rateLimitHeaders = createRateLimitHeaders(rateLimit);

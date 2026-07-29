@@ -1,3 +1,8 @@
+// In-memory store: counters live in this process only. Correct for a single
+// Railway replica; if this service ever scales to multiple instances, each
+// replica enforces its own limit independently, so the effective limit
+// multiplies by replica count. Move to a shared store (Redis/Postgres) before
+// scaling horizontally.
 type RateLimitOptions = {
   identifier: string;
   maxRequests: number;

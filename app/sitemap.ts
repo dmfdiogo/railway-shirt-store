@@ -3,6 +3,8 @@ import type { MetadataRoute } from "next";
 import prisma from "@/lib/prisma";
 import { absoluteUrl } from "@/lib/seo";
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const staticRoutes: MetadataRoute.Sitemap = [

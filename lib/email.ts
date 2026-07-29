@@ -88,14 +88,14 @@ export async function sendOrderConfirmationEmail({
         </a>
       </p>
       <hr style="border:none;border-top:1px solid #f0f0f0;margin:32px 0;">
-      <p style="font-size:12px;color:#aaa;margin:0;">Beart Store &middot; beartstore.com.br</p>
+      <p style="font-size:12px;color:#aaa;margin:0;">Be Art &middot; beartstore.com.br</p>
     </div>
   `;
 
   await resend.emails.send({
     from: FROM_EMAIL,
     to,
-    subject: `Pedido #${shortId} confirmado — Beart Store`,
+    subject: `Pedido #${shortId} confirmado — Be Art`,
     html,
   });
 }
@@ -111,7 +111,7 @@ export async function sendWelcomeEmail({
 
   const html = `
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a1a;">
-      <h2 style="margin-bottom:4px;color:#111;">Bem-vindo à Beart Store! 👋</h2>
+      <h2 style="margin-bottom:4px;color:#111;">Bem-vindo à Be Art! 👋</h2>
       <p style="color:#555;">Olá, <strong>${name}</strong>! É um prazer ter você por aqui.</p>
       <p style="color:#555;">Explore nosso catálogo e encontre a camiseta perfeita para você.</p>
       <p style="margin-top:32px;">
@@ -121,14 +121,14 @@ export async function sendWelcomeEmail({
         </a>
       </p>
       <hr style="border:none;border-top:1px solid #f0f0f0;margin:32px 0;">
-      <p style="font-size:12px;color:#aaa;margin:0;">Beart Store &middot; beartstore.com.br</p>
+      <p style="font-size:12px;color:#aaa;margin:0;">Be Art &middot; beartstore.com.br</p>
     </div>
   `;
 
   await resend.emails.send({
     from: FROM_EMAIL,
     to,
-    subject: "Bem-vindo à Beart Store!",
+    subject: "Bem-vindo à Be Art!",
     html,
   });
 }
@@ -154,14 +154,14 @@ export async function sendOrderShippedEmail({
         </a>
       </p>
       <hr style="border:none;border-top:1px solid #f0f0f0;margin:32px 0;">
-      <p style="font-size:12px;color:#aaa;margin:0;">Beart Store &middot; beartstore.com.br</p>
+      <p style="font-size:12px;color:#aaa;margin:0;">Be Art &middot; beartstore.com.br</p>
     </div>
   `;
 
   await resend.emails.send({
     from: FROM_EMAIL,
     to,
-    subject: `Pedido #${shortId} enviado — Beart Store`,
+    subject: `Pedido #${shortId} enviado — Be Art`,
     html,
   });
 }

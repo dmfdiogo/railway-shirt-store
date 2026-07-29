@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ViewTransition } from "react";
-import { ArrowLeft, ArrowRight, Palette, Shirt, Sparkles } from "lucide-react";
+import { ArrowLeft, Palette, Shirt, Sparkles } from "lucide-react";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import Image from "next/image";
