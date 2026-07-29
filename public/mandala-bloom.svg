@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="100%" height="100%">
+  <defs>
+    <path
+      id="mandala-petal"
+      d="M720 450 C690 390 690 322 720 266 C750 322 750 390 720 450 Z"
+      fill="none"
+      stroke="#ffffff"
+      stroke-width="3.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      id="mandala-leaf"
+      d="M720 450 C700 405 702 356 720 318 C738 356 740 405 720 450 Z"
+      fill="none"
+      stroke="#ffffff"
+      stroke-width="2.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </defs>
+
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="720" cy="450" r="54" stroke-width="3.8" />
+    <circle cx="720" cy="450" r="108" stroke-width="2.8" opacity="0.95" />
+    <circle cx="720" cy="450" r="184" stroke-width="2.6" opacity="0.9" />
+    <circle cx="720" cy="450" r="258" stroke-width="2.2" opacity="0.8" />
+    <circle cx="720" cy="450" r="320" stroke-width="1.8" opacity="0.72" />
+
+    <use href="#mandala-petal" />
+    <use href="#mandala-petal" transform="rotate(30 720 450)" />
+    <use href="#mandala-petal" transform="rotate(60 720 450)" />
+    <use href="#mandala-petal" transform="rotate(90 720 450)" />
+    <use href="#mandala-petal" transform="rotate(120 720 450)" />
+    <use href="#mandala-petal" transform="rotate(150 720 450)" />
+    <use href="#mandala-petal" transform="rotate(180 720 450)" />
+    <use href="#mandala-petal" transform="rotate(210 720 450)" />
+    <use href="#mandala-petal" transform="rotate(240 720 450)" />
+    <use href="#mandala-petal" transform="rotate(270 720 450)" />
+    <use href="#mandala-petal" transform="rotate(300 720 450)" />
+    <use href="#mandala-petal" transform="rotate(330 720 450)" />
+
+    <use href="#mandala-leaf" transform="rotate(15 720 450)" />
+    <use href="#mandala-leaf" transform="rotate(45 720 450)" />
+    <use href="#mandala-leaf" transform="rotate(75 720 450)" />
+    <use href="#mandala-leaf" transform="rotate(105 720 450)" />
+    <use href="#mandala-leaf" transform="rotate(135 720 450)" />
+    <use href="#mandala-leaf" transform="rotate(165 720 450)" />
+    <use href="#mandala-leaf" transform="rotate(195 720 450)" />
+    <use href="#mandala-leaf" transform="rotate(225 720 450)" />
+    <use href="#mandala-leaf" transform="rotate(255 720 450)" />
+    <use href="#mandala-leaf" transform="rotate(285 720 450)" />
+    <use href="#mandala-leaf" transform="rotate(315 720 450)" />
+    <use href="#mandala-leaf" transform="rotate(345 720 450)" />
+
+    <path
+      stroke-width="2.4"
+      opacity="0.84"
+      d="M720 130 C766 184 790 248 790 318 C790 388 766 420 720 450 C674 420 650 388 650 318 C650 248 674 184 720 130 Z"
+    />
+    <path
+      stroke-width="2.4"
+      opacity="0.84"
+      d="M1040 450 C986 496 922 520 852 520 C782 520 750 496 720 450 C750 404 782 380 852 380 C922 380 986 404 1040 450 Z"
+    />
+    <path
+      stroke-width="2.4"
+      opacity="0.84"
+      d="M720 770 C674 716 650 652 650 582 C650 512 674 480 720 450 C766 480 790 512 790 582 C790 652 766 716 720 770 Z"
+    />
+    <path
+      stroke-width="2.4"
+      opacity="0.84"
+      d="M400 450 C454 404 518 380 588 380 C658 380 690 404 720 450 C690 496 658 520 588 520 C518 520 454 496 400 450 Z"
+    />
+  </g>
+</svg>

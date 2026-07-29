@@ -13,6 +13,7 @@ import { buildMarketingMetadata, SITE_DESCRIPTION, SITE_TITLE } from "@/lib/seo"
 import { MysticBackground } from "@/components/ui/mystic-background";
 import { Navbar } from "@/components/ui/navbar";
 import { SiteFooter } from "@/components/ui/site-footer";
+import { HeroTcgCard } from "@/components/ui/hero-tcg-card";
 
 export const runtime = "nodejs";
 
@@ -122,6 +123,25 @@ const benefits = [
   },
 ];
 
+const storeScenes = [
+  {
+    src: "/loja-cena-1.png",
+    alt: "Interior futurista da Be Art Store com vitrine espacial e araras de camisetas coloridas.",
+    eyebrow: "Showroom imersivo",
+    title: "Uma vitrine montada como cabine noturna.",
+    description:
+      "Fibra aparente, luz fria e uma vista cósmica para transformar a loja em cenário, não apenas exposição.",
+  },
+  {
+    src: "/loja-cena-2.png",
+    alt: "Área de produção da Be Art Store com maquinário, estética sci-fi e acabamento em fibra de carbono.",
+    eyebrow: "Ateliê em operação",
+    title: "Produção com linguagem industrial e sci-fi.",
+    description:
+      "As peças ganham contexto de fabricação premium, com textura técnica e atmosfera consistente com a marca.",
+  },
+];
+
 export default async function Home() {
   await connection();
 
@@ -226,66 +246,8 @@ export default async function Home() {
 
           </div>
 
-          <aside className="relative lg:justify-self-end">
-            <article className="hero-tcg-card group relative isolate overflow-hidden rounded-[2.35rem] border border-white/10 bg-[linear-gradient(155deg,rgba(23,24,34,0.96)_0%,rgba(15,15,22,0.98)_42%,rgba(9,10,16,0.98)_100%)] p-5 shadow-[0_30px_90px_rgba(0,0,0,0.42)] backdrop-blur-2xl sm:p-6">
-              <div aria-hidden="true" className="tcg-gleam absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.18),transparent_22%),radial-gradient(circle_at_76%_14%,rgba(130,146,255,0.20),transparent_30%),radial-gradient(circle_at_74%_82%,rgba(139,92,246,0.24),transparent_30%),radial-gradient(circle_at_18%_74%,rgba(46,91,255,0.18),transparent_28%)]" />
-              <div aria-hidden="true" className="absolute inset-[1px] rounded-[2.25rem] border border-white/[0.06]" />
-              <div aria-hidden="true" className="tcg-foil absolute inset-y-[-18%] left-[-34%] w-[72%] bg-[linear-gradient(115deg,transparent_16%,rgba(255,255,255,0.02)_28%,rgba(255,255,255,0.28)_42%,rgba(163,191,255,0.24)_50%,rgba(255,255,255,0.02)_61%,transparent_72%)] opacity-70 mix-blend-screen" />
-              <div aria-hidden="true" className="absolute inset-x-6 top-5 h-px bg-gradient-to-r from-transparent via-white/45 to-transparent opacity-70" />
-              <div aria-hidden="true" className="absolute inset-x-6 bottom-5 h-px bg-gradient-to-r from-transparent via-[#7C7CFF]/55 to-transparent opacity-75" />
-              <div aria-hidden="true" className="absolute -right-14 top-18 font-display text-[9rem] font-black uppercase tracking-[-0.08em] text-white/[0.045]">
-                BA
-              </div>
-
-              <div className="relative flex min-h-[30rem] flex-col justify-between">
-                <div className="flex items-start justify-between gap-4 text-[11px] font-medium uppercase tracking-[0.34em] text-white/44">
-                  <div>
-                    <p>Be Art</p>
-                    <p className="mt-2 tracking-[0.28em] text-white/28">Trading Aura 01</p>
-                  </div>
-                  <span className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1 text-[10px] text-white/54">
-                    Holo Rare
-                  </span>
-                </div>
-
-                <div className="mt-10">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.42em] text-[#B9BEFF]">
-                    Be Art Signature
-                  </p>
-                  <h2 className="font-display mt-5 max-w-[10ch] text-[clamp(2.6rem,4vw,4.6rem)] font-black uppercase leading-[0.88] tracking-[-0.06em] text-white">
-                    Vista a noite do seu jeito.
-                  </h2>
-                  <p className="mt-5 max-w-[28ch] text-base leading-7 text-white/62">
-                    Be Art e uma loja de camisetas de rave pensada para noites intensas, contraste preciso e elegancia em ambientes de luz baixa.
-                  </p>
-                </div>
-
-                <div className="mt-10 space-y-3 text-sm text-white/68">
-                  {[
-                    "Loja autoral de ravewear com identidade clara.",
-                    "Metal, brilho e sombra combinados para criar atmosfera.",
-                    "Peças que acompanham seu estilo sem precisar exagerar.",
-                  ].map((item) => (
-                    <div key={item} className="flex items-start gap-3 border-t border-white/10 pt-3.5 first:border-t-0 first:pt-0">
-                      <span className="mt-1 h-2 w-2 rounded-full bg-[linear-gradient(135deg,#EEF2FF_0%,#7C7CFF_45%,#6B3CF6_100%)] shadow-[0_0_14px_rgba(109,120,255,0.55)]" aria-hidden="true" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-8 flex items-end justify-between gap-5 border-t border-white/10 pt-4">
-                  <div>
-                    <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-white/32">Categoria</p>
-                    <p className="mt-2 font-display text-xl font-bold uppercase tracking-[0.08em] text-white/90">
-                      Ravewear
-                    </p>
-                  </div>
-                  <p className="max-w-[10rem] text-right text-[11px] uppercase tracking-[0.26em] text-white/38">
-                    loja de camisetas para noites elétricas
-                  </p>
-                </div>
-              </div>
-            </article>
+          <aside className="relative lg:justify-self-end w-full max-w-[26rem]">
+            <HeroTcgCard />
           </aside>
         </div>
 
@@ -389,6 +351,102 @@ export default async function Home() {
                   style={{ background: b.accent }}
                   aria-hidden="true"
                 />
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div aria-hidden="true" className="h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+      <section className="px-6 py-24 sm:py-32" aria-labelledby="store-scenes-heading">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-end">
+            <div className="max-w-3xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#6B21A8]">
+                Ambiente da marca
+              </p>
+              <h2
+                id="store-scenes-heading"
+                className="font-display mt-3 text-4xl font-extrabold uppercase tracking-[-0.04em] sm:text-5xl"
+              >
+                A loja como extensão visual da coleção.
+              </h2>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-white/58 sm:text-base">
+                Essas cenas apresentam o universo da Be Art além da camiseta: showroom, produção e ambientação tratados com a mesma linguagem escura, precisa e tecnológica.
+              </p>
+            </div>
+
+            <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.03] px-5 py-4 backdrop-blur-xl">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-white/42">
+                Materialidade
+              </p>
+              <p className="mt-2 text-sm leading-6 text-white/62">
+                Os cards usam uma moldura texturizada inspirada em fibra de carbono para conversar com os painéis e máquinas das próprias ilustrações.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            {storeScenes.map((scene, index) => (
+              <article
+                key={scene.src}
+                className="group relative flex flex-col overflow-hidden rounded-[2.2rem] p-3 shadow-[0_28px_80px_rgba(0,0,0,0.36)]"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(180deg, rgba(9,10,13,0.52), rgba(6,7,10,0.38)), url('/real-carbon-fibre.png')",
+                  backgroundSize: "100% 100%, 14px 14px",
+                  backgroundPosition: "0 0, center",
+                  backgroundColor: "#090A0D",
+                  boxShadow:
+                    "0 28px 80px rgba(0,0,0,0.36), inset 0 0 0 1px rgba(255,255,255,0.05), inset 0 0 24px rgba(118,124,148,0.04)",
+                }}
+              >
+                {/* Hover Glow - Único overlay absolutizado */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 z-0 opacity-0 transition duration-700 group-hover:opacity-100"
+                  style={{
+                    background:
+                      index === 0
+                        ? "radial-gradient(circle at 18% 18%, rgba(124,92,255,0.18), transparent 30%)"
+                        : "radial-gradient(circle at 82% 18%, rgba(196,113,255,0.16), transparent 30%)",
+                  }}
+                />
+
+                {/* Container da Imagem */}
+                <div className="relative z-10 w-full overflow-hidden rounded-[1.4rem] border border-white/[0.08] bg-black/40 ring-1 ring-inset ring-white/[0.04]">
+                  <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-4 px-5 py-4 text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-white/72">
+                    <span>{scene.eyebrow}</span>
+                    <span className="rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[0.58rem] text-white/60 backdrop-blur-md">
+                      Cena {index + 1}
+                    </span>
+                  </div>
+
+                  <div className="relative aspect-[16/10] w-full">
+                    <Image
+                      src={scene.src}
+                      alt={scene.alt}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      className="object-cover transition duration-1000 group-hover:scale-[1.03]"
+                    />
+                    {/* Sombra interna na imagem */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" aria-hidden="true" />
+                  </div>
+                </div>
+
+                {/* Container do Texto */}
+                <div className="relative z-10 p-5 sm:p-6 lg:p-7">
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-[0.34em] text-[#B9BEFF]">
+                    {scene.eyebrow}
+                  </p>
+                  <h3 className="font-display mt-2 max-w-[18ch] text-2xl font-extrabold uppercase leading-tight tracking-[-0.04em] text-white sm:text-[1.8rem]">
+                    {scene.title}
+                  </h3>
+                  <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/60 sm:text-[0.95rem]">
+                    {scene.description}
+                  </p>
+                </div>
               </article>
             ))}
           </div>

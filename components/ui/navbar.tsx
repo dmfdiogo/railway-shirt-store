@@ -4,6 +4,7 @@ import {
   ArrowRight,
   LogIn,
   Menu,
+  Sparkles,
   ShoppingBag,
   ShoppingCart,
   UserRound,
@@ -43,6 +44,10 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
           <Link href="/shop" className="inline-flex items-center gap-2 text-sm font-medium text-white/50 transition-colors hover:text-white">
             <ShoppingBag className="h-4 w-4" aria-hidden="true" />
             Catálogo
+          </Link>
+          <Link href="/art" className="inline-flex items-center gap-2 text-sm font-medium text-white/50 transition-colors hover:text-white">
+            <Sparkles className="h-4 w-4" aria-hidden="true" />
+            Art
           </Link>
           <Link href="/cart" className="relative inline-flex items-center gap-2 text-sm font-medium text-white/50 transition-colors hover:text-white">
             <ShoppingCart className="h-4 w-4" aria-hidden="true" />
@@ -104,6 +109,16 @@ export function Navbar({ sessionActive, authReady }: NavbarProps) {
               >
                 <ShoppingBag className="h-4 w-4" aria-hidden="true" />
                 Catálogo
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/art"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white/60 transition hover:bg-white/[0.05] hover:text-white"
+              >
+                <Sparkles className="h-4 w-4" aria-hidden="true" />
+                Art
               </Link>
             </li>
             <li>

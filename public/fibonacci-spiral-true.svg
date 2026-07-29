@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="100%" height="100%">
+  <g
+    fill="none"
+    stroke="#ffffff"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    transform="translate(720 450) rotate(-90) scale(44) translate(-3.5 4.5)"
+  >
+    <g stroke-width="0.075" opacity="0.42">
+      <rect x="0" y="0" width="1" height="1" />
+      <rect x="1" y="0" width="1" height="1" />
+      <rect x="0" y="-2" width="2" height="2" />
+      <rect x="-3" y="-2" width="3" height="3" />
+      <rect x="-3" y="1" width="5" height="5" />
+      <rect x="2" y="-2" width="8" height="8" />
+      <rect x="-3" y="-15" width="13" height="13" />
+      <rect x="-3" y="-15" width="13" height="21" opacity="0.58" />
+    </g>
+
+    <path
+      stroke-width="0.14"
+      d="M0 0 A1 1 0 0 0 1 1 A1 1 0 0 0 2 0 A2 2 0 0 1 0 -2 A3 3 0 0 1 -3 1 A5 5 0 0 0 2 6 A8 8 0 0 0 10 -2 A13 13 0 0 1 -3 -15"
+    />
+
+    <circle cx="0.5" cy="0.5" r="0.08" fill="#ffffff" stroke="none" opacity="0.9" />
+  </g>
+</svg>
